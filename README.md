@@ -1,6 +1,5 @@
 ## 概述
-* 本库可单独使用，也可以作为[AndroidLib](https://github.com/gdyanry/AndroidLib)的依赖库用于Android开发。
-* 本库可用于Java客户端和服务端开发。
+* 本库可用于Java客户端和服务端开发，也可以作为[AndroidLib](https://github.com/gdyanry/AndroidLib)的依赖库用于Android开发。
 * 相关文档会陆续补充。
 
 ## 开发层通信协议
