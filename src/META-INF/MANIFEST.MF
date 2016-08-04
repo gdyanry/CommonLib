@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: libs/mysql-connector-java-5.1.30-bin.jar libs/thumbnailator-0.4.7.jar
+
