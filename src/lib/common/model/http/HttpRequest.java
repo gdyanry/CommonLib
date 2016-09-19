@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.Map;
 
 import lib.common.util.ConsoleUtil;
 
@@ -15,41 +16,47 @@ import lib.common.util.ConsoleUtil;
  *
  *         2014年10月10日 下午5:02:56
  */
-public class HttpResponse {
+public abstract class HttpRequest {
 	private HttpURLConnection conn;
 	private long startTime;
-	private long length;
+	private long contentLength;
+	private boolean cancel;
 
-	HttpResponse(HttpURLConnection conn, long startTime)
-			throws IOException {
-		this.conn = conn;
-		this.startTime = startTime;
-		if (!isSuccess()) {
-			ConsoleUtil.error(getClass(), "response code: " + conn.getResponseCode());
-		}
+	public HttpRequest(String url, Map<String, Object> urlParams) throws IOException {
+		startTime = System.currentTimeMillis();
+		conn = Https.getConnection(Https.getUrl(url, urlParams));
+		conn.setRequestMethod(getRequestMethod());
 	}
-	
+
+	public void cancel() {
+		cancel = true;
+	}
+
+	public boolean isCancel() {
+		return cancel;
+	}
+
 	public long getTotalLength() {
-		if (length == 0) {
+		if (contentLength == 0) {
 			String contentRange = conn.getHeaderField("Content-Range");
 			if (contentRange != null) {
 				int i = contentRange.indexOf("/");
 				if (i != -1) {
 					String len = contentRange.substring(i + 1);
 					if (len.length() > 0) {
-						length = Long.parseLong(len);
+						contentLength = Long.parseLong(len);
 					}
 				}
 			}
 			String contentLength = conn.getHeaderField("Content-Length");
 			if (contentLength != null) {
-				length = Long.parseLong(contentLength);
+				this.contentLength = Long.parseLong(contentLength);
 			} else {
-				ConsoleUtil.error(getClass(), "content length is unreachable for " + conn.getURL());
-				length = -1;
+				ConsoleUtil.error(getClass(), "content contentLength is unreachable for " + conn.getURL());
+				this.contentLength = -1;
 			}
 		}
-		return length;
+		return contentLength;
 	}
 
 	public HttpURLConnection getConnection() {
@@ -76,6 +83,9 @@ public class HttpResponse {
 	}
 
 	public boolean isSuccess() throws IOException {
-		return conn.getResponseCode() == 200;
+		int responseCode = conn.getResponseCode();
+		return responseCode >= 200 && responseCode < 300;
 	}
+
+	protected abstract String getRequestMethod();
 }

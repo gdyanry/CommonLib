@@ -48,7 +48,7 @@ public final class Singletons {
 	 * @param type
 	 * @return the previous created object of the given type, might be null.
 	 */
-	public static <T> T reload(Class<T> type) {
+	public static <T> T remove(Class<T> type) {
 		return (T) container.remove(type);
 	}
 	

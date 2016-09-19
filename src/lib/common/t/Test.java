@@ -3,13 +3,10 @@
  */
 package lib.common.t;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Random;
 
-import lib.common.model.http.HttpResponse;
-import lib.common.model.http.Https;
 import lib.common.model.json.JSONObject;
 import lib.common.util.ConversionUtil;
 import lib.common.util.HexUtil;
@@ -54,12 +51,5 @@ public class Test {
 		System.out.println(~0);
 		System.out.println(String.format("%tc", 1466776535000L));
 		
-		try {
-			HttpResponse resp = Https.get("http://api.football.6cheng.com.cn/upload/face/2016/07/14/s_20160714123405_469.jpg", null);
-			System.out.println(resp.getConnection().getHeaderFields());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

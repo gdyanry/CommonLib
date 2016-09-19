@@ -5,7 +5,6 @@ package lib.common.model.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -21,9 +20,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-import lib.common.entity.StreamTransferHook;
 import lib.common.util.ConsoleUtil;
-import lib.common.util.IOUtil;
 
 /**
  * 
@@ -96,75 +93,5 @@ public class Https {
 			sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 		}
 		return sb.deleteCharAt(sb.length() - 1).toString();
-	}
-
-	public static HttpResponse get(String baseUrl, Map<String, Object> params) throws IOException {
-		return get(baseUrl, params, 0);
-	}
-	
-	public static HttpResponse get(String baseUrl, Map<String, Object> params, long startPos) throws IOException {
-		long time = System.currentTimeMillis();
-		HttpURLConnection conn = getConnection(getUrl(baseUrl, params));
-		conn.setRequestMethod("GET");
-		if (startPos > 0) {
-			conn.setRequestProperty("RANGE", "bytes=" + startPos + "-");
-		}
-		conn.connect();
-		return new HttpResponse(conn, time);
-	}
-
-	public static HttpResponse post(String baseUrl, Map<String, Object> params, byte[] entity) throws IOException {
-		return post(baseUrl, params, entity, null);
-	}
-	
-	public static HttpResponse post(String baseUrl, Map<String, Object> params, byte[] entity, StreamTransferHook uploadHook) throws IOException {
-		long time = System.currentTimeMillis();
-		HttpURLConnection conn = postPreparation(baseUrl, params);
-		OutputStream os = conn.getOutputStream();
-		if (uploadHook == null) {
-			os.write(entity);
-			os.flush();
-			ConsoleUtil.debug(Https.class, String.format("post content length: %sbytes", entity.length));
-		} else {
-			IOUtil.bytesToOutputStream(entity, os, uploadHook);
-		}
-		os.close();
-		return new HttpResponse(conn, time);
-	}
-
-	private static HttpURLConnection postPreparation(String baseUrl, Map<String, Object> params) throws IOException {
-		HttpURLConnection conn = getConnection(getUrl(baseUrl, params));
-		conn.setRequestMethod("POST");
-		conn.setDoOutput(true);
-		conn.setUseCaches(false);
-		conn.setRequestProperty("Content-type", "application/octet-stream");
-		return conn;
-	}
-
-	public static HttpResponse post(String baseUrl, Map<String, Object> params, InputStream entity) throws IOException {
-		return post(baseUrl, params, entity, null);
-	}
-	
-	public static HttpResponse post(String baseUrl, Map<String, Object> params, InputStream entity, StreamTransferHook uploadHook) throws IOException {
-		long time = System.currentTimeMillis();
-		HttpURLConnection conn = postPreparation(baseUrl, params);
-		OutputStream os = conn.getOutputStream();
-		if (uploadHook == null) {
-			long length = IOUtil.transferStream(entity, os);
-			ConsoleUtil.debug(Https.class, String.format("post content length: %sbytes", length));
-		} else {
-			IOUtil.transferStream(entity, os, uploadHook);
-		}
-		os.close();
-		return new HttpResponse(conn, time);
-	}
-
-	public static HttpResponse customizedRequest(String baseUrl, Map<String, Object> params, CustomRequest request)
-			throws IOException {
-		long time = System.currentTimeMillis();
-		HttpURLConnection conn = getConnection(getUrl(baseUrl, params));
-		request.customize(conn);
-		conn.connect();
-		return new HttpResponse(conn, time);
 	}
 }

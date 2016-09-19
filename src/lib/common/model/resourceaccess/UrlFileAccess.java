@@ -8,8 +8,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import lib.common.entity.ActionAbortException;
-import lib.common.model.http.HttpResponse;
-import lib.common.model.http.Https;
+import lib.common.model.http.HttpGet;
+import lib.common.model.http.HttpRequest;
 import lib.common.util.IOUtil;
 
 /**
@@ -36,19 +36,23 @@ public abstract class UrlFileAccess extends CacheResourceAccess<String, File, Ur
 		if (key.length() > 0) {
 			// use random number as tempt suffix to avoid concurrent issue
 			File temp = new File(cached.getAbsolutePath() + ".tmp");
-			HttpResponse httpResponse;
+			HttpRequest request;
 			if (supportResume()) {
-				httpResponse = Https.get(key, null, temp.length());
+				request = new HttpGet(key, null, temp.length());
 			} else {
-				httpResponse = Https.get(key, null);
+				request = new HttpGet(key);
 			}
-			if (httpResponse.isSuccess()) {
-				InputStream is = httpResponse.getConnection().getInputStream();
+			if (request.isSuccess()) {
+				InputStream is = request.getConnection().getInputStream();
 				if (option == null) {
-					IOUtil.transferStream(is, new FileOutputStream(temp, false));
+					FileOutputStream os = new FileOutputStream(temp, false);
+					IOUtil.transferStream(is, os);
+					os.close();
 				} else {
-					if (option.onReadyToDownload(temp.length(), httpResponse.getTotalLength())) {
-						IOUtil.transferStream(is, new FileOutputStream(temp, supportResume()), option);
+					if (option.onReadyToDownload(temp.length(), request.getTotalLength())) {
+						FileOutputStream os = new FileOutputStream(temp, supportResume());
+						IOUtil.transferStream(is, os, option);
+						os.close();
 						if (option.isStop()) {
 							throw new ActionAbortException("aborted by user on downloading");
 						}
@@ -59,7 +63,7 @@ public abstract class UrlFileAccess extends CacheResourceAccess<String, File, Ur
 				temp.renameTo(cached);
 				return cached;
 			} else {
-				throw new ActionAbortException("http error: " + httpResponse.getConnection().getResponseCode());
+				throw new ActionAbortException("http error: " + request.getConnection().getResponseCode());
 			}
 		} else {
 			throw new ActionAbortException("url is empty");

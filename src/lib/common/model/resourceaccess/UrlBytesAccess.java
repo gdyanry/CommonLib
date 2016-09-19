@@ -7,8 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import lib.common.entity.ActionAbortException;
-import lib.common.model.http.HttpResponse;
-import lib.common.model.http.Https;
+import lib.common.model.http.HttpGet;
+import lib.common.model.http.HttpRequest;
 import lib.common.util.IOUtil;
 
 /**
@@ -22,14 +22,14 @@ public abstract class UrlBytesAccess extends CacheResourceAccess<String, byte[],
 	protected byte[] generate(String key, byte[] cached, UrlOption option, AccessHook<byte[]> hook)
 			throws Exception {
 		if (key.length() > 0) {
-			HttpResponse httpResponse = Https.get(key, null);
-			if (httpResponse.isSuccess()) {
-				InputStream is = httpResponse.getConnection().getInputStream();
+			HttpRequest request = new HttpGet(key);
+			if (request.isSuccess()) {
+				InputStream is = request.getConnection().getInputStream();
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				if (option == null) {
 					IOUtil.transferStream(is, bos);
 				} else {
-					if (option.onReadyToDownload(0L, httpResponse.getTotalLength())) {
+					if (option.onReadyToDownload(0L, request.getTotalLength())) {
 						IOUtil.transferStream(is, bos, option);
 						if (option.isStop()) {
 							throw new ActionAbortException("aborted by user on downloading");
@@ -40,7 +40,7 @@ public abstract class UrlBytesAccess extends CacheResourceAccess<String, byte[],
 				}
 				return bos.toByteArray();
 			} else {
-				throw new ActionAbortException("http error: " + httpResponse.getConnection().getResponseCode());
+				throw new ActionAbortException("http error: " + request.getConnection().getResponseCode());
 			}
 		} else {
 			throw new ActionAbortException("url is empty");
