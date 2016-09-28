@@ -54,12 +54,12 @@ public abstract class UdpClient {
 
 	private synchronized void prepareChannel() throws IOException {
 		if (dc == null) {
-			ConsoleUtil.debug(getClass(), "open datagram channel.");
+			ConsoleUtil.debug("open datagram channel.");
 			dc = DatagramChannel.open();
 			dc.configureBlocking(false);
 		}
 		if (!dc.isConnected()) {
-			ConsoleUtil.debug(getClass(), "connect to server " + server);
+			ConsoleUtil.debug("connect to server " + server);
 			dc.socket().bind(bindAddr);
 			dc.connect(server);
 		}
@@ -88,7 +88,7 @@ public abstract class UdpClient {
 						dc.register(s, SelectionKey.OP_READ);
 					}
 
-					ConsoleUtil.debug(UdpClient.this.getClass(),
+					ConsoleUtil.debug(
 							"start listening...");
 					while (!exit && start && s.select() > 0) {
 						Iterator<SelectionKey> it = s.selectedKeys().iterator();
@@ -101,16 +101,16 @@ public abstract class UdpClient {
 							if (i > 0) {
 								String text = UdpClient.this.charset.decode(
 										receiveBuf).toString();
-								ConsoleUtil.debug(UdpClient.this.getClass(),
+								ConsoleUtil.debug(
 										"<<< " + text);
 								listener.onServerRequest(text);
 							}
 						}
 					}
-					ConsoleUtil.debug(UdpClient.this.getClass(),
+					ConsoleUtil.debug(
 							"stop listening.");
 					if (exit) {
-						ConsoleUtil.debug(UdpClient.this.getClass(), "exit.");
+						ConsoleUtil.debug("exit.");
 						s.close();
 						dc.close();
 						s = null;
@@ -133,7 +133,7 @@ public abstract class UdpClient {
 		sendBuf.put(charset.encode(text));
 		sendBuf.flip();
 		prepareChannel();
-		ConsoleUtil.debug(getClass(),
+		ConsoleUtil.debug(
 				String.format("%s>>> %s", dc.socket().getLocalPort(), text));
 		dc.write(sendBuf);
 	}

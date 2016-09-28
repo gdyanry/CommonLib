@@ -154,14 +154,14 @@ public abstract class IntegratedCommunicationServer<U> {
 			}
 		}
 		JSONArray ja1 = ja.getJSONArray(1);
-		ConsoleUtil.debug(getClass(), String.format("%s%n%n  %s >> %s%n", sessionId, uid, ja1));
+		ConsoleUtil.debug(String.format("%s%n%n  %s >> %s%n", sessionId, uid, ja1));
 		// ja1: [[非0/0, timestamp, {tag: [data, ...], ...}], ...]
 		for (int i = 0; i < ja1.length(); i++) {
 			JSONArray ja2 = ja1.getJSONArray(i);
 			ch.receive(ja2.getLong(1), ja2.getJSONObject(2), ja2.getInt(0));
 		}
 		JSONArray jaResponse = ch.endReceive(null);
-		ConsoleUtil.debug(getClass(), String.format("%s%n%n  %s << %s%n", sessionId, uid, jaResponse));
+		ConsoleUtil.debug(String.format("%s%n%n  %s << %s%n", sessionId, uid, jaResponse));
 		if (isAnonym) {
 			// 放回容器重用
 			anonymCHs.restore(ch);

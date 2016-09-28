@@ -64,7 +64,7 @@ public abstract class ConfigManager {
 		defaults = new LinkedHashMap<String, Object>();
 		keyDescription = new StringBuilder();
 		initialize(configClasses);
-		ConsoleUtil.debug(getClass(), "init config: " + defaults);
+		ConsoleUtil.debug("init config: " + defaults);
 		if (!configFile.exists()) {
 			createConfigFile();
 		}
@@ -100,7 +100,7 @@ public abstract class ConfigManager {
 			sb.append(entry.getKey()).append(keyValueSeparator).append(entry.getValue()).append(entrySeperator);
 		}
 		IOUtil.stringToFile(sb.toString(), configFile, charset, false);
-		ConsoleUtil.debug(getClass(), "create config file: " + configFile);
+		ConsoleUtil.debug("create config file: " + configFile);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public abstract class ConfigManager {
 					loads.put(keyValue[0].trim(), keyValue[1].trim());
 				}
 			}
-			ConsoleUtil.debug(getClass(), "load config: " + loads);
+			ConsoleUtil.debug("load config: " + loads);
 		}
 	}
 
@@ -166,17 +166,17 @@ public abstract class ConfigManager {
 		// append content
 		StringBuilder sb = new StringBuilder();
 		if (content != null) {
-			sb.append(content).append(System.lineSeparator());
+			sb.append(content).append(System.getProperty("line.separator"));
 		}
 		// append key description
 		if (keyDescription.length() > 0) {
-			sb.append("===========================配置项说明========================").append(System.lineSeparator())
+			sb.append("===========================配置项说明========================").append(System.getProperty("line.separator"))
 					.append(keyDescription);
 		}
 		// save
 		File manual = new File(configFile.getParentFile(), configFile.getName() + ".readme");
 		IOUtil.stringToFile(sb.toString(), manual, charset, false);
-		ConsoleUtil.debug(getClass(), "create config manual: " + manual);
+		ConsoleUtil.debug("create config manual: " + manual);
 	}
 
 	private void initialize(Class<?>... cs) throws IllegalArgumentException, IllegalAccessException {
@@ -201,7 +201,7 @@ public abstract class ConfigManager {
 					// put into default configurations
 					defaults.put(key, item.getValue());
 					if (description != null) {
-						keyDescription.append(key).append(": ").append(description).append(System.lineSeparator());
+						keyDescription.append(key).append(": ").append(description).append(System.getProperty("line.separator"));
 					}
 				}
 			}

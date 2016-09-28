@@ -26,10 +26,10 @@ public abstract class HttpPost extends HttpRequest {
         getConnection().setRequestProperty("Content-type", contentType);
     }
 
-    public void send(Map<String, String> textFields, String charset) throws IOException {
+    public void send(Map<String, Object> textFields, String charset) throws IOException {
         if (textFields != null && !textFields.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for (Map.Entry<String, String> entry : textFields.entrySet()) {
+            for (Map.Entry<String, Object> entry : textFields.entrySet()) {
                 sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
             send(sb.deleteCharAt(sb.length() - 1).toString().getBytes(charset));
@@ -42,7 +42,7 @@ public abstract class HttpPost extends HttpRequest {
         if (uploadHook == null) {
             os.write(entity);
             os.flush();
-            ConsoleUtil.debug(Https.class, String.format("post bytes length: %sb", entity.length));
+            ConsoleUtil.debug(String.format("post bytes length: %sb", entity.length));
         } else {
             IOUtil.bytesToOutputStream(entity, os, uploadHook);
         }
@@ -54,7 +54,7 @@ public abstract class HttpPost extends HttpRequest {
         StreamTransferHook uploadHook = getUploadHook();
         if (uploadHook == null) {
             long length = IOUtil.transferStream(entity, os);
-            ConsoleUtil.debug(Https.class, String.format("post input stream length: %sb", length));
+            ConsoleUtil.debug(String.format("post input stream length: %sb", length));
         } else {
             IOUtil.transferStream(entity, os, uploadHook);
         }

@@ -80,7 +80,7 @@ public class Https {
 
 	public static HttpURLConnection getConnection(String url) throws IOException {
 		URL u = URI.create(url).toURL();
-		ConsoleUtil.debug(Https.class, "open connection: " + u);
+		ConsoleUtil.debug("open connection: " + u);
 		return (HttpURLConnection) u.openConnection();
 	}
 

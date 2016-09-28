@@ -61,7 +61,7 @@ public abstract class LoginHandler {
 	}
 
 	public void logout() {
-		ConsoleUtil.debug(getClass(), "logout: " + getValue(SESSION_ID));
+		ConsoleUtil.debug("logout: " + getValue(SESSION_ID));
 		removeEntry(SESSION_ID);
 		removeEntry(USER_ID);
 		initialized = false;

@@ -14,10 +14,8 @@ public interface InfoHandler {
 	int LEVEL_NONE = 4;
 	
 	void setLevel(int level);
-	
-	void handleException(Exception e);
 
-	void handleThrowable(Throwable e);
+	void handleException(Throwable e);
 
 	/**
 	 * Post an error message to user interface.
@@ -33,15 +31,13 @@ public interface InfoHandler {
 
 	/**
 	 * Log a debug message.
-	 * @param tag current class object, to help locating source code.
 	 * @param msg
 	 */
-	void debug(Class<?> tag, String msg);
+	void debug(String msg);
 
 	/**
 	 * Log an error message.
-	 * @param tag current class object, to help locating source code.
 	 * @param msg
 	 */
-	void error(Class<?> tag, String msg);
+	void error(String msg);
 }

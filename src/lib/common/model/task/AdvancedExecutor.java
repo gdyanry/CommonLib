@@ -68,9 +68,9 @@ public class AdvancedExecutor extends ThreadPoolExecutor {
 				if (contains(e)) {
 					if (duplicatePolicy == DuplicatePolicy.DISCARD_OLD) {
 						remove(e);
-						ConsoleUtil.debug(getClass(), "drop old task: " + e);
+						ConsoleUtil.debug("drop old task: " + e);
 					} else {
-						ConsoleUtil.debug(getClass(), "drop new task: " + e);
+						ConsoleUtil.debug("drop new task: " + e);
 						// drop the new task by doing nothing and telling the
 						// caller that everything goes well.
 						return true;

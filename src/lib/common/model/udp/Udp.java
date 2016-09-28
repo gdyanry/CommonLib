@@ -40,7 +40,7 @@ public abstract class Udp {
 		dc.configureBlocking(false);
 		if (port > 0) {
 			SocketAddress localAddr = new InetSocketAddress(port);
-			ConsoleUtil.debug(getClass(), "bind: " + localAddr);
+			ConsoleUtil.debug("bind: " + localAddr);
 			dc.bind(localAddr);
 		}
 	}
@@ -59,7 +59,7 @@ public abstract class Udp {
 			@Override
 			public void run() {
 				try {
-					ConsoleUtil.debug(Udp.class, "start listening...");
+					ConsoleUtil.debug("start listening...");
 					while (!exit) {
 						receiveBuf.clear();
 						SocketAddress client = dc.receive(receiveBuf);
@@ -67,15 +67,15 @@ public abstract class Udp {
 						if (client != null) {
 							String text = Udp.this.charset.decode(
 									receiveBuf).toString();
-							ConsoleUtil.debug(Udp.class, String.format("%s >>> %s", client, text));
+							ConsoleUtil.debug(String.format("%s >>> %s", client, text));
 							listener.onReceive((InetSocketAddress) client, text);
 						}
 					}
-					ConsoleUtil.debug(Udp.class, "stop listening.");
+					ConsoleUtil.debug("stop listening.");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				ConsoleUtil.debug(Udp.class, "exit.");
+				ConsoleUtil.debug("exit.");
 			}
 		});
 		return true;
@@ -86,7 +86,7 @@ public abstract class Udp {
 		ByteBuffer content = charset.encode(text);
 		sendBuf.put(content);
 		sendBuf.flip();
-		ConsoleUtil.debug(getClass(), String.format(String.format("%s <<< %s", target, text)));
+		ConsoleUtil.debug(String.format(String.format("%s <<< %s", target, text)));
 		dc.send(sendBuf, target);
 	}
 

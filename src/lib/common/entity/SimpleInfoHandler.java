@@ -14,14 +14,7 @@ public class SimpleInfoHandler implements InfoHandler {
 	private int level;
 
 	@Override
-	public void handleException(Exception e) {
-		if (level <= LEVEL_EXCEPTION) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void handleThrowable(Throwable e) {
+	public void handleException(Throwable e) {
 		if (level <= LEVEL_EXCEPTION) {
 			e.printStackTrace();
 		}
@@ -40,22 +33,25 @@ public class SimpleInfoHandler implements InfoHandler {
 	}
 
 	@Override
-	public void debug(Class<?> tag, String msg) {
+	public void debug(String msg) {
 		if (level <= LEVEL_DEBUG) {
-			ConsoleUtil.debug(tag, msg);
+			ConsoleUtil.debug(getClass(), msg);
 		}
 	}
 
 	@Override
-	public void error(Class<?> tag, String msg) {
+	public void error(String msg) {
 		if (level <= LEVEL_ERROR) {
-			ConsoleUtil.error(tag, msg);
+			ConsoleUtil.error(getClass(), msg);
 		}
+	}
+
+	public int getLevel() {
+		return level;
 	}
 
 	@Override
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
 }

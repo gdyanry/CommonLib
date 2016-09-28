@@ -41,7 +41,7 @@ public abstract class Tache<I> implements Runnable {
 
 	@Override
 	public void run() {
-		ConsoleUtil.debug(getClass(), "start running.");
+		ConsoleUtil.debug("start running.");
 		while (!exit) {
 			try {
 				I in = q.take();
@@ -53,7 +53,7 @@ public abstract class Tache<I> implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		ConsoleUtil.debug(getClass(), "stop running.");
+		ConsoleUtil.debug("stop running.");
 	}
 
 	/**

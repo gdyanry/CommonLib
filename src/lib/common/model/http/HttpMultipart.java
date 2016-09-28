@@ -52,7 +52,7 @@ public abstract class HttpMultipart extends HttpRequest {
             if (file.length() > 0) {
                 addStream(name, new FileInputStream(file), file.getName());
             } else {
-                ConsoleUtil.error(getClass(), "invalid file: " + file.getAbsolutePath());
+                ConsoleUtil.error("invalid file: " + file.getAbsolutePath());
             }
             return this;
         } else {
@@ -67,7 +67,7 @@ public abstract class HttpMultipart extends HttpRequest {
         if (uploadHook == null) {
             getOutputStream().write(leadBytes);
             long len = IOUtil.transferStream(in, getOutputStream());
-            ConsoleUtil.debug(getClass(), String.format("add stream field %s: %s(%sbytes)", fieldName, fileName, len));
+            ConsoleUtil.debug(String.format("add stream field %s: %s(%sbytes)", fieldName, fileName, len));
             getOutputStream().write(tailBytes);
         } else {
             IOUtil.bytesToOutputStream(leadBytes, getOutputStream(), uploadHook);
