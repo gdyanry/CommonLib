@@ -17,21 +17,23 @@ import lib.common.util.DbUtil;
  *
  *         2015年10月8日
  */
-public abstract class JDBCDML<R> {
-	private R result;
-	private Connection conn;
+public class JDBCDML {
 
 	/**
 	 * 
 	 * @param isQuery
-	 * @param isSimple simple means no extra parameter when calling {@link Connection#prepareStatement(String)}.
+	 * @param isSimple simple means no extra parameter when calling {@link Connection#prepareStatement(String)},
+	 *                    precisely, not simple means updatable query, or insertion with generated keys.
 	 */
-	public JDBCDML(boolean isQuery, boolean isSimple) {
+	public JDBCDML(boolean isQuery, boolean isSimple, Connection conn, String sql, InfoHandler infoHandler) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			conn = getDao().getConnection();
-			ps = prepareStatement(getSql(), isQuery, isSimple);
+			ps = isSimple ? conn.prepareStatement(sql) : isQuery ? conn
+					.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
+							ResultSet.CONCUR_UPDATABLE)
+					: conn.prepareStatement(sql,
+					Statement.RETURN_GENERATED_KEYS);
 			setParameters(ps);
 			ps.execute();
 			if (isQuery) {
@@ -39,35 +41,17 @@ public abstract class JDBCDML<R> {
 			} else if (!isSimple) {
 				rs = ps.getGeneratedKeys();
 			}
-			result = onExecuted(rs);
+			onResult(rs);
 		} catch (SQLException e) {
-			getInfoHandler().handleException(e);
+			if (infoHandler != null) {
+				infoHandler.handleException(e);
+			}
 		} finally {
-			DbUtil.releaseConnection(conn, ps, rs, getInfoHandler());
+			DbUtil.releaseConnection(conn, ps, rs, infoHandler);
 		}
 	}
 
-	protected PreparedStatement prepareStatement(String sql, boolean isQuery,
-			boolean isSimple) throws SQLException {
-		return isSimple ? conn.prepareStatement(sql) : isQuery ? conn
-				.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
-						ResultSet.CONCUR_UPDATABLE)
-				: conn.prepareStatement(sql,
-						Statement.RETURN_GENERATED_KEYS);
-	}
+	protected void onResult(ResultSet rs) throws SQLException {}
 
-	public R getResult() {
-		return result;
-	}
-
-	protected abstract R onExecuted(ResultSet rs) throws SQLException;
-
-	protected abstract JDBCDao getDao() throws SQLException;
-
-	protected abstract String getSql();
-
-	protected abstract void setParameters(PreparedStatement ps)
-			throws SQLException;
-
-	protected abstract InfoHandler getInfoHandler();
+	protected void setParameters(PreparedStatement ps) throws SQLException {}
 }
