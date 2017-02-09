@@ -3,15 +3,15 @@
  */
 package lib.common.t;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Random;
-
 import lib.common.model.json.JSONObject;
 import lib.common.util.ConversionUtil;
 import lib.common.util.HexUtil;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Random;
 
 
 
@@ -50,7 +50,7 @@ public class Test {
 		System.out.println(~1);
 		System.out.println(~0);
 		System.out.println(String.format("%tc", 1466776535000L));
-		String s = "https://s2.meijiabang.cn/v1/user/groups.json?fields=list[].group_id,list[].icon,list[].ui_type,list[].can_create_topic,list[].topic_count,list[].name,list[].type,list[].desc,list[].best_topic_count,list[].popularity_users[].uid,list[].popularity_users[].nickname,list[].popularity_users[].verified_type,list[].popularity_users[].cpma.icon,list[].popularity_users[].avatar.m(320|webp)&type=custom";
-		System.out.println(s.charAt(377));
-	}
+
+        System.out.println(new JSONObject() instanceof Object);
+    }
 }
