@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import lib.common.util.ReflectionUtil;
 
 /**
- * 
+ * 该类主要提供了对数据库表和视图定义的一种不同于ORM框架的表示方式，以及对这些表和视图进行基本的管理。
  * @author yanry
  * 
  */
