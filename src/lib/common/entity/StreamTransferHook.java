@@ -23,12 +23,12 @@ public interface StreamTransferHook {
 	int getUpdateInterval();
 
 	/**
-	 * 
-	 * @param transferedBytes
-	 *            the transferred bytes, not necessarily equals to current
+	 *
+     * @param transferredBytes
+     *            the transferred bytes, not necessarily equals to current
 	 *            position if start position is not 0.
 	 */
-	void onUpdate(long transferedBytes);
+    void onUpdate(long transferredBytes);
 
 	/**
 	 * 
