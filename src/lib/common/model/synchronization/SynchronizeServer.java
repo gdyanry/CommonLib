@@ -1,16 +1,12 @@
 package lib.common.model.synchronization;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
 import lib.common.entity.InfoHandler;
 import lib.common.model.dao.JDBCDML;
 import lib.common.model.json.JSONArray;
 import lib.common.model.json.JSONObject;
 import lib.common.util.ReflectionUtil;
+
+import java.sql.*;
 
 /**
  * Created by rongyu.yan on 12/14/2016.
@@ -32,8 +28,8 @@ public abstract class SynchronizeServer {
             String insertSql = null;
             for (int i = 0; i < created.length(); i++) {
                 final JSONObject item = created.getJSONObject(i);
-                final Object clientId = item.get(ClientObjectTable.id);
-                item.remove(ClientObjectTable.id);
+                final Object clientId = item.get(SyncConst.client_id);
+                item.remove(SyncConst.client_id);
                 if (insertSql == null) {
                     // create insert sql statement
                     StringBuilder sb = new StringBuilder("insert into ").append(table).append("(").append(ServerObjectTable.if_delete)
@@ -77,8 +73,8 @@ public abstract class SynchronizeServer {
             String updateSql = null;
             for (int i = 0; i < modified.length(); i++) {
                 final JSONObject item = modified.getJSONObject(i);
-                final Object serverId = item.get(ClientObjectTable.server_id);
-                item.remove(ClientObjectTable.server_id);
+                final Object serverId = item.get(SyncConst.server_id);
+                item.remove(SyncConst.server_id);
                 if (updateSql == null) {
                     // create update sql statement
                     StringBuilder sb = new StringBuilder("update ").append(table).append(" set ").append(ServerObjectTable.update_timestamp)
@@ -86,7 +82,7 @@ public abstract class SynchronizeServer {
                     for (String key : item.keySet()) {
                         sb.append(",").append(key).append("=?");
                     }
-                    sb.append(" where ").append(ServerObjectTable.id).append("=?");
+                    sb.append(" where ").append(SyncConst.server_id).append("=?");
                     updateSql = sb.toString();
                 }
                 // update
@@ -114,7 +110,7 @@ public abstract class SynchronizeServer {
         if (deleted != null) {
             StringBuilder sb = new StringBuilder("update ").append(table).append(" set ").append(ServerObjectTable.update_timestamp)
                     .append("=").append(curTime).append(",").append(ServerObjectTable.if_delete).append("=1").append(" where ")
-                    .append(ServerObjectTable.id).append(" in(");
+                    .append(SyncConst.server_id).append(" in(");
             for (int i = 0; i < deleted.length(); i++) {
                 sb.append(deleted.get(i)).append(",");
             }
@@ -143,7 +139,7 @@ public abstract class SynchronizeServer {
                 resp.put(SyncConst.push, pushResp);
                 while (rs.next()) {
                     if (rs.getInt(ServerObjectTable.if_delete) == 1) {
-                        pushResp.append(SyncConst.deleted, rs.getObject(ServerObjectTable.id));
+                        pushResp.append(SyncConst.deleted, rs.getObject(SyncConst.server_id));
                     } else {
                         JSONObject item = new JSONObject();
                         pushResp.append(SyncConst.modified, item);
@@ -151,8 +147,8 @@ public abstract class SynchronizeServer {
                         int columnCount = metaData.getColumnCount();
                         for (int i = 1; i <= columnCount; i++) {
                             String columnName = metaData.getColumnName(i);
-                            if (columnName.equals(ServerObjectTable.id)) {
-                                item.put(ClientObjectTable.server_id, rs.getObject(i));
+                            if (columnName.equals(SyncConst.server_id)) {
+                                item.put(SyncConst.server_id, rs.getObject(i));
                             } else if (!columnName.equals(ServerObjectTable.update_timestamp) && !columnName.equals(ServerObjectTable.if_delete)
                                     && !columnName.equals(ServerObjectTable.user_id)) {
                                 item.put(columnName, rs.getObject(i));

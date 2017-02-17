@@ -3,6 +3,8 @@
  */
 package lib.common.util;
 
+import java.util.Scanner;
+
 /**
  * @author yanry
  *
@@ -43,4 +45,10 @@ public class ConsoleUtil {
 		return String.format("[%s] %s", Thread.currentThread().getName(), msg);
 	}
 
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static String readLine(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
 }
