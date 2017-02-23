@@ -11,6 +11,8 @@ import lib.common.util.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -51,6 +53,14 @@ public class Test {
 		System.out.println(~0);
 		System.out.println(String.format("%tc", 1466776535000L));
 
-        System.out.println(new JSONObject() instanceof Object);
+        System.out.println(null != null);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("a", "b");
+        map.put("c", "d");
+        System.out.println(map.keySet().stream().filter(s -> {
+            System.out.println(map.get(s));
+            return true;
+        }).findAny().get());
     }
 }
