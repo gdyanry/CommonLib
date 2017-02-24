@@ -55,12 +55,11 @@ public class Test {
 
         System.out.println(null != null);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("a", "b");
-        map.put("c", "d");
-        System.out.println(map.keySet().stream().filter(s -> {
-            System.out.println(map.get(s));
-            return true;
-        }).findAny().get());
+        Map<String, String> map1 = new HashMap<>();
+        map1.put("a", "b");
+        map1.put("c", "d");
+        Map<String, String> map2 = new HashMap<>();
+        map2.put("a", "b");
+        System.out.println(map1.entrySet().containsAll(map2.entrySet()));
     }
 }
