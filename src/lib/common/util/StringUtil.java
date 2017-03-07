@@ -24,6 +24,14 @@ public class StringUtil {
 		}
 	}
 
+	public static String getClassName(Object o) {
+		String c = o.getClass().getSimpleName();
+		if (c.length() == 0) {
+			return o.getClass().getSuperclass().getSimpleName();
+		}
+		return c;
+	}
+
 	public static String capitalize(String word) {
 		String firstLetter = word.substring(0, 1);
 		return word.replaceFirst(firstLetter, firstLetter.toUpperCase());
