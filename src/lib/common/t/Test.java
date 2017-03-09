@@ -11,8 +11,6 @@ import lib.common.util.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 
@@ -55,11 +53,7 @@ public class Test {
 
         System.out.println(null != null);
 
-        Map<String, String> map1 = new HashMap<>();
-        map1.put("a", "b");
-        map1.put("c", "d");
-        Map<String, String> map2 = new HashMap<>();
-        map2.put("a", "b");
-        System.out.println(map1.entrySet().containsAll(map2.entrySet()));
-    }
+		System.out.println("theAbctheD".replaceFirst("^the", ""));
+
+	}
 }

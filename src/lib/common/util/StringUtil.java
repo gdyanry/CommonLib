@@ -32,9 +32,9 @@ public class StringUtil {
 		return c;
 	}
 
-	public static String capitalize(String word) {
+	public static String setFirstLetterCase(String word, boolean upper) {
 		String firstLetter = word.substring(0, 1);
-		return word.replaceFirst(firstLetter, firstLetter.toUpperCase());
+		return word.replaceFirst(firstLetter, upper ? firstLetter.toUpperCase() : firstLetter.toLowerCase());
 	}
 
 	public static String getExceptionStackTrace(Exception e) {
