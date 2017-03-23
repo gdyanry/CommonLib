@@ -16,12 +16,13 @@ import java.net.Socket;
 public class TcpDownload {
     public static void main(String... args) throws IOException {
         final ServerSocket ss = new ServerSocket(800);
+        ConsoleUtil.debug("listening at port 800...");
         while (true) {
             final Socket socket = ss.accept();
             new Thread(() -> {
                 try {
                     ConsoleUtil.debug("receive request from " + socket.getRemoteSocketAddress());
-                    FileInputStream fileInputStream = new FileInputStream("C:\\Users\\rongyu.yan\\Downloads\\jcpicker\\jcpicker.exe");
+                    FileInputStream fileInputStream = new FileInputStream("C:\\Users\\rongyu.yan\\Documents\\pmp_exam.pdf");
                     OutputStream outputStream = socket.getOutputStream();
                     IOUtil.transferStream(fileInputStream, outputStream, new StreamTransferHook() {
                         @Override

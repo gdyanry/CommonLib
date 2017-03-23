@@ -42,7 +42,7 @@ public class ConsoleUtil {
 			} else if (isLogger) {
 				String fileName = f.getFileName();
 				fileName = fileName.substring(0, fileName.lastIndexOf("."));
-				return String.format("[%s:%s.%s(line%s)] %s", Thread.currentThread().getName(), fileName, f.getMethodName(), f.getLineNumber(), msg);
+				return String.format("[%s:%s.%s] %s", Thread.currentThread().getName(), fileName, f.getLineNumber(), msg);
 			}
 		}
 		return String.format("[%s] %s", Thread.currentThread().getName(), msg);

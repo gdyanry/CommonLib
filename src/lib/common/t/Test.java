@@ -28,9 +28,9 @@ public class Test {
 		byte[] arr = {-122, 1,0,0};
 		System.out.println(ConversionUtil.byteArrayToInt(arr, 0, null));
 		System.out.println(Arrays.toString(ConversionUtil.intToByteArray(36868, null)));
-		
-		System.out.println(2 >> 1);
-		System.out.println(Math.pow(2, 6));
+
+        System.out.println(49 >> 2);
+        System.out.println(Math.pow(2, 6));
 		System.out.println(StringUtil.generateFixedLengthNumber(new Random(), 10));
 
 		System.out.println(1<<2);

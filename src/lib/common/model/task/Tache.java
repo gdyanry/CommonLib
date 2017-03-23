@@ -3,10 +3,10 @@
  */
 package lib.common.model.task;
 
+import lib.common.util.ConsoleUtil;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import lib.common.util.ConsoleUtil;
 
 /**
  * A light-weight producer-consumer pattern model which is originally designed
@@ -60,8 +60,8 @@ public abstract class Tache<I> implements Runnable {
 	 * Put an input object to this tache.
 	 * 
 	 * @param in
-	 * @return return false if {@link #exit()} has been invoked, otherwise
-	 *         return true.
+     * @return return false if {@link #exit(boolean)}  has been invoked, otherwise
+     *         return true.
 	 * @throws InterruptedException
 	 */
 	public boolean enter(I in) throws InterruptedException {
