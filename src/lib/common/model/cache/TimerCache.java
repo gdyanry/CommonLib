@@ -17,8 +17,8 @@ import java.util.TimerTask;
 public class TimerCache<V> {
 	private HashMap<Object, V> cache;
 	private int timeout;
-	private HashMap<Object, TimerTask> tts;
-	private Timer timer;
+    private HashMap<Object, TimerTask> tasks;
+    private Timer timer;
 	private CacheTimeoutListener<V> listener;
 
 	public TimerCache(int timeoutSecond, Timer timer) {
@@ -32,8 +32,8 @@ public class TimerCache<V> {
 			this.cache = cache.cache;
 		}
 		timeout = timeoutSecond * 1000;
-		tts = new HashMap<Object, TimerTask>();
-		this.timer = timer;
+        tasks = new HashMap<Object, TimerTask>();
+        this.timer = timer;
 	}
 
 	public int size() {
@@ -48,26 +48,30 @@ public class TimerCache<V> {
 		return timeout;
 	}
 
-	public void put(final Object key, final V value) {
-		cache.put(key, value);
-		cancelTask(key);
-		TimerTask task = new TimerTask() {
+    public void put(final Object key, V value) {
+        cache.put(key, value);
+        scheduleTimeout(key);
+    }
 
-			@Override
-			public void run() {
-				cache.remove(key);
-				tts.remove(key);
-				if (listener != null) {
-					listener.onTimeout(key, value);
-				}
-			}
-		};
-		tts.put(key, task);
-		timer.schedule(task, timeout);
-	}
+    private void scheduleTimeout(final Object key) {
+        cancelTask(key);
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                cache.remove(key);
+                tasks.remove(key);
+                if (listener != null) {
+                    listener.onTimeout(key, cache.get(key));
+                }
+            }
+        };
+        tasks.put(key, task);
+        timer.schedule(task, timeout);
+    }
 
 	public V get(Object key) {
-		return cache.get(key);
+        scheduleTimeout(key);
+        return cache.get(key);
 	}
 
 	public V remove(Object key) {
@@ -76,8 +80,8 @@ public class TimerCache<V> {
 	}
 
 	private void cancelTask(final Object key) {
-		TimerTask task = tts.remove(key);
-		if (task != null) {
+        TimerTask task = tasks.remove(key);
+        if (task != null) {
 			task.cancel();
 		}
 	}
