@@ -11,6 +11,8 @@ import lib.common.util.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Random;
 
 
@@ -51,9 +53,7 @@ public class Test {
 		System.out.println(~0);
 		System.out.println(String.format("%tc", 1466776535000L));
 
-        System.out.println(null != null);
-
-		System.out.println("theAbctheD".replaceFirst("^the", ""));
+		System.out.println(GregorianCalendar.getInstance().get(Calendar.DAY_OF_YEAR));
 
 	}
 }
