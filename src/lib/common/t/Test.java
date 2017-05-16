@@ -9,6 +9,7 @@ import lib.common.util.HexUtil;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,7 +25,7 @@ import java.util.Random;
  */
 public class Test {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		System.out.println(IOUtil.getAppRelativeFile("").getAbsolutePath());
 		System.out.println();
 		byte[] arr = {-122, 1,0,0};
@@ -54,6 +55,6 @@ public class Test {
 		System.out.println(String.format("%tc", 1466776535000L));
 
 		System.out.println(GregorianCalendar.getInstance().get(Calendar.DAY_OF_YEAR));
-
+		System.out.println(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
 	}
 }

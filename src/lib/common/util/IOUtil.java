@@ -153,9 +153,9 @@ public class IOUtil {
 		if (is == null) {
 			return null;
 		}
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		transferStream(is, baos);
-		return baos.toString(charset);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		transferStream(is, out);
+		return out.toString(charset);
 	}
 
 	/**
