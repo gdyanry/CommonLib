@@ -56,5 +56,8 @@ public class Test {
 
 		System.out.println(GregorianCalendar.getInstance().get(Calendar.DAY_OF_YEAR));
 		System.out.println(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
+
+		Boolean b = null;
+		System.out.println(b == true);
 	}
 }
