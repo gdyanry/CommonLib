@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/gdyanry/CommonLib.svg)](https://jitpack.io/#gdyanry/CommonLib)
+
 ## 概述
 * 本库可用于Java客户端和服务端开发，也可以作为[AndroidLib](https://github.com/gdyanry/AndroidLib)的依赖库用于Android开发。
 * 相关文档会陆续补充。
