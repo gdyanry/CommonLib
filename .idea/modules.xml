@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commonlib.iml" filepath="$PROJECT_DIR$/.idea/modules/commonlib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commonlib_main.iml" filepath="$PROJECT_DIR$/.idea/modules/commonlib_main.iml" group="commonlib" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commonlib_test.iml" filepath="$PROJECT_DIR$/.idea/modules/commonlib_test.iml" group="commonlib" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CommonLib.iml" filepath="$PROJECT_DIR$/.idea/modules/CommonLib.iml" />
     </modules>
   </component>
 </project>
