@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lib.common.entity;
+package lib.common.interfaces;
 
 /**
  * @author Yanry

@@ -1,6 +1,6 @@
 package lib.common.t;
 
-import lib.common.entity.StreamTransferHook;
+import lib.common.interfaces.StreamTransferHook;
 import lib.common.util.ConsoleUtil;
 import lib.common.util.IOUtil;
 

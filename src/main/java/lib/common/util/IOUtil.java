@@ -1,6 +1,6 @@
 package lib.common.util;
 
-import lib.common.entity.StreamTransferHook;
+import lib.common.interfaces.StreamTransferHook;
 
 import java.io.*;
 

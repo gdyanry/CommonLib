@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import lib.common.entity.StreamTransferHook;
+import lib.common.interfaces.StreamTransferHook;
 import lib.common.util.ConsoleUtil;
 import lib.common.util.IOUtil;
 

@@ -3,6 +3,7 @@
  */
 package lib.common.entity;
 
+import lib.common.interfaces.InfoHandler;
 import lib.common.util.ConsoleUtil;
 
 /**

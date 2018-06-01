@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import lib.common.entity.InfoHandler;
+import lib.common.interfaces.InfoHandler;
 import lib.common.util.DbUtil;
 
 /**

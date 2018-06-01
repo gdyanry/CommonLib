@@ -3,7 +3,7 @@
  */
 package lib.common.model.resourceaccess;
 
-import lib.common.entity.StreamTransferHook;
+import lib.common.interfaces.StreamTransferHook;
 
 /**
  * @author yanry

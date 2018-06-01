@@ -1,6 +1,6 @@
 package lib.common.model.synchronization;
 
-import lib.common.entity.InfoHandler;
+import lib.common.interfaces.InfoHandler;
 import lib.common.model.dao.JDBCDML;
 import lib.common.model.json.JSONArray;
 import lib.common.model.json.JSONObject;

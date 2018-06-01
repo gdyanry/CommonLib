@@ -2,7 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="89a3ba0e-40e3-4c9e-a0ed-d88b7c7e09c1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/ContinuousAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/InfoHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/InfoHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/SimpleInfoHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/entity/SimpleInfoHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/StreamTransferHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/dao/JDBCDML.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/dao/JDBCDML.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpMultipart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpMultipart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpPost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpPost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/resourceaccess/UrlOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/resourceaccess/UrlOption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/synchronization/SynchronizeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/synchronization/SynchronizeServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/t/TcpDownload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/t/TcpDownload.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/util/DbUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/util/DbUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/util/IOUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/util/IOUtil.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,6 +47,33 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="InfoHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="133">
+              <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StreamTransferHook.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Loggable.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="57">
+              <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="PendingOperationManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/PendingOperationManager.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -53,7 +92,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RepeatAction.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RepeatAction.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="456">
@@ -62,6 +101,15 @@
                 <element signature="e#322#323#0" expanded="true" />
                 <element signature="e#368#369#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="38">
+              <caret line="2" column="8" lean-forward="true" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -85,6 +133,13 @@
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -387,6 +442,8 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/java/lib/common/model/ContinuousAction.java" />
         <option value="$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java" />
       </list>
     </option>
   </component>
@@ -457,6 +514,24 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="entity" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CommonLib" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CommonLib" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="interfaces" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CommonLib" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CommonLib" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
               <item name="model" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -478,7 +553,7 @@
     <property name="android.project.structure.last.selected" value="Project" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../AndroidLib" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -591,8 +666,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info anchor="right" id="Palette" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -607,7 +681,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16979167" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23541667" />
       <window_info anchor="right" id="Gradle" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -646,31 +720,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/settings.gradle" />
     <entry file="file://$PROJECT_DIR$/local.properties" />
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="54" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/common/t/Test.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
           <caret line="15" column="35" lean-forward="true" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="51" column="31" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
@@ -699,6 +752,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="54" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="518">
+          <caret line="51" column="31" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="8" lean-forward="true" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <states>
@@ -716,7 +818,7 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited />
+          <last-edited>No facets are configured</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
