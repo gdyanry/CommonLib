@@ -12,11 +12,11 @@ import java.util.Scanner;
  */
 public class ConsoleUtil {
     public static void debug(String msg, Object... args) {
-        debug(0, msg, args);
+        debug(1, msg, args);
     }
 
     public static void error(String msg, Object... args) {
-        error(0, msg, args);
+        error(1, msg, args);
     }
 
     public static void debug(int depthOffset, String msg, Object... args) {
@@ -32,8 +32,8 @@ public class ConsoleUtil {
             msg = String.format(msg, args);
         }
         StackTraceElement[] frames = Thread.currentThread().getStackTrace();
-        if (frames.length > depthOffset + 1) {
-            StackTraceElement f = frames[1 + depthOffset];
+        if (frames.length > depthOffset + 3) {
+            StackTraceElement f = frames[3 + depthOffset];
             String fileName = f.getFileName();
             fileName = fileName.substring(0, fileName.lastIndexOf("."));
             return String.format("[%s:%s.%s] %s", Thread.currentThread().getName(), fileName, f.getLineNumber(), msg);

@@ -261,7 +261,7 @@ public abstract class IntegratedCommunicationServer<U> {
 			if (th != null) {
 				handlers.put(tag, th);
 			} else {
-				ConsoleUtil.error(getClass(), String.format("tag handler for %s is missing!", tag));
+				ConsoleUtil.error(String.format("tag handler for %s is missing!", tag));
 			}
 		}
 		return th;

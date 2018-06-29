@@ -52,7 +52,7 @@ public abstract class HttpRequest {
 			if (contentLength != null) {
 				this.contentLength = Long.parseLong(contentLength);
 			} else {
-				ConsoleUtil.error(getClass(), "content contentLength is unreachable for " + conn.getURL());
+				ConsoleUtil.error("content contentLength is unreachable for " + conn.getURL());
 				this.contentLength = -1;
 			}
 		}

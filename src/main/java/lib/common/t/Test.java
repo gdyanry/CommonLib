@@ -3,6 +3,7 @@
  */
 package lib.common.t;
 
+import lib.common.entity.SimpleInfoHandler;
 import lib.common.model.json.JSONObject;
 import lib.common.util.*;
 
@@ -71,5 +72,9 @@ public class Test {
         System.out.println(String.format("%02d - %02d", 1, 1542));
         System.out.println("a".matches("^[\\x00-\\xff]+$"));
         System.out.println(0x8f);
+
+        SimpleInfoHandler handler = new SimpleInfoHandler();
+        handler.debug("SimpleInfoHandler debug");
+        ConsoleUtil.debug("ConsoleUtil debug");
     }
 }

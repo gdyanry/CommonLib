@@ -170,7 +170,7 @@ public abstract class CommunicationHandler {
 		while ((re = cache.getRequesponseToSendCache().pop()) != null) {
 			// reject requests with different id but same value.
 			if (cache.getPendingRequestCache().containsValue(re)) {
-				ConsoleUtil.error(getClass(), "reject request: " + re);
+				ConsoleUtil.error("reject request: " + re);
 				onRejectRequest(re.getRequestId());
 			} else {
 				requesponses.put(re.getJa());
