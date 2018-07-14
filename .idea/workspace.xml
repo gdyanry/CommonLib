@@ -2,21 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="89a3ba0e-40e3-4c9e-a0ed-d88b7c7e09c1" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/InfoHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/InfoHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/SimpleInfoHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/entity/SimpleInfoHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/entity/StreamTransferHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/dao/JDBCDML.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/dao/JDBCDML.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpMultipart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpMultipart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpPost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/http/HttpPost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/resourceaccess/UrlOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/resourceaccess/UrlOption.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/synchronization/SynchronizeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/synchronization/SynchronizeServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/t/TcpDownload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/t/TcpDownload.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/util/DbUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/util/DbUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lib/common/util/IOUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lib/common/util/IOUtil.java" afterDir="false" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/junit_4_12.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java" afterPath="$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/cache/TimerObjectPool.java" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/cache/TimerObjectPool.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/lib/common/model/communication/IntegratedCommunicationServer.java" afterPath="$PROJECT_DIR$/src/main/java/lib/common/model/communication/IntegratedCommunicationServer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/lib/common/t/Test.java" afterPath="$PROJECT_DIR$/src/main/java/lib/common/t/Test.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path="$PROJECT_DIR$/.gradle/" />
+    <ignored path="$PROJECT_DIR$/build/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,8 +43,9 @@
       <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="0">
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -51,7 +54,8 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="133">
-              <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+              <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -60,46 +64,39 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="152">
-              <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+              <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Loggable.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="StringMatcher.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/StringMatcher.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2071">
+              <caret line="114" column="27" lean-forward="false" selection-start-line="114" selection-start-column="27" selection-end-line="114" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Loggable.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+            <state relative-caret-position="95">
+              <caret line="5" column="43" lean-forward="false" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PendingOperationManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/PendingOperationManager.java">
+      <file leaf-file-name="TimerObjectPool.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/cache/TimerObjectPool.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1330">
-              <caret line="80" column="21" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Singletons.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/Singletons.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="24" column="79" lean-forward="true" selection-start-line="24" selection-start-column="79" selection-end-line="24" selection-end-column="79" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RepeatAction.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="24" column="49" lean-forward="true" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+            <state relative-caret-position="285">
+              <caret line="17" column="42" lean-forward="true" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
               <folding>
-                <element signature="e#322#323#0" expanded="true" />
-                <element signature="e#368#369#0" expanded="true" />
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -109,7 +106,8 @@
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="38">
-              <caret line="2" column="8" lean-forward="true" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+              <caret line="2" column="8" lean-forward="false" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -117,8 +115,9 @@
       <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="51" column="31" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
+            <state relative-caret-position="931">
+              <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -126,8 +125,9 @@
       <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="15" column="54" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="54" />
+            <state relative-caret-position="323">
+              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -147,12 +147,12 @@
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
       <map>
-        <entry key="$PROJECT_DIR$" value="D:\Program Files\Android\Android Studio\gradle\gradle-4.4" />
+        <entry key="$PROJECT_DIR$" value="H:\gradle-4.6" />
       </map>
     </option>
     <option name="myGradleVersions">
       <map>
-        <entry key="$PROJECT_DIR$" value="4.4" />
+        <entry key="$PROJECT_DIR$" value="4.6" />
       </map>
     </option>
     <option name="availableProjects">
@@ -327,7 +327,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="3055518993921" />
+        <entry key="$PROJECT_DIR$" value="1528806337233" />
         <entry key="$PROJECT_DIR$/.gradle" value="0" />
         <entry key="$PROJECT_DIR$/build.gradle" value="1618468706" />
       </map>
@@ -351,80 +351,81 @@
               <option name="name" value="CommonLib" />
               <option name="projectBuildClasspath">
                 <list>
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/ant-1.9.9.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/ant-launcher-1.9.9.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-base-services-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-base-services-groovy-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-build-cache-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-build-option-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-cli-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-core-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-core-api-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-docs-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-installation-beacon-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-jvm-services-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-kotlin-dsl-0.13.1.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-kotlin-dsl-tooling-builders-0.13.1.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-kotlin-dsl-tooling-models-0.13.1.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-launcher-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-logging-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-messaging-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-model-core-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-model-groovy-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-native-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-persistent-cache-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-process-services-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-resources-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-runtime-api-info-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-tooling-api-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/gradle-wrapper-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/groovy-all-2.4.12.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-announce-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-antlr-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-build-cache-http-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-build-comparison-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-build-init-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-code-quality-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-composite-builds-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-dependency-management-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-diagnostics-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-ear-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-ide-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-ide-native-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-ide-play-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-ivy-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-jacoco-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-javascript-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-language-groovy-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-language-java-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-language-jvm-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-language-native-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-language-scala-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-maven-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-osgi-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-platform-base-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-platform-jvm-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-platform-native-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-platform-play-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-plugin-development-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-plugin-use-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-plugins-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-publish-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-reporting-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-resources-gcs-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-resources-http-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-resources-s3-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-resources-sftp-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-scala-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-signing-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-test-kit-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-testing-base-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-testing-jvm-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-testing-native-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-tooling-api-builders-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-version-control-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/gradle-workers-4.4.jar" />
-                  <option value="$APPLICATION_HOME_DIR$/gradle/gradle-4.4/lib/plugins/ivy-2.2.0.jar" />
+                  <option value="H:/gradle-4.6/lib/ant-1.9.9.jar" />
+                  <option value="H:/gradle-4.6/lib/ant-launcher-1.9.9.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-base-services-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-base-services-groovy-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-build-cache-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-build-option-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-cli-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-core-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-core-api-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-docs-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-installation-beacon-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-jvm-services-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-kotlin-dsl-0.15.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-kotlin-dsl-tooling-builders-0.15.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-kotlin-dsl-tooling-models-0.15.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-launcher-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-logging-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-messaging-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-model-core-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-model-groovy-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-native-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-persistent-cache-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-process-services-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-resources-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-runtime-api-info-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-tooling-api-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/gradle-wrapper-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/groovy-all-2.4.12.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-announce-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-antlr-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-build-cache-http-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-build-comparison-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-build-init-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-code-quality-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-composite-builds-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-dependency-management-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-diagnostics-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-ear-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-ide-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-ide-native-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-ide-play-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-ivy-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-jacoco-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-javascript-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-language-groovy-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-language-java-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-language-jvm-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-language-native-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-language-scala-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-maven-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-osgi-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-platform-base-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-platform-jvm-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-platform-native-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-platform-play-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-plugin-development-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-plugin-use-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-plugins-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-publish-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-reporting-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-resources-gcs-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-resources-http-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-resources-s3-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-resources-sftp-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-scala-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-signing-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-test-kit-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-testing-base-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-testing-junit-platform-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-testing-jvm-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-testing-native-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-tooling-api-builders-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-version-control-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/gradle-workers-4.6.jar" />
+                  <option value="H:/gradle-4.6/lib/plugins/ivy-2.2.0.jar" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -443,7 +444,10 @@
         <option value="$PROJECT_DIR$/src/main/java/lib/common/model/ContinuousAction.java" />
         <option value="$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/lib/common/model/StringMatcher.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lib/common/t/Test.java" />
         <option value="$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lib/common/model/cache/TimerObjectPool.java" />
       </list>
     </option>
   </component>
@@ -455,14 +459,23 @@
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages ProjectPane="false" />
       <showMembers ProjectPane="false" />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
       <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -541,6 +554,16 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="model" type="462c0819:PsiDirectoryNode" />
+              <item name="cache" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CommonLib" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CommonLib" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
               <item name="t" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -553,11 +576,11 @@
     <property name="android.project.structure.last.selected" value="Project" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../AndroidLib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../UiTestDriver" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -571,8 +594,29 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Test">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="lib.common.t.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="lib.common.t.Test" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="CommonLib" />
+      <envs />
+    </configuration>
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" />
@@ -582,10 +626,12 @@
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="file://$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
       </option>
+      <envs />
       <patterns />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
@@ -593,22 +639,27 @@
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-    </configuration>
-    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="lib.common.t.Test" />
-      <module name="CommonLib" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="lib.common.t.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+      <option name="WIDTH" value="0" />
+      <option name="HEIGHT" value="0" />
+      <module />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" />
@@ -618,13 +669,17 @@
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
       </option>
+      <envs />
       <patterns />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="SUITE_NAME" />
@@ -637,20 +692,26 @@
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
       <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
       </option>
       <option name="USE_DEFAULT_REPORTERS" value="false" />
       <option name="PROPERTIES_FILE" />
+      <envs />
       <properties />
       <listeners />
     </configuration>
     <recent_temporary>
-      <list>
-        <item itemvalue="Application.Test" />
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Application.Test" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -666,71 +727,252 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" weight="0.4165781" />
-      <window_info anchor="right" id="Palette&#9;" order="3" />
-      <window_info id="Image Layers" order="2" />
-      <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="right" id="Maven Projects" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3304904" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info id="Capture Tool" order="2" />
-      <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23541667" />
-      <window_info anchor="right" id="Gradle" order="3" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info id="UI Designer" />
-      <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info id="Captures" order="2" weight="0.25" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info id="Build Variants" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Build" order="7" visible="true" weight="0.32936078" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info id="PlantUML" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290993" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3290993" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26222494" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/build.gradle">
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" column="14" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+        <state relative-caret-position="418">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="8" lean-forward="false" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="54" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="54" />
+        <state relative-caret-position="323">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/settings.gradle" />
-    <entry file="file://$PROJECT_DIR$/local.properties" />
-    <entry file="file://$PROJECT_DIR$/src/lib/common/t/Test.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="15" column="35" lean-forward="true" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+        <state relative-caret-position="1216">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/StringMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2071">
+          <caret line="114" column="27" lean-forward="false" selection-start-line="114" selection-start-column="27" selection-end-line="114" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="41" lean-forward="false" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="8" lean-forward="false" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1216">
+          <caret line="78" column="0" lean-forward="true" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/StringMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2071">
+          <caret line="114" column="27" lean-forward="false" selection-start-line="114" selection-start-column="27" selection-end-line="114" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="41" lean-forward="false" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="8" lean-forward="false" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1159">
+          <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/PendingOperationManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1330">
-          <caret line="80" column="21" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="21" />
+          <caret line="80" column="21" lean-forward="false" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -738,31 +980,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="399">
           <caret line="24" column="79" lean-forward="true" selection-start-line="24" selection-start-column="79" selection-end-line="24" selection-end-column="79" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
+        <state relative-caret-position="418">
           <caret line="24" column="49" lean-forward="true" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
-          <folding>
-            <element signature="e#322#323#0" expanded="true" />
-            <element signature="e#368#369#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="54" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="51" column="31" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -770,34 +996,162 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
           <caret line="2" column="8" lean-forward="true" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        <state relative-caret-position="741">
+          <caret line="51" column="31" lean-forward="false" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+        <state relative-caret-position="285">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="57">
-          <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+          <caret line="3" column="41" lean-forward="false" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" column="14" lean-forward="false" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="54" lean-forward="false" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle" />
+    <entry file="file://$PROJECT_DIR$/local.properties" />
+    <entry file="file://$PROJECT_DIR$/src/lib/common/t/Test.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/PendingOperationManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1330">
+          <caret line="80" column="21" lean-forward="false" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/Singletons.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="24" column="79" lean-forward="false" selection-start-line="24" selection-start-column="79" selection-end-line="24" selection-end-column="79" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/RepeatAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="8" lean-forward="false" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/InfoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/StateVerifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-115">
+          <caret line="23" column="27" lean-forward="true" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/StreamTransferHook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/StringMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2071">
+          <caret line="114" column="27" lean-forward="false" selection-start-line="114" selection-start-column="27" selection-end-line="114" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/t/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="931">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/interfaces/Loggable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="43" lean-forward="false" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_05/src.zip!/java/util/Timer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1216">
+          <caret line="88" column="13" lean-forward="false" selection-start-line="88" selection-start-column="13" selection-end-line="88" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lib/common/model/cache/TimerObjectPool.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="17" column="42" lean-forward="true" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

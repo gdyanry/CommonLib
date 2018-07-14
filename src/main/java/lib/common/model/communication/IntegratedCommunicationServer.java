@@ -3,12 +3,6 @@
  */
 package lib.common.model.communication;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-
 import lib.common.model.PendingOperationManager;
 import lib.common.model.cache.TimerCache;
 import lib.common.model.cache.TimerObjectPool;
@@ -19,6 +13,8 @@ import lib.common.model.communication.interfaces.ServerTagHandler;
 import lib.common.model.json.JSONArray;
 import lib.common.model.json.JSONObject;
 import lib.common.util.ConsoleUtil;
+
+import java.util.*;
 
 /**
  * 因为获取二进制对象时如果缓存里没有该对象，线程会进入等待，直到往缓存放对象的线程将其唤醒，
@@ -141,7 +137,7 @@ public abstract class IntegratedCommunicationServer<U> {
 			// anonymous requests are supposed to be one-night requests, because
 			// there's no strict mapping between sessions and communication
 			// handlers.
-			ch = anonymCHs.take();
+			ch = anonymCHs.obtain();
 			ch.setExtra(extra);
 		} else {
 			sessionId = ja.getString(0);
@@ -164,7 +160,7 @@ public abstract class IntegratedCommunicationServer<U> {
 		ConsoleUtil.debug(String.format("%s%n%n  %s << %s%n", sessionId, uid, jaResponse));
 		if (isAnonym) {
 			// 放回容器重用
-			anonymCHs.restore(ch);
+			anonymCHs.recycle(ch);
 		}
 		return jaResponse == null ? null : jaResponse.toString();
 	}
