@@ -95,7 +95,7 @@ public abstract class CacheResourceAccess<K, R, O, H extends AccessHook<R>> {
 			}
 			taskCache.add(new TaskEntity(key, option, hook));
 		} else {
-			ConsoleUtil.error(getClass(), "cache task is disable.");
+			ConsoleUtil.error("cache task is disable.");
 		}
 	}
 

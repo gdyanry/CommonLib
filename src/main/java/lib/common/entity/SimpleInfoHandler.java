@@ -36,14 +36,14 @@ public class SimpleInfoHandler implements InfoHandler {
 	@Override
 	public void debug(String msg) {
 		if (level <= LEVEL_DEBUG) {
-			ConsoleUtil.debug(getClass(), msg);
+			ConsoleUtil.debug(1, msg);
 		}
 	}
 
 	@Override
 	public void error(String msg) {
 		if (level <= LEVEL_ERROR) {
-			ConsoleUtil.error(getClass(), msg);
+			ConsoleUtil.error(1, msg);
 		}
 	}
 

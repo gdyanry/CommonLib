@@ -3,8 +3,7 @@
  */
 package lib.common.t;
 
-import lib.common.model.StringMatcher;
-import lib.common.model.StringMatcher.OnViolationListener;
+import lib.common.entity.SimpleInfoHandler;
 import lib.common.model.json.JSONObject;
 import lib.common.util.*;
 
@@ -74,5 +73,8 @@ public class Test {
         System.out.println("a".matches("^[\\x00-\\xff]+$"));
         System.out.println(0x8f);
 
+        SimpleInfoHandler handler = new SimpleInfoHandler();
+        handler.debug("SimpleInfoHandler debug");
+        ConsoleUtil.debug("ConsoleUtil debug");
     }
 }

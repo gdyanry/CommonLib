@@ -67,7 +67,7 @@ public class EventBus {
 						}
 					}
 				} else {
-					ConsoleUtil.error(getClass(), String.format("register interface %s mutiple times on subscriber %s.",
+					ConsoleUtil.error(String.format("register interface %s mutiple times on subscriber %s.",
 							i.getSimpleName(), subscriber.getClass().getSimpleName()));
 				}
 			}
@@ -79,7 +79,7 @@ public class EventBus {
 			if (interfaces.contains(c)) {
 				List<Object> subscribers = interface_subscriber.get(c);
 				if (!subscribers.remove(subscriber)) {
-					ConsoleUtil.error(getClass(), String.format("subscriber %s is not registered yet.",
+					ConsoleUtil.error(String.format("subscriber %s is not registered yet.",
 							subscriber.getClass().getSimpleName()));
 				}
 			}
