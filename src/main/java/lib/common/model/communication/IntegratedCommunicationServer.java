@@ -141,7 +141,7 @@ public abstract class IntegratedCommunicationServer<U> {
 			// anonymous requests are supposed to be one-night requests, because
 			// there's no strict mapping between sessions and communication
 			// handlers.
-			ch = anonymCHs.take();
+			ch = anonymCHs.obtain();
 			ch.setExtra(extra);
 		} else {
 			sessionId = ja.getString(0);
@@ -164,7 +164,7 @@ public abstract class IntegratedCommunicationServer<U> {
 		ConsoleUtil.debug(String.format("%s%n%n  %s << %s%n", sessionId, uid, jaResponse));
 		if (isAnonym) {
 			// 放回容器重用
-			anonymCHs.restore(ch);
+			anonymCHs.recycle(ch);
 		}
 		return jaResponse == null ? null : jaResponse.toString();
 	}
