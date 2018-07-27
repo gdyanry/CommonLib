@@ -1,6 +1,3 @@
-/**
- *
- */
 package lib.common.t;
 
 import lib.common.entity.SimpleInfoHandler;

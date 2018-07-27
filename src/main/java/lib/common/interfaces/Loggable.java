@@ -1,5 +1,7 @@
 package lib.common.interfaces;
 
 public interface Loggable {
-    void log(String msg, Object... args);
+    void debug(String msg, Object... args);
+
+    void error(String msg, Object... args);
 }
