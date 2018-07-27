@@ -3,7 +3,11 @@
  */
 package lib.common.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 /**
  * @author yanry
@@ -46,5 +50,13 @@ public class ConsoleUtil {
     public static String readLine(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
+    }
+
+    public static void execCommand(Process process, Consumer<String> outputHandler) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            outputHandler.accept(line);
+        }
     }
 }
