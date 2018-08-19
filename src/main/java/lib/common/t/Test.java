@@ -1,12 +1,10 @@
-/**
- *
- */
 package lib.common.t;
 
 import lib.common.entity.SimpleInfoHandler;
 import lib.common.model.json.JSONObject;
 import lib.common.util.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -53,7 +51,7 @@ public class Test {
         System.out.println(~0);
         System.out.println(String.format("%tF", 1466776535000L));
         System.out.println(String.format("%tR", 1466776535000L));
-        System.out.println(String.format("%tT", 1466776535000L));
+        System.out.println(String.format("%tT  %1$s", 1466776535000L));
 
         System.out.println(GregorianCalendar.getInstance().get(Calendar.DAY_OF_YEAR));
         System.out.println(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
@@ -66,7 +64,8 @@ public class Test {
         }
 
         System.out.println("D1".matches("\\D[1-7](?:,\\D[1-7])?"));
-        System.out.println("D1,D4,D5,D6,D5,D7,D3".matches("^\\D[1-7](?:(?:,\\D[1-7]){0,5},\\D[1-7])?$"));;
+        System.out.println("D1,D4,D5,D6,D5,D7,D3".matches("^\\D[1-7](?:(?:,\\D[1-7]){0,5},\\D[1-7])?$"));
+        ;
 
 
         System.out.println(String.format("%02d - %02d", 1, 1542));
@@ -76,5 +75,8 @@ public class Test {
         SimpleInfoHandler handler = new SimpleInfoHandler();
         handler.debug("SimpleInfoHandler debug");
         ConsoleUtil.debug("ConsoleUtil debug");
+
+        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
     }
+
 }
