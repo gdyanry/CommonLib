@@ -27,12 +27,12 @@ public class TimerCache<V> {
 
 	public TimerCache(int timeoutSecond, Timer timer, TimerCache<V> cache) {
 		if (cache == null) {
-			this.cache = new HashMap<Object, V>();
+			this.cache = new HashMap<>();
 		} else {
 			this.cache = cache.cache;
 		}
 		timeout = timeoutSecond * 1000;
-        tasks = new HashMap<Object, TimerTask>();
+        tasks = new HashMap<>();
         this.timer = timer;
 	}
 
