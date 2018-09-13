@@ -1,15 +1,16 @@
 package lib.common.t;
 
 import lib.common.entity.SimpleInfoHandler;
-import lib.common.model.json.JSONObject;
+import lib.common.model.log.ConsoleHandler;
+import lib.common.model.log.LogFormatter;
+import lib.common.model.log.LogLevel;
+import lib.common.model.log.Logger;
 import lib.common.util.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,11 +36,6 @@ public class Test {
 
         System.out.println(1 << 2);
 
-        JSONObject jo1 = new JSONObject().put("2", 2);
-        JSONObject jo2 = new JSONObject().put("2", 2);
-        System.out.println(jo1.equals(jo2));
-        System.out.println(jo1.toString().equals(jo2.toString()));
-
         try {
             System.out.println(HexUtil.charsetHex("中文", "utf-8", 20));
         } catch (UnsupportedEncodingException e) {
@@ -53,7 +49,6 @@ public class Test {
         System.out.println(String.format("%tR", 1466776535000L));
         System.out.println(String.format("%tT  %1$s", 1466776535000L));
 
-        System.out.println(GregorianCalendar.getInstance().get(Calendar.DAY_OF_YEAR));
         System.out.println(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
 
         Pattern pattern = Pattern.compile("DAY\\((.*)\\)");
@@ -77,6 +72,32 @@ public class Test {
         ConsoleUtil.debug("ConsoleUtil debug");
 
         ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
+
+        logTest();
     }
 
+    private static void logTest() {
+        new Runnable() {
+            @Override
+            public void run() {
+                LogFormatter formatter = new LogFormatter(0)
+                        .level(level -> level.getAcronym())
+                        .with(" ")
+                        .timestamp(t -> String.format("%tT", t))
+                        .with(" [")
+                        .thread(thread -> thread.getName())
+                        .with(":")
+                        .stackTrace(e -> String.format("%s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .with(" ")
+                        .message(msg -> msg)
+                        .newLine()
+                        .stackTrace(e -> String.format("* %s.%s", e.getClassName(), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("** %s.%s", e.getFileName(), e.getLineNumber()));
+                ConsoleHandler handler = new ConsoleHandler(formatter, null);
+                Logger.getDefault().addHandler(handler);
+                Logger.getDefault().log(LogLevel.Info, "current time is: %s", System.currentTimeMillis());
+            }
+        }.run();
+    }
 }
