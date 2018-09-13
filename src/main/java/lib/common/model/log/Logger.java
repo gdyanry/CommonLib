@@ -47,13 +47,13 @@ public class Logger {
         }
     }
 
-    public void log(int stackTraceOffset, LogLevel level, String msg, Object... args) {
+    public void log(int encapsulationLayerCount, LogLevel level, String msg, Object... args) {
         if (this.level == null || this.level.test(level)) {
             LogRecord record = null;
             for (LogHandler handler : handlers) {
                 if (handler.getLevel() == null || handler.getLevel().test(level)) {
                     if (record == null) {
-                        record = new LogRecord(tag, level, args.length == 0 ? msg : String.format(msg, args), stackTraceOffset);
+                        record = new LogRecord(tag, level, args.length == 0 ? msg : String.format(msg, args), encapsulationLayerCount);
                     }
                     LogFormatter formatter = handler.getFormatter();
                     if (formatter == null) {
