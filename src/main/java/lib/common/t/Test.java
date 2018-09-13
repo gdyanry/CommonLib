@@ -69,9 +69,9 @@ public class Test {
 
         SimpleInfoHandler handler = new SimpleInfoHandler();
         handler.debug("SimpleInfoHandler debug");
-        ConsoleUtil.debug("ConsoleUtil debug");
+        ConsoleUtil.debug(0, "ConsoleUtil debug");
 
-        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
+//        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
 
         logTest();
     }
@@ -80,7 +80,7 @@ public class Test {
         new Runnable() {
             @Override
             public void run() {
-                LogFormatter formatter = new LogFormatter(0)
+                LogFormatter formatter = new LogFormatter()
                         .level(level -> level.getAcronym())
                         .with(" ")
                         .timestamp(t -> String.format("%tT", t))
@@ -93,10 +93,26 @@ public class Test {
                         .newLine()
                         .stackTrace(e -> String.format("* %s.%s", e.getClassName(), e.getLineNumber()))
                         .newLine()
-                        .stackTrace(e -> String.format("** %s.%s", e.getFileName(), e.getLineNumber()));
+                        .stackTrace(e -> String.format("** %s.%s", e.getFileName(), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("*** %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("**** %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("***** %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("****** %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("******* %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("******** %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()))
+                        .newLine()
+                        .stackTrace(e -> String.format("********* %s.%s]", LogFormatter.getSimpleClassName(e), e.getLineNumber()));
+
                 ConsoleHandler handler = new ConsoleHandler(formatter, null);
                 Logger.getDefault().addHandler(handler);
                 Logger.getDefault().log(LogLevel.Info, "current time is: %s", System.currentTimeMillis());
+                Logger.getDefault().d("dddddd");
             }
         }.run();
     }

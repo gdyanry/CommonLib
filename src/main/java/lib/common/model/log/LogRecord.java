@@ -2,7 +2,7 @@ package lib.common.model.log;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class LogRecord {
+class LogRecord {
     private static AtomicLong sequenceNumberCreator = new AtomicLong();
     private StringBuilder stringBuilder;
     private String tag;
@@ -11,11 +11,13 @@ public class LogRecord {
     private String message;
     private long timeMillis;
     private StackTraceElement[] stackTraceElements;
+    private int stackTraceOffset;
 
-    LogRecord(String tag, LogLevel level, String message) {
+    LogRecord(String tag, LogLevel level, String message, int stackTraceOffset) {
         this.tag = tag;
         this.level = level;
         this.message = message;
+        this.stackTraceOffset = stackTraceOffset;
         sequenceNumber = sequenceNumberCreator.getAndIncrement();
     }
 
@@ -26,7 +28,7 @@ public class LogRecord {
         return stringBuilder;
     }
 
-    public String getTag() {
+    String getTag() {
         return tag;
     }
 
@@ -34,15 +36,15 @@ public class LogRecord {
         return level;
     }
 
-    public long getSequenceNumber() {
+    long getSequenceNumber() {
         return sequenceNumber;
     }
 
-    public String getMessage() {
+    String getMessage() {
         return message;
     }
 
-    public long getTimeMillis() {
+    long getTimeMillis() {
         if (timeMillis == 0) {
             timeMillis = System.currentTimeMillis();
         }
@@ -51,8 +53,13 @@ public class LogRecord {
 
     StackTraceElement[] getStackTraceElements() {
         if (stackTraceElements == null) {
+            // stack trace index: 1
             stackTraceElements = Thread.currentThread().getStackTrace();
         }
         return stackTraceElements;
+    }
+
+    public int getStackTraceOffset() {
+        return stackTraceOffset;
     }
 }

@@ -8,13 +8,11 @@ import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
 public class LogFormatter {
-    private static final int BASE_STACK_TRACE_OFFSET = 5;
+    private static final int STACK_TRACE_START_INDEX = 6;
     private List<Consumer<LogRecord>> recordProcessors;
     private int stackTraceCount;
-    private int stackTraceOffset;
 
-    public LogFormatter(int stackTraceOffset) {
-        this.stackTraceOffset = stackTraceOffset;
+    public LogFormatter() {
         recordProcessors = new LinkedList<>();
     }
 
@@ -51,7 +49,8 @@ public class LogFormatter {
     public LogFormatter stackTrace(Function<StackTraceElement, Object> stackTraceFormatter) {
         int count = stackTraceCount++;
         recordProcessors.add(logRecord -> {
-            int index = BASE_STACK_TRACE_OFFSET + stackTraceOffset + count;
+            int index = STACK_TRACE_START_INDEX + logRecord.getStackTraceOffset() + count;
+            // stack trace index: 2
             if (logRecord.getStackTraceElements().length > index) {
                 StackTraceElement f = logRecord.getStackTraceElements()[index];
                 logRecord.getStringBuilder().append(stackTraceFormatter.apply(f));
@@ -80,6 +79,7 @@ public class LogFormatter {
 
     String format(LogRecord record) {
         for (Consumer<LogRecord> processor : recordProcessors) {
+            // stack trace index: 4
             processor.accept(record);
         }
         return record.getStringBuilder().toString();
