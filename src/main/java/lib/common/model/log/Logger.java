@@ -47,6 +47,17 @@ public class Logger {
         }
     }
 
+    public boolean isReady() {
+        return !handlers.isEmpty();
+    }
+
+    /**
+     * 对于日志方法先封装再使用的场景需要调用此方法输出日志，否则定位不到日志打点处。
+     * @param encapsulationLayerCount 日志打点处距离此方法中间封装的方法层数。
+     * @param level
+     * @param msg
+     * @param args
+     */
     public void log(int encapsulationLayerCount, LogLevel level, String msg, Object... args) {
         if (this.level == null || this.level.test(level)) {
             LogRecord record = null;
@@ -60,7 +71,6 @@ public class Logger {
                         formatter = defaultFormatter;
                     }
                     if (formatter != null) {
-                        // stack trace index: 5
                         handler.handleLog(level, tag, formatter.format(record));
                     }
                 }
@@ -72,7 +82,23 @@ public class Logger {
         log(1, level, msg, args);
     }
 
+    public void v(String msg, Object... args) {
+        log(1, LogLevel.Verbose, msg, args);
+    }
+
     public void d(String msg, Object... args) {
         log(1, LogLevel.Debug, msg, args);
+    }
+
+    public void i(String msg, Object... args) {
+        log(1, LogLevel.Info, msg, args);
+    }
+
+    public void w(String msg, Object... args) {
+        log(1, LogLevel.Warn, msg, args);
+    }
+
+    public void e(String msg, Object... args) {
+        log(1, LogLevel.Error, msg, args);
     }
 }

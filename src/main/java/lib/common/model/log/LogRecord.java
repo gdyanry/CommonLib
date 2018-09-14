@@ -11,13 +11,13 @@ class LogRecord {
     private String message;
     private long timeMillis;
     private StackTraceElement[] stackTraceElements;
-    private int stackTraceOffset;
+    private int encapsulationLayerCount;
 
-    LogRecord(String tag, LogLevel level, String message, int stackTraceOffset) {
+    LogRecord(String tag, LogLevel level, String message, int encapsulationLayerCount) {
         this.tag = tag;
         this.level = level;
         this.message = message;
-        this.stackTraceOffset = stackTraceOffset;
+        this.encapsulationLayerCount = encapsulationLayerCount;
         sequenceNumber = sequenceNumberCreator.getAndIncrement();
     }
 
@@ -32,7 +32,7 @@ class LogRecord {
         return tag;
     }
 
-    public LogLevel getLevel() {
+    LogLevel getLevel() {
         return level;
     }
 
@@ -59,7 +59,7 @@ class LogRecord {
         return stackTraceElements;
     }
 
-    public int getStackTraceOffset() {
-        return stackTraceOffset;
+    int getEncapsulationLayerCount() {
+        return encapsulationLayerCount;
     }
 }

@@ -8,9 +8,9 @@ import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
 public class LogFormatter {
-    private static final int STACK_TRACE_START_INDEX = 6;
+    private static int STACK_START_INDEX;
     private List<Consumer<LogRecord>> recordProcessors;
-    private int stackTraceCount;
+    private int stackTraceDepth;
 
     public LogFormatter() {
         recordProcessors = new LinkedList<>();
@@ -47,9 +47,19 @@ public class LogFormatter {
     }
 
     public LogFormatter stackTrace(Function<StackTraceElement, Object> stackTraceFormatter) {
-        int count = stackTraceCount++;
+        int depth = stackTraceDepth++;
         recordProcessors.add(logRecord -> {
-            int index = STACK_TRACE_START_INDEX + logRecord.getStackTraceOffset() + count;
+            if (STACK_START_INDEX == 0) {
+                // 不同虚拟机栈的层数可能不一样，所以需要计算不能写死
+                for (int i = 0; i < logRecord.getStackTraceElements().length; i++) {
+                    StackTraceElement element = logRecord.getStackTraceElements()[i];
+                    if (Logger.class.getName().equals(element.getClassName())) {
+                        STACK_START_INDEX = i + 1;
+                        break;
+                    }
+                }
+            }
+            int index = STACK_START_INDEX + logRecord.getEncapsulationLayerCount() + depth;
             // stack trace index: 2
             if (logRecord.getStackTraceElements().length > index) {
                 StackTraceElement f = logRecord.getStackTraceElements()[index];
@@ -79,7 +89,6 @@ public class LogFormatter {
 
     String format(LogRecord record) {
         for (Consumer<LogRecord> processor : recordProcessors) {
-            // stack trace index: 4
             processor.accept(record);
         }
         return record.getStringBuilder().toString();

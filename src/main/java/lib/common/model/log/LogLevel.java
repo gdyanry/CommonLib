@@ -1,7 +1,7 @@
 package lib.common.model.log;
 
 public enum LogLevel {
-    Verbase, Debug, Info, Warn, Error;
+    Verbose, Debug, Info, Warn, Error;
 
     private String acronym;
 
