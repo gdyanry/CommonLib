@@ -2,14 +2,10 @@ package lib.common.model.log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.LongFunction;
-import java.util.function.Supplier;
 
 public class LogFormatter {
     private static int STACK_START_INDEX;
-    private List<Consumer<LogRecord>> recordProcessors;
+    private List<LogRecordProcessor> recordProcessors;
     private int stackTraceDepth;
 
     public LogFormatter() {
@@ -21,32 +17,32 @@ public class LogFormatter {
         return className.substring(className.lastIndexOf(".") + 1);
     }
 
-    public LogFormatter tag(Function<String, Object> tagFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(tagFormatter.apply(logRecord.getTag())));
+    public LogFormatter tag(InfoTransformer<String> tagFormatter) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(tagFormatter.transform(logRecord.getTag())));
         return this;
     }
 
-    public LogFormatter level(Function<LogLevel, Object> levelFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(levelFormatter.apply(logRecord.getLevel())));
+    public LogFormatter level(InfoTransformer<LogLevel> levelFormatter) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(levelFormatter.transform(logRecord.getLevel())));
         return this;
     }
 
-    public LogFormatter sequenceNumber(LongFunction<Object> sequenceNumberFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(sequenceNumberFormatter.apply(logRecord.getSequenceNumber())));
+    public LogFormatter sequenceNumber(LongTransformer sequenceNumberFormatter) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(sequenceNumberFormatter.transform(logRecord.getSequenceNumber())));
         return this;
     }
 
-    public LogFormatter timestamp(LongFunction<Object> timeFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(timeFormatter.apply(logRecord.getTimeMillis())));
+    public LogFormatter timestamp(LongTransformer timeFormatter) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(timeFormatter.transform(logRecord.getTimeMillis())));
         return this;
     }
 
-    public LogFormatter thread(Function<Thread, Object> threadFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(threadFormatter.apply(Thread.currentThread())));
+    public LogFormatter thread(InfoTransformer<Thread> threadFormatter) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(threadFormatter.transform(Thread.currentThread())));
         return this;
     }
 
-    public LogFormatter stackTrace(Function<StackTraceElement, Object> stackTraceFormatter) {
+    public LogFormatter stackTrace(InfoTransformer<StackTraceElement> stackTraceFormatter) {
         int depth = stackTraceDepth++;
         recordProcessors.add(logRecord -> {
             if (STACK_START_INDEX == 0) {
@@ -63,14 +59,14 @@ public class LogFormatter {
             // stack trace index: 2
             if (logRecord.getStackTraceElements().length > index) {
                 StackTraceElement f = logRecord.getStackTraceElements()[index];
-                logRecord.getStringBuilder().append(stackTraceFormatter.apply(f));
+                logRecord.getStringBuilder().append(stackTraceFormatter.transform(f));
             }
         });
         return this;
     }
 
-    public LogFormatter message(Function<String, String> messageFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(messageFormatter.apply(logRecord.getMessage())));
+    public LogFormatter message(InfoTransformer<String> messageFormatter) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(messageFormatter.transform(logRecord.getMessage())));
         return this;
     }
 
@@ -82,14 +78,14 @@ public class LogFormatter {
         return append(() -> System.lineSeparator());
     }
 
-    public LogFormatter append(Supplier<Object> infoFormatter) {
-        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(infoFormatter.get()));
+    public LogFormatter append(InfoSupplier infoSupplier) {
+        recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(infoSupplier.get()));
         return this;
     }
 
     String format(LogRecord record) {
-        for (Consumer<LogRecord> processor : recordProcessors) {
-            processor.accept(record);
+        for (LogRecordProcessor processor : recordProcessors) {
+            processor.process(record);
         }
         return record.getStringBuilder().toString();
     }
