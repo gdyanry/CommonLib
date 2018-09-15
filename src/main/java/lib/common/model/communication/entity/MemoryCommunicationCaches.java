@@ -41,10 +41,10 @@ public class MemoryCommunicationCaches implements CommunicationCaches {
 	private ReceivedResponseCache receivedResponseCache;
 
 	public MemoryCommunicationCaches() {
-		response = new HashMap<Object, Requesponse>();
+		response = new HashMap<>();
 		requesponseToSend = Collections.synchronizedList(new LinkedList<Requesponse>());
 		pendingRequest = new PendingRequestMap();
-		receivedResponse = new HashSet<Object>();
+		receivedResponse = new HashSet<>();
 		responseCache = new ResponseCache() {
 
 			@Override
@@ -117,13 +117,7 @@ public class MemoryCommunicationCaches implements CommunicationCaches {
 				return pendingRequest.containsValue(r);
 			}
 		};
-		receivedResponseCache = new ReceivedResponseCache() {
-
-			@Override
-			public boolean add(Object requestId) {
-				return receivedResponse.add(requestId);
-			}
-		};
+		receivedResponseCache = requestId -> receivedResponse.add(requestId);
 	}
 	
 	/**
@@ -220,8 +214,7 @@ public class MemoryCommunicationCaches implements CommunicationCaches {
 		private Requesponse emptyRequesponse = new Requesponse(-1, JSONObject.NULL, null);
 
 		private void receiveResponse(Object id) {
-			// when the map is empty, put() will not trigger
-			// removeEldestEntry()!
+			// when the map is empty, put() will not trigger removeEldestEntry()!
 			if (!isEmpty()) {
 				this.id = id;
 				// removeEldestEntry() comes before put action!
@@ -233,19 +226,13 @@ public class MemoryCommunicationCaches implements CommunicationCaches {
 		@Override
 		protected boolean removeEldestEntry(Entry<Object, Requesponse> eldest) {
 			if (id != null) {
-				// the request correspond to the received response is not in
-				// pending requests, when it's a one-night request, so here we
-				// need to check.
+				// the request correspond to the received response is not in pending requests, when it's a one-night request, so here we need to check.
 				if (containsKey(id)) {
 					remove(eldest.getKey());
 					if (!id.equals(eldest.getKey()) && !id.equals(emptyRequesponse.getRequestId())) {
-						// not equal means this eldest request fail to receive
-						// response for some reason, so we transmit it to send
-						// queue.
+						// not equal means this eldest request fail to receive response for some reason, so we transmit it to send queue.
 						getRequesponseToSendCache().add(eldest.getValue());
-						// and recursively push.
-						// must remove here, a little weird, given that
-						// "removeEldestEntry() comes before put action".
+						// and recursively push. must remove here, a little weird, given that "removeEldestEntry() comes before put action".
 						remove(emptyRequesponse.getRequestId());
 						put(emptyRequesponse.getRequestId(), emptyRequesponse);
 					}

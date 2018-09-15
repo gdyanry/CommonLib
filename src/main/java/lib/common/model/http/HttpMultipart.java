@@ -1,17 +1,11 @@
 package lib.common.model.http;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Map;
-
 import lib.common.interfaces.StreamTransferHook;
-import lib.common.util.ConsoleUtil;
+import lib.common.model.log.Logger;
 import lib.common.util.IOUtil;
+
+import java.io.*;
+import java.util.Map;
 
 /**
  * Created by yanry on 2015/8/10.
@@ -48,16 +42,12 @@ public abstract class HttpMultipart extends HttpRequest {
     }
 
     public HttpMultipart addFile(String name, File file) throws IOException {
-        if (file.isFile()) {
-            if (file.length() > 0) {
-                addStream(name, new FileInputStream(file), file.getName());
-            } else {
-                ConsoleUtil.error("invalid file: " + file.getAbsolutePath());
-            }
-            return this;
+        if (file.isFile() && file.length() > 0) {
+            addStream(name, new FileInputStream(file), file.getName());
         } else {
-            throw new IllegalArgumentException(String.format("invalid file: " + file.getAbsolutePath()));
+            Logger.getDefault().e("invalid file: %s", file.getAbsolutePath());
         }
+        return this;
     }
 
     public HttpMultipart addStream(String fieldName, InputStream in, String fileName) throws IOException {
@@ -67,7 +57,7 @@ public abstract class HttpMultipart extends HttpRequest {
         if (uploadHook == null) {
             getOutputStream().write(leadBytes);
             long len = IOUtil.transferStream(in, getOutputStream());
-            ConsoleUtil.debug(String.format("add stream field %s: %s(%sbytes)", fieldName, fileName, len));
+            Logger.getDefault().d("add stream field %s: %s(%sB)", fieldName, fileName, len);
             getOutputStream().write(tailBytes);
         } else {
             IOUtil.bytesToOutputStream(leadBytes, getOutputStream(), uploadHook);

@@ -9,4 +9,9 @@ public class ConsoleHandler extends LogHandler {
     protected void handleLog(LogLevel level, String tag, String log) {
         System.out.println(log);
     }
+
+    @Override
+    protected void catches(Exception e) {
+        e.printStackTrace();
+    }
 }

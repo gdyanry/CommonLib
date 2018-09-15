@@ -1,39 +1,42 @@
 /**
- * 
+ *
  */
 package lib.common.util;
+
+import lib.common.model.log.Logger;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import lib.common.interfaces.InfoHandler;
-
 /**
  * @author yanry
- *
- *         2015年8月4日 上午10:57:58
+ * <p>
+ * 2015年8月4日 上午10:57:58
  */
 public class DbUtil {
 
-	public static void releaseConnection(Connection conn, Statement stmt, ResultSet rs, InfoHandler ih) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-			if (conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			if (ih != null) {
-				ih.handleException(e);
-			} else {
-				e.printStackTrace();
-			}
-		}
-	}
+    /**
+     * requires jdk 8.
+     *
+     * @param conn
+     * @param stmt
+     * @param rs
+     */
+    public static void releaseConnection(Connection conn, Statement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            Logger.getDefault().catches(e);
+        }
+    }
 }

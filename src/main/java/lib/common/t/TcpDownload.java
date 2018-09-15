@@ -1,7 +1,6 @@
 package lib.common.t;
 
 import lib.common.interfaces.StreamTransferHook;
-import lib.common.util.ConsoleUtil;
 import lib.common.util.IOUtil;
 
 import java.io.FileInputStream;
@@ -16,12 +15,12 @@ import java.net.Socket;
 public class TcpDownload {
     public static void main(String... args) throws IOException {
         final ServerSocket ss = new ServerSocket(800);
-        ConsoleUtil.debug("listening at port 800...");
+        System.out.println("listening at port 800...");
         while (true) {
             final Socket socket = ss.accept();
             new Thread(() -> {
                 try {
-                    ConsoleUtil.debug("receive request from " + socket.getRemoteSocketAddress());
+                    System.out.println("receive request from " + socket.getRemoteSocketAddress());
                     FileInputStream fileInputStream = new FileInputStream("C:\\Users\\rongyu.yan\\Documents\\pmp_exam.pdf");
                     OutputStream outputStream = socket.getOutputStream();
                     IOUtil.transferStream(fileInputStream, outputStream, new StreamTransferHook() {
@@ -37,12 +36,12 @@ public class TcpDownload {
 
                         @Override
                         public void onUpdate(long transferredBytes) {
-                            ConsoleUtil.debug(String.valueOf(transferredBytes >> 10));
+                            System.out.println(String.valueOf(transferredBytes >> 10));
                         }
 
                         @Override
                         public void onFinish(boolean isStopped) {
-                            ConsoleUtil.debug(socket.getRemoteSocketAddress() + " finish.");
+                            System.out.println(socket.getRemoteSocketAddress() + " finish.");
                         }
 
                         @Override

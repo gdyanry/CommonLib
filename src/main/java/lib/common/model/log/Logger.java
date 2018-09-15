@@ -53,6 +53,7 @@ public class Logger {
 
     /**
      * 对于日志方法先封装再使用的场景需要调用此方法输出日志，否则定位不到日志打点处。
+     *
      * @param encapsulationLayerCount 日志打点处距离此方法中间封装的方法层数。
      * @param level
      * @param msg
@@ -100,5 +101,11 @@ public class Logger {
 
     public void e(String msg, Object... args) {
         log(1, LogLevel.Error, msg, args);
+    }
+
+    public void catches(Exception e) {
+        for (LogHandler handler : handlers) {
+            handler.catches(e);
+        }
     }
 }

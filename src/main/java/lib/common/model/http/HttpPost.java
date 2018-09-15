@@ -1,13 +1,13 @@
 package lib.common.model.http;
 
+import lib.common.interfaces.StreamTransferHook;
+import lib.common.model.log.Logger;
+import lib.common.util.IOUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
-
-import lib.common.interfaces.StreamTransferHook;
-import lib.common.util.ConsoleUtil;
-import lib.common.util.IOUtil;
 
 /**
  * Created by yanrongyu on 16/9/18.
@@ -42,7 +42,7 @@ public abstract class HttpPost extends HttpRequest {
         if (uploadHook == null) {
             os.write(entity);
             os.flush();
-            ConsoleUtil.debug(String.format("post bytes length: %sb", entity.length));
+            Logger.getDefault().d("post bytes length: %sb", entity.length);
         } else {
             IOUtil.bytesToOutputStream(entity, os, uploadHook);
         }
@@ -54,7 +54,7 @@ public abstract class HttpPost extends HttpRequest {
         StreamTransferHook uploadHook = getUploadHook();
         if (uploadHook == null) {
             long length = IOUtil.transferStream(entity, os);
-            ConsoleUtil.debug(String.format("post input stream length: %sb", length));
+            Logger.getDefault().d("post input stream length: %sb", length);
         } else {
             IOUtil.transferStream(entity, os, uploadHook);
         }

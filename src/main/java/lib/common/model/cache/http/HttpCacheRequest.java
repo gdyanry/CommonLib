@@ -4,20 +4,19 @@ import lib.common.model.cache.CacheDataHook;
 import lib.common.model.cache.CacheDataManager;
 import lib.common.model.cancelable.Cancelable;
 import lib.common.model.json.JSONArray;
-import lib.common.util.ConsoleUtil;
+import lib.common.model.log.Logger;
 
 /**
  * Created by yanrongyu on 16/9/19.
  */
 
-public abstract class
-HttpCacheRequest extends Cancelable implements CacheDataHook {
+public abstract class HttpCacheRequest extends Cancelable implements CacheDataHook {
     private long expire;
     private String eTag;
     private boolean hasCache;
 
     public void start() {
-        ConsoleUtil.debug("start: " + getCacheKey());
+        Logger.getDefault().d("start: %s", getCacheKey());
         if (getCachePolicy() != CachePolicy.NetworkOnly) {
             // get cache
             getCacheDataManager().getData(getCacheKey(), this);
@@ -30,7 +29,7 @@ HttpCacheRequest extends Cancelable implements CacheDataHook {
             sendRequest();
         }
         release();
-        ConsoleUtil.debug("finish: " + getCacheKey());
+        Logger.getDefault().d("finish: %s", getCacheKey());
     }
 
     public void handleResponse(Object dataToCache) {

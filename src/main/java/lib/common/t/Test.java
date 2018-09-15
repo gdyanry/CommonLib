@@ -1,8 +1,13 @@
 package lib.common.t;
 
-import lib.common.entity.SimpleInfoHandler;
-import lib.common.model.log.*;
-import lib.common.util.*;
+import lib.common.model.log.ConsoleHandler;
+import lib.common.model.log.LogLevel;
+import lib.common.model.log.Logger;
+import lib.common.model.log.SimpleFormatterBuilder;
+import lib.common.util.ConversionUtil;
+import lib.common.util.HexUtil;
+import lib.common.util.IOUtil;
+import lib.common.util.StringUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,7 +40,6 @@ public class Test {
         try {
             log(HexUtil.charsetHex("中文", "utf-8", 20));
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -63,10 +67,6 @@ public class Test {
         System.out.println("a".matches("^[\\x00-\\xff]+$"));
         System.out.println(0x8f);
 
-        SimpleInfoHandler handler = new SimpleInfoHandler();
-        handler.debug("SimpleInfoHandler debug");
-        ConsoleUtil.debug(0, "ConsoleUtil debug");
-
 //        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
 
     }
@@ -74,9 +74,9 @@ public class Test {
     private static void log(String msg, Object... args) {
         Logger logger = Logger.get("test");
         if (!logger.isReady()) {
-            logger.addHandler(new ConsoleHandler(new SimpleFormatterBuilder().build(), null));
+            logger.addHandler(new ConsoleHandler(new SimpleFormatterBuilder().thread().build(), null));
         }
         logger.log(1, LogLevel.Debug, msg, args);
     }
-    
+
 }

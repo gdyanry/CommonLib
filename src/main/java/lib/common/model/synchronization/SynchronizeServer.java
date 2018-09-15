@@ -1,6 +1,5 @@
 package lib.common.model.synchronization;
 
-import lib.common.interfaces.InfoHandler;
 import lib.common.model.dao.JDBCDML;
 import lib.common.model.json.JSONArray;
 import lib.common.model.json.JSONObject;
@@ -45,7 +44,7 @@ public abstract class SynchronizeServer {
                     insertSql = sb.toString();
                 }
                 // insert
-                new JDBCDML(false, false, getConnection(), insertSql, getInfoHandler()) {
+                new JDBCDML(false, false, getConnection(), insertSql) {
 
                     @Override
                     protected void onResult(ResultSet rs) throws SQLException {
@@ -86,7 +85,7 @@ public abstract class SynchronizeServer {
                     updateSql = sb.toString();
                 }
                 // update
-                new JDBCDML(false, true, getConnection(), updateSql, getInfoHandler()) {
+                new JDBCDML(false, true, getConnection(), updateSql) {
 
                     @Override
                     protected void onResult(ResultSet rs) throws SQLException {
@@ -115,7 +114,7 @@ public abstract class SynchronizeServer {
                 sb.append(deleted.get(i)).append(",");
             }
             sb.deleteCharAt(sb.length() - 1).append(")");
-            new JDBCDML(false, true, getConnection(), sb.toString(), getInfoHandler()) {
+            new JDBCDML(false, true, getConnection(), sb.toString()) {
                 @Override
                 protected void onResult(ResultSet rs) throws SQLException {
                     resp.append(SyncConst.deleted, deleted);
@@ -125,7 +124,7 @@ public abstract class SynchronizeServer {
         // push
         String querySql = String.format("select * from %s where %s=? and %s>? and %<s<?", table, ServerObjectTable.user_id,
                 ServerObjectTable.update_timestamp);
-        new JDBCDML(true, true, getConnection(), querySql, getInfoHandler()) {
+        new JDBCDML(true, true, getConnection(), querySql) {
             @Override
             protected void setParameters(PreparedStatement ps) throws SQLException {
                 ps.setObject(1, userId);
@@ -162,6 +161,4 @@ public abstract class SynchronizeServer {
     }
 
     protected abstract Connection getConnection();
-
-    protected abstract InfoHandler getInfoHandler();
 }
