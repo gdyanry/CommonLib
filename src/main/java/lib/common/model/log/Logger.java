@@ -5,19 +5,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Logger {
-    private static HashMap<String, Logger> instances = new HashMap<>();
-    private String tag;
-    private LogFormatter defaultFormatter;
+    private static HashMap<Object, Logger> instances = new HashMap<>();
+    private static LogFormatter defaultFormatter;
+    private Object tag;
     private LogLevel level;
     private List<LogHandler> handlers;
 
-    private Logger(String tag) {
+    private Logger(Object tag) {
         this.tag = tag;
         handlers = new LinkedList<>();
+        level = LogLevel.Verbose;
         instances.put(tag, this);
     }
 
-    public static Logger get(String tag) {
+    public static Logger get(Object tag) {
         Logger logger = instances.get(tag);
         if (logger == null) {
             synchronized (Logger.class) {
@@ -29,14 +30,17 @@ public class Logger {
         return logger;
     }
 
+    public static void setDefaultFormatter(LogFormatter formatter) {
+        defaultFormatter = formatter;
+    }
+
     public static Logger getDefault() {
         return get(null);
     }
 
-    public void setDefaultFormatter(LogFormatter defaultFormatter) {
-        this.defaultFormatter = defaultFormatter;
-    }
-
+    /**
+     * @param level 当为null时不输出任何日志。
+     */
     public void setLevel(LogLevel level) {
         this.level = level;
     }
@@ -60,7 +64,7 @@ public class Logger {
      * @param args
      */
     public void log(int encapsulationLayerCount, LogLevel level, String msg, Object... args) {
-        if (this.level == null || this.level.test(level)) {
+        if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
             for (LogHandler handler : handlers) {
                 if (handler.getLevel() == null || handler.getLevel().test(level)) {

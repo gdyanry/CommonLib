@@ -17,7 +17,7 @@ public class LogFormatter {
         return className.substring(className.lastIndexOf(".") + 1);
     }
 
-    public LogFormatter tag(InfoTransformer<String> tagFormatter) {
+    public LogFormatter tag(InfoTransformer<Object> tagFormatter) {
         recordProcessors.add(logRecord -> logRecord.getStringBuilder().append(tagFormatter.transform(logRecord.getTag())));
         return this;
     }

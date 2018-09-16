@@ -17,7 +17,7 @@ public abstract class LogHandler {
         return level;
     }
 
-    protected abstract void handleLog(LogLevel level, String tag, String log);
+    protected abstract void handleLog(LogLevel level, Object tag, String log);
 
     protected abstract void catches(Exception e);
 }

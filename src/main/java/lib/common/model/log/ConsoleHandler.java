@@ -6,7 +6,7 @@ public class ConsoleHandler extends LogHandler {
     }
 
     @Override
-    protected void handleLog(LogLevel level, String tag, String log) {
+    protected void handleLog(LogLevel level, Object tag, String log) {
         System.out.println(log);
     }
 

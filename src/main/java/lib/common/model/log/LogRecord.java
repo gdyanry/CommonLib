@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 class LogRecord {
     private static AtomicLong sequenceNumberCreator = new AtomicLong();
     private StringBuilder stringBuilder;
-    private String tag;
+    private Object tag;
     private LogLevel level;
     private long sequenceNumber;
     private String message;
@@ -13,7 +13,7 @@ class LogRecord {
     private StackTraceElement[] stackTraceElements;
     private int encapsulationLayerCount;
 
-    LogRecord(String tag, LogLevel level, String message, int encapsulationLayerCount) {
+    LogRecord(Object tag, LogLevel level, String message, int encapsulationLayerCount) {
         this.tag = tag;
         this.level = level;
         this.message = message;
@@ -28,7 +28,7 @@ class LogRecord {
         return stringBuilder;
     }
 
-    String getTag() {
+    Object getTag() {
         return tag;
     }
 

@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 public class Test {
 
     public static void main(String[] args) throws IOException {
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().sequenceNumber().thread().build(), null));
+
         log(IOUtil.getAppRelativeFile("").getAbsolutePath());
         System.out.println();
         byte[] arr = {-122, 1, 0, 0};
@@ -60,23 +62,21 @@ public class Test {
 
         System.out.println("D1".matches("\\D[1-7](?:,\\D[1-7])?"));
         System.out.println("D1,D4,D5,D6,D5,D7,D3".matches("^\\D[1-7](?:(?:,\\D[1-7]){0,5},\\D[1-7])?$"));
-        ;
-
 
         log(String.format("%02d - %02d", 1, 1542));
         System.out.println("a".matches("^[\\x00-\\xff]+$"));
         System.out.println(0x8f);
 
 //        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
-
+        Logger.getDefault().v("verbose");
+        Logger.getDefault().d("debug");
+        Logger.getDefault().i("info");
+        Logger.getDefault().w("warn");
+        Logger.getDefault().e("error");
     }
 
     private static void log(String msg, Object... args) {
-        Logger logger = Logger.get("test");
-        if (!logger.isReady()) {
-            logger.addHandler(new ConsoleHandler(new SimpleFormatterBuilder().thread().build(), null));
-        }
-        logger.log(1, LogLevel.Debug, msg, args);
+        Logger.getDefault().log(1, LogLevel.Debug, msg, args);
     }
 
 }
