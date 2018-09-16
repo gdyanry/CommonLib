@@ -109,7 +109,7 @@ public class Logger {
 
     public void catches(Exception e) {
         for (LogHandler handler : handlers) {
-            handler.catches(e);
+            handler.catches(tag, e);
         }
     }
 }
