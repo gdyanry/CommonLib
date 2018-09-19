@@ -27,6 +27,7 @@ public class Test {
     public static void main(String[] args) throws IOException {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().sequenceNumber().thread().build(), null));
 
+        System.out.println("\033[0;35m字符串\033[5m");
         log(IOUtil.getAppRelativeFile("").getAbsolutePath());
         System.out.println();
         byte[] arr = {-122, 1, 0, 0};
