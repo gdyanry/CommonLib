@@ -59,7 +59,7 @@ public class StringUtil {
             return null;
         }
         String[] strArr = srcStr.split(separator + "+");
-        List<Integer> list = new ArrayList<Integer>(strArr.length);
+        List<Integer> list = new ArrayList<>(strArr.length);
         for (String s : strArr) {
             list.add(Integer.valueOf(s));
         }
@@ -97,9 +97,10 @@ public class StringUtil {
         StringBuilder stringBuilder = new StringBuilder();
         char newLine = '\n';
         boolean isInString = false;
+        char lastChar = 0;
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
-            if (level > 0 && '\n' == stringBuilder.charAt(stringBuilder.length() - 1)) {
+            if (level > 0 && newLine == stringBuilder.charAt(stringBuilder.length() - 1)) {
                 appendSpace(stringBuilder, level);
             }
             switch (c) {
@@ -115,8 +116,17 @@ public class StringUtil {
                     }
                     break;
                 case '}':
+                    if (lastChar != '{') {
+                        stringBuilder.append(newLine);
+                    }
+                    level--;
+                    appendSpace(stringBuilder, level);
+                    stringBuilder.append(c);
+                    break;
                 case ']':
-                    stringBuilder.append(newLine);
+                    if (lastChar != '[') {
+                        stringBuilder.append(newLine);
+                    }
                     level--;
                     appendSpace(stringBuilder, level);
                     stringBuilder.append(c);
@@ -129,6 +139,7 @@ public class StringUtil {
                     stringBuilder.append(c);
                     break;
             }
+            lastChar = c;
         }
         return stringBuilder.toString();
     }

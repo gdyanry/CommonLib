@@ -7,11 +7,7 @@ public class ConsoleHandler extends LogHandler {
 
     @Override
     protected void handleLog(LogLevel level, Object tag, String log) {
-        if (level == LogLevel.Error) {
-            System.err.println(log);
-        } else {
-            System.out.println(log);
-        }
+        System.out.println(log);
     }
 
     @Override
