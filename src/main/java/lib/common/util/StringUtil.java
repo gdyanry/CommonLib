@@ -90,6 +90,9 @@ public class StringUtil {
     }
 
     public static String formatJson(String raw) {
+        if (raw == null) {
+            return null;
+        }
         int level = 0;
         StringBuilder stringBuilder = new StringBuilder();
         char newLine = '\n';
