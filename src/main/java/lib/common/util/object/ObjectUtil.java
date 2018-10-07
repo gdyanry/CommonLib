@@ -7,6 +7,7 @@ import lib.common.util.StringUtil;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -87,9 +88,9 @@ public class ObjectUtil {
                 jsonArray.put(getPresentation(Array.get(object, i), typeSymbol));
             }
             return jsonArray;
-        } else if (object instanceof List) {
+        } else if (object instanceof Collection) {
             JSONArray jsonArray = new JSONArray();
-            List list = (List) object;
+            Collection list = (Collection) object;
             for (Object item : list) {
                 jsonArray.put(getPresentation(item, typeSymbol));
             }
