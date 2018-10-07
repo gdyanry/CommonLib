@@ -7,24 +7,25 @@ import lib.common.util.StringUtil;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class ObjectUtil {
     public static int hashCode(Object object) {
         Class<?> type = object.getClass();
-        return Objects.hash(Stream.of(type.getMethods()).filter(method -> method.isAnnotationPresent(HashAndEquals.class))
-                .map(method -> {
-                    try {
-                        return method.invoke(object);
-                    } catch (ReflectiveOperationException e) {
-                        Logger.getDefault().catches(e);
-                        return null;
-                    }
-                }).toArray());
+        ArrayList<Object> fields = new ArrayList<>();
+        for (Method method : type.getMethods()) {
+            if (method.isAnnotationPresent(HashAndEquals.class)) {
+                try {
+                    fields.add(method.invoke(object));
+                } catch (ReflectiveOperationException e) {
+                    Logger.getDefault().catches(e);
+                }
+            }
+        }
+        return Objects.hash(fields.toArray());
     }
 
     public static boolean equals(Object object, Object that) {
@@ -51,7 +52,6 @@ public class ObjectUtil {
     }
 
     /**
-     *
      * @param object
      * @param typeSymbol
      * @return the return object is one of these types: Boolean, Double, Integer, JSONArray, JSONObject, Long, String, or the JSONObject.NULL object.
