@@ -30,9 +30,7 @@ public class Test {
         System.out.println("\033[0;35m字符串\033[5m");
         log(IOUtil.getAppRelativeFile("").getAbsolutePath());
         System.out.println();
-        byte[] arr = {-122, 1, 0, 0};
-        System.out.println(ConversionUtil.byteArrayToInt(arr, 0, null));
-        log(Arrays.toString(ConversionUtil.intToByteArray(36868, null)));
+        System.out.println(Integer.parseInt("02"));
 
         System.out.println(49 >> 2);
         System.out.println(Math.pow(2, 6));
