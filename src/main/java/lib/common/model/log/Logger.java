@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Logger {
     private static HashMap<Object, Logger> instances = new HashMap<>();
+    private static Object defaultTag;
     private static LogFormatter defaultFormatter;
     private Object tag;
     private LogLevel level;
@@ -30,16 +31,20 @@ public class Logger {
         return logger;
     }
 
+    public static void setDefaultTag(Object defaultTag) {
+        Logger.defaultTag = defaultTag;
+    }
+
     public static void setDefaultFormatter(LogFormatter formatter) {
         defaultFormatter = formatter;
     }
 
     public static Logger getDefault() {
-        return get(null);
+        return get(defaultTag);
     }
 
     /**
-     * @param level 当为null时不输出任何日志。
+     * @param level 当level为null时不输出任何日志。
      */
     public void setLevel(LogLevel level) {
         this.level = level;
@@ -91,20 +96,40 @@ public class Logger {
         log(1, LogLevel.Verbose, msg, args);
     }
 
+    public void v(Object info) {
+        log(1, LogLevel.Verbose, info == null ? null : info.toString());
+    }
+
     public void d(String msg, Object... args) {
         log(1, LogLevel.Debug, msg, args);
+    }
+
+    public void d(Object info) {
+        log(1, LogLevel.Debug, info == null ? null : info.toString());
     }
 
     public void i(String msg, Object... args) {
         log(1, LogLevel.Info, msg, args);
     }
 
+    public void i(Object info) {
+        log(1, LogLevel.Info, info == null ? null : info.toString());
+    }
+
     public void w(String msg, Object... args) {
         log(1, LogLevel.Warn, msg, args);
     }
 
+    public void w(Object info) {
+        log(1, LogLevel.Warn, info == null ? null : info.toString());
+    }
+
     public void e(String msg, Object... args) {
         log(1, LogLevel.Error, msg, args);
+    }
+
+    public void e(Object info) {
+        log(1, LogLevel.Error, info == null ? null : info.toString());
     }
 
     public void catches(Exception e) {

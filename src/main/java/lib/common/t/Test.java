@@ -74,6 +74,9 @@ public class Test {
         Logger.getDefault().i("info");
         Logger.getDefault().w("warn");
         Logger.getDefault().e("error");
+
+        Logger.getDefault().d("a");
+        Logger.getDefault().d(null);
     }
 
     private static void log(String msg, Object... args) {
