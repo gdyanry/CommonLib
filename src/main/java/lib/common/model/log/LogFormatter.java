@@ -48,8 +48,7 @@ public class LogFormatter {
             if (STACK_START_INDEX == 0) {
                 // 不同虚拟机栈的层数可能不一样，所以需要计算不能写死
                 for (int i = 0; i < logRecord.getStackTraceElements().length; i++) {
-                    StackTraceElement element = logRecord.getStackTraceElements()[i];
-                    if (Logger.class.getName().equals(element.getClassName())) {
+                    if (Logger.class.getName().equals(logRecord.getStackTraceElements()[i].getClassName())) {
                         STACK_START_INDEX = i + 1;
                         break;
                     }
