@@ -81,18 +81,12 @@ public class SimpleFormatterBuilder {
         if (flags[TAG]) {
             formatter.tag(t -> t).with(separator);
         }
-        if (stackDepth > 0) {
-            formatter.with("[");
-            for (int i = 0; i < stackDepth; i++) {
-                formatter.stackTrace(e -> flags[METHOD] ? String.format("%s.%s(%s)", LogFormatter.getSimpleClassName(e), e.getMethodName(), e.getLineNumber()) :
-                        String.format("%s(%s)", LogFormatter.getSimpleClassName(e), e.getLineNumber()));
-                if (i < stackDepth - 1) {
-                    formatter.with("/");
-                }
-            }
-            formatter.with("]").with(separator);
-        }
         formatter.message(msg -> msg);
+        if (stackDepth > 0) {
+            for (int i = 0; i < stackDepth; i++) {
+                formatter.newLine().stackTrace(e -> LogFormatter.print(e));
+            }
+        }
         return formatter;
     }
 }
