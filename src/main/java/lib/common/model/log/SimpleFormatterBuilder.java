@@ -20,7 +20,6 @@ public class SimpleFormatterBuilder {
     public SimpleFormatterBuilder(Object separator) {
         this.separator = separator;
         flags = new boolean[7];
-        stackDepth = 1;
     }
 
     private SimpleFormatterBuilder setFlag(int index) {
@@ -81,10 +80,13 @@ public class SimpleFormatterBuilder {
         if (flags[TAG]) {
             formatter.tag(t -> t).with(separator);
         }
+        if (flags[METHOD] && stackDepth == 0) {
+            formatter.stackTrace(e -> String.format("%s.%s()", LogFormatter.getSimpleClassName(e), e.getMethodName())).with(separator);
+        }
         formatter.message(msg -> msg);
         if (stackDepth > 0) {
             for (int i = 0; i < stackDepth; i++) {
-                formatter.newLine().stackTrace(e -> LogFormatter.print(e));
+                formatter.stackTrace(e -> LogFormatter.print(e));
             }
         }
         return formatter;

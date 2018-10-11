@@ -18,7 +18,7 @@ public class LogFormatter {
     }
 
     public static String print(StackTraceElement e) {
-        return String.format("    at %s.%s(%s:%s)", e.getClassName(), e.getMethodName(), e.getFileName(), e.getLineNumber());
+        return String.format("%n    at %s.%s(%s:%s)", e.getClassName(), e.getMethodName(), e.getFileName(), e.getLineNumber());
     }
 
     public LogFormatter tag(InfoTransformer<Object> tagFormatter) {

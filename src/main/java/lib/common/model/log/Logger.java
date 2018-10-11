@@ -70,7 +70,7 @@ public class Logger {
             for (LogHandler handler : handlers) {
                 if (handler.getLevel() == null || handler.getLevel().test(level)) {
                     if (record == null) {
-                        record = new LogRecord(tag, level, args.length == 0 ? msg : String.format(msg, args), encapsulationLayerCount);
+                        record = LogRecord.get(tag, level, args.length == 0 ? msg : String.format(msg, args), encapsulationLayerCount);
                     }
                     LogFormatter formatter = handler.getFormatter();
                     if (formatter == null) {
@@ -78,6 +78,9 @@ public class Logger {
                     }
                     handler.handleLog(level, tag, formatter.format(record));
                 }
+            }
+            if (record != null) {
+                record.recycle();
             }
         }
     }

@@ -50,14 +50,24 @@ public abstract class IntegratedCommunicationServer<U> {
         if (binaryTimeoutMinute > 0) {
             binaryCache = new TimerCache<>(binaryTimeoutMinute * 60, timer);
         }
-        anonymousCHs = new TimerObjectPool<CommunicationHandler>(idleAnonymousCommunicationHandlerKeepAliveSeconds) {
+        anonymousCHs = new TimerObjectPool<>(idleAnonymousCommunicationHandlerKeepAliveSeconds) {
             @Override
-            protected CommunicationHandler generate() {
+            protected CommunicationHandler createInstance() {
                 return new AnonymousCommunicationHandler();
             }
 
             @Override
-            protected void release(CommunicationHandler obj) {
+            protected void onReturn(CommunicationHandler obj) {
+                obj.getCache().clear();
+                obj.setExtra(null);
+            }
+
+            @Override
+            protected void onDiscard(CommunicationHandler obj) {
+            }
+
+            @Override
+            protected void onCleared(int poolSize) {
             }
         };
         handlers = new HashMap<>();
@@ -128,7 +138,7 @@ public abstract class IntegratedCommunicationServer<U> {
             // anonymous requests are supposed to be one-night requests, because
             // there's no strict mapping between sessions and communication
             // handlers.
-            ch = anonymousCHs.obtain();
+            ch = anonymousCHs.borrow();
             ch.setExtra(extra);
         } else {
             sessionId = ja.getString(0);
@@ -151,7 +161,7 @@ public abstract class IntegratedCommunicationServer<U> {
         Logger.getDefault().d("%s%n%n  %s << %s%n", sessionId, uid, jaResponse);
         if (isAnonym) {
             // 放回容器重用
-            anonymousCHs.recycle(ch);
+            anonymousCHs.giveBack(ch);
         }
         return jaResponse == null ? null : jaResponse.toString();
     }
