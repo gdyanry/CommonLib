@@ -50,7 +50,7 @@ public abstract class IntegratedCommunicationServer<U> {
         if (binaryTimeoutMinute > 0) {
             binaryCache = new TimerCache<>(binaryTimeoutMinute * 60, timer);
         }
-        anonymousCHs = new TimerObjectPool<>(idleAnonymousCommunicationHandlerKeepAliveSeconds) {
+        anonymousCHs = new TimerObjectPool<CommunicationHandler>(idleAnonymousCommunicationHandlerKeepAliveSeconds) {
             @Override
             protected CommunicationHandler createInstance() {
                 return new AnonymousCommunicationHandler();
