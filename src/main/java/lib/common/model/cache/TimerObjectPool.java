@@ -3,8 +3,10 @@
  */
 package lib.common.model.cache;
 
+import lib.common.entity.DaemonTimer;
+import lib.common.model.Singletons;
+
 import java.util.LinkedList;
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -15,16 +17,16 @@ import java.util.TimerTask;
  * <p>
  * 2014年7月7日下午3:33:11
  */
-public abstract class TimerObjectPool<E> extends Timer {
+public abstract class TimerObjectPool<E> {
     private LinkedList<E> container;
     private LinkedList<Long> timeRecords;
 
     public TimerObjectPool(int timeoutSeconds) {
-        super(true);
+        super();
         container = new LinkedList<>();
         timeRecords = new LinkedList<>();
         long timeout = timeoutSeconds * 1000;
-        schedule(new TimerTask() {
+        Singletons.get(DaemonTimer.class).schedule(new TimerTask() {
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
