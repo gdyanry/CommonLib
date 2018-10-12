@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.TimerTask;
 
 /**
- * A linked list based object pool with timeout mechanism.
+ * A simple but effective linked-list-based object pool with timeout mechanism.
  *
  * @param <E> type of pooled object.
  * @author yanry

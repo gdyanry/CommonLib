@@ -55,8 +55,8 @@ public class SimpleFormatterBuilder {
         return setFlag(METHOD);
     }
 
-    public SimpleFormatterBuilder stackDepth(int depth) {
-        this.stackDepth = depth;
+    public SimpleFormatterBuilder method(int stackDepth) {
+        this.stackDepth = stackDepth;
         return this;
     }
 

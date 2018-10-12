@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().stackDepth(10).build(), null));
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().method(10).build(), null));
 
         System.out.println("\033[0;35m字符串\033[5m");
         log(IOUtil.getAppRelativeFile("").getAbsolutePath());
