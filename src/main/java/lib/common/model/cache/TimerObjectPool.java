@@ -46,7 +46,7 @@ public abstract class TimerObjectPool<E> extends Timer {
      *
      * @param element
      */
-    public synchronized void giveBack(E element) {
+    public void giveBack(E element) {
         if (element != null) {
             onReturn(element);
             container.addLast(element);
@@ -59,7 +59,7 @@ public abstract class TimerObjectPool<E> extends Timer {
      *
      * @return
      */
-    public synchronized E borrow() {
+    public E borrow() {
         E e = container.pollFirst();
         if (e == null) {
             e = createInstance();
