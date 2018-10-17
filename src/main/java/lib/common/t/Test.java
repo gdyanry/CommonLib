@@ -71,12 +71,12 @@ public class Test {
         Logger.getDefault().w("warn");
         Logger.getDefault().e("error");
 
-        Logger.getDefault().d("a");
-        Logger.getDefault().d(null);
+        for (String s : "20℃~26℃".split("\\D+")) {
+            System.out.println(": " + s);
+        }
     }
 
     private static void log(String msg, Object... args) {
         Logger.getDefault().log(1, LogLevel.Debug, msg, args);
     }
-
 }

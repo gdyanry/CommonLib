@@ -11,8 +11,8 @@ import java.io.UnsupportedEncodingException;
  *         2014-5-5 下午5:41:03
  */
 public class HexUtil {
-	
-	public static String bytesToHex(byte[] bytes) {
+
+	public static String bytesToHex(byte... bytes) {
 		StringBuilder sb = new StringBuilder();
 		for (byte b : bytes) {
 			sb.append(String.format("%02x", b));
@@ -44,16 +44,6 @@ public class HexUtil {
 	}
 
 	public static void main(String[] args) {
-		try {
-			String input = "中国好多人有木有wa";
-			int width = 8;
-			System.out.println(charsetHex(input, "unicode", width));
-			System.out.println(charsetHex(input, "gbk", width));
-			System.out.println(charsetHex(input, "utf-8", width));
-			System.out.println(charsetHex(input, "utf-16be", width));
-			System.out.println(charsetHex(input, "utf-16le", width));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		System.out.println(String.format("%02x", Math.round(0xff * 0.15f)));
 	}
 }
