@@ -11,12 +11,14 @@ public class CollectionUtil {
                 return true;
             }
             int distance = list.size() - lastOccurrence;
-            for (int i = lastIndex; i > lastOccurrence && i - distance >= 0; i--) {
-                if (!list.get(i).equals(list.get(i - distance))) {
-                    return false;
+            if (list.size() > (distance - 1) * 2) {
+                for (int i = lastIndex; i > lastOccurrence && i - distance >= 0; i--) {
+                    if (!list.get(i).equals(list.get(i - distance))) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
