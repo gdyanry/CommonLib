@@ -3,7 +3,6 @@
  */
 package lib.common.model;
 
-import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import java.util.Map;
  */
 public final class Singletons {
 
-    private static Map<Class<?>, SoftReference<Object>> container = new HashMap<>();
+    private static Map<Class<?>, Object> container = new HashMap<>();
     private static ObjectProvider objectProvider;
 
     private Singletons() {
@@ -25,27 +24,25 @@ public final class Singletons {
     }
 
     public static <T> T get(Class<T> type) {
-        SoftReference<Object> reference = container.get(type);
-        if (reference == null || reference.get() == null) {
+        Object instance = container.get(type);
+        if (instance == null) {
             synchronized (type) {
-                if (reference == null || reference.get() == null) {
-                    Object obj = null;
+                if (instance == null) {
                     if (objectProvider != null) {
-                        obj = objectProvider.getInstance(type);
+                        instance = objectProvider.getInstance(type);
                     }
-                    if (obj == null) {
+                    if (instance == null) {
                         try {
-                            obj = type.getDeclaredConstructor().newInstance();
+                            instance = type.getDeclaredConstructor().newInstance();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
-                    reference = new SoftReference<>(obj);
-                    container.put(type, reference);
+                    container.put(type, instance);
                 }
             }
         }
-        return (T) reference.get();
+        return (T) instance;
     }
 
     /**
@@ -53,11 +50,10 @@ public final class Singletons {
      * @return the previous created object of the given type, might be null.
      */
     public static <T> T remove(Class<T> type) {
-        SoftReference<Object> reference = container.remove(type);
-        return reference == null ? null : (T) reference.get();
+        return (T) container.remove(type);
     }
 
-    public static void release() {
+    public static void clear() {
         container.clear();
     }
 

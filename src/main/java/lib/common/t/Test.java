@@ -4,14 +4,12 @@ import lib.common.model.log.ConsoleHandler;
 import lib.common.model.log.LogLevel;
 import lib.common.model.log.Logger;
 import lib.common.model.log.SimpleFormatterBuilder;
-import lib.common.util.ConversionUtil;
 import lib.common.util.HexUtil;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +23,7 @@ import java.util.regex.Pattern;
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().sequenceNumber().thread().build(), null));
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().method(10).build(), null));
 
         System.out.println("\033[0;35m字符串\033[5m");
         log(IOUtil.getAppRelativeFile("").getAbsolutePath());
@@ -73,12 +71,12 @@ public class Test {
         Logger.getDefault().w("warn");
         Logger.getDefault().e("error");
 
-        Logger.getDefault().d("a");
-        Logger.getDefault().d(null);
+        for (String s : "20℃~26℃".split("\\D+")) {
+            System.out.println(": " + s);
+        }
     }
 
     private static void log(String msg, Object... args) {
         Logger.getDefault().log(1, LogLevel.Debug, msg, args);
     }
-
 }

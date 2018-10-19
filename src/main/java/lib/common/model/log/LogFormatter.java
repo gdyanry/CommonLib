@@ -12,9 +12,13 @@ public class LogFormatter {
         recordProcessors = new LinkedList<>();
     }
 
-    public static String getSimpleClassName(StackTraceElement traceElement) {
-        String className = traceElement.getClassName();
+    public static String getSimpleClassName(StackTraceElement e) {
+        String className = e.getClassName();
         return className.substring(className.lastIndexOf(".") + 1);
+    }
+
+    public static String print(StackTraceElement e) {
+        return String.format("%n    at %s.%s(%s:%s)", e.getClassName(), e.getMethodName(), e.getFileName(), e.getLineNumber());
     }
 
     public LogFormatter tag(InfoTransformer<Object> tagFormatter) {
@@ -48,8 +52,7 @@ public class LogFormatter {
             if (STACK_START_INDEX == 0) {
                 // 不同虚拟机栈的层数可能不一样，所以需要计算不能写死
                 for (int i = 0; i < logRecord.getStackTraceElements().length; i++) {
-                    StackTraceElement element = logRecord.getStackTraceElements()[i];
-                    if (Logger.class.getName().equals(element.getClassName())) {
+                    if (Logger.class.getName().equals(logRecord.getStackTraceElements()[i].getClassName())) {
                         STACK_START_INDEX = i + 1;
                         break;
                     }

@@ -20,7 +20,6 @@ public class SimpleFormatterBuilder {
     public SimpleFormatterBuilder(Object separator) {
         this.separator = separator;
         flags = new boolean[7];
-        stackDepth = 1;
     }
 
     private SimpleFormatterBuilder setFlag(int index) {
@@ -56,8 +55,8 @@ public class SimpleFormatterBuilder {
         return setFlag(METHOD);
     }
 
-    public SimpleFormatterBuilder stackDepth(int depth) {
-        this.stackDepth = depth;
+    public SimpleFormatterBuilder method(int stackDepth) {
+        this.stackDepth = stackDepth;
         return this;
     }
 
@@ -81,18 +80,15 @@ public class SimpleFormatterBuilder {
         if (flags[TAG]) {
             formatter.tag(t -> t).with(separator);
         }
-        if (stackDepth > 0) {
-            formatter.with("[");
-            for (int i = 0; i < stackDepth; i++) {
-                formatter.stackTrace(e -> flags[METHOD] ? String.format("%s.%s(%s)", LogFormatter.getSimpleClassName(e), e.getMethodName(), e.getLineNumber()) :
-                        String.format("%s(%s)", LogFormatter.getSimpleClassName(e), e.getLineNumber()));
-                if (i < stackDepth - 1) {
-                    formatter.with("/");
-                }
-            }
-            formatter.with("]").with(separator);
+        if (flags[METHOD] && stackDepth == 0) {
+            formatter.stackTrace(e -> String.format("%s.%s()", LogFormatter.getSimpleClassName(e), e.getMethodName())).with(separator);
         }
         formatter.message(msg -> msg);
+        if (stackDepth > 0) {
+            for (int i = 0; i < stackDepth; i++) {
+                formatter.stackTrace(e -> LogFormatter.print(e));
+            }
+        }
         return formatter;
     }
 }

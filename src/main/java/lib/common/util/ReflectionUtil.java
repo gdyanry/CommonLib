@@ -3,6 +3,8 @@
  */
 package lib.common.util;
 
+import lib.common.model.log.Logger;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -25,7 +27,7 @@ public class ReflectionUtil {
 				try {
 					f.set(null, f.getName());
 				} catch (Exception e) {
-					e.printStackTrace();
+                    Logger.getDefault().catches(e);
 				}
 			}
 		}

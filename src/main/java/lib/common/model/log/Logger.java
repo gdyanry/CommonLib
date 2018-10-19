@@ -6,8 +6,8 @@ import java.util.List;
 
 public class Logger {
     private static HashMap<Object, Logger> instances = new HashMap<>();
+    private final static LogFormatter defaultFormatter = new SimpleFormatterBuilder().build();
     private static Object defaultTag;
-    private static LogFormatter defaultFormatter;
     private Object tag;
     private LogLevel level;
     private List<LogHandler> handlers;
@@ -33,10 +33,6 @@ public class Logger {
 
     public static void setDefaultTag(Object defaultTag) {
         Logger.defaultTag = defaultTag;
-    }
-
-    public static void setDefaultFormatter(LogFormatter formatter) {
-        defaultFormatter = formatter;
     }
 
     public static Logger getDefault() {
@@ -74,16 +70,17 @@ public class Logger {
             for (LogHandler handler : handlers) {
                 if (handler.getLevel() == null || handler.getLevel().test(level)) {
                     if (record == null) {
-                        record = new LogRecord(tag, level, args.length == 0 ? msg : String.format(msg, args), encapsulationLayerCount);
+                        record = LogRecord.get(tag, level, args.length == 0 ? msg : String.format(msg, args), encapsulationLayerCount);
                     }
                     LogFormatter formatter = handler.getFormatter();
                     if (formatter == null) {
                         formatter = defaultFormatter;
                     }
-                    if (formatter != null) {
-                        handler.handleLog(level, tag, formatter.format(record));
-                    }
+                    handler.handleLog(level, tag, formatter.format(record));
                 }
+            }
+            if (record != null) {
+                record.recycle();
             }
         }
     }

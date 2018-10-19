@@ -3,12 +3,14 @@
  */
 package lib.common.model.cache;
 
+import lib.common.entity.DaemonTimer;
 import lib.common.model.Singletons;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.TimerTask;
 
 /**
- * A linked list based object pool with timeout mechanism.
+ * A simple but effective linked-list-based object pool with timeout mechanism.
  *
  * @param <E> type of pooled object.
  * @author yanry
@@ -16,14 +18,29 @@ import java.util.*;
  * 2014年7月7日下午3:33:11
  */
 public abstract class TimerObjectPool<E> {
-    private List<E> container;
-    private long timeout;
-    private HashMap<E, TimerTask> tts;
+    private LinkedList<E> container;
+    private LinkedList<Long> timeRecords;
 
     public TimerObjectPool(int timeoutSeconds) {
-        container = new LinkedList<E>();
-        timeout = timeoutSeconds * 1000;
-        tts = new HashMap<>();
+        super();
+        container = new LinkedList<>();
+        timeRecords = new LinkedList<>();
+        long timeout = timeoutSeconds * 1000;
+        Singletons.get(DaemonTimer.class).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+                Long time;
+                while ((time = timeRecords.peekFirst()) != null && now - time > timeout) {
+                    timeRecords.pollFirst();
+                    E obj = container.pollFirst();
+                    if (obj != null) {
+                        onDiscard(obj);
+                    }
+                }
+                onCleared(container.size());
+            }
+        }, timeout, timeout);
     }
 
     /**
@@ -31,20 +48,11 @@ public abstract class TimerObjectPool<E> {
      *
      * @param element
      */
-    public synchronized void recycle(final E element) {
-        if (!container.contains(element)) {
-            container.add(element);
-            TimerTask tt = new TimerTask() {
-
-                @Override
-                public void run() {
-                    container.remove(element);
-                    tts.remove(element);
-                    release(element);
-                }
-            };
-            Singletons.get(Timer.class).schedule(tt, timeout);
-            tts.put(element, tt);
+    public void giveBack(E element) {
+        if (element != null) {
+            onReturn(element);
+            container.addLast(element);
+            timeRecords.addLast(System.currentTimeMillis());
         }
     }
 
@@ -53,26 +61,21 @@ public abstract class TimerObjectPool<E> {
      *
      * @return
      */
-    public synchronized E obtain() {
-        E e;
-        if (container.isEmpty()) {
-            e = generate();
+    public E borrow() {
+        E e = container.pollFirst();
+        if (e == null) {
+            e = createInstance();
         } else {
-            e = container.remove(0);
-        }
-        TimerTask tt = tts.remove(e);
-        if (tt != null) {
-            tt.cancel();
+            timeRecords.pollFirst();
         }
         return e;
     }
 
-    /**
-     * Construct an object.
-     *
-     * @return
-     */
-    protected abstract E generate();
+    protected abstract E createInstance();
 
-    protected abstract void release(E obj);
+    protected abstract void onReturn(E obj);
+
+    protected abstract void onDiscard(E obj);
+
+    protected abstract void onCleared(int poolSize);
 }
