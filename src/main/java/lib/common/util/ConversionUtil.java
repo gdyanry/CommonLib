@@ -13,7 +13,7 @@ import java.nio.ByteOrder;
  */
 public class ConversionUtil {
 	public static String intToIp(int ip) {
-		StringBuffer sb = new StringBuffer("");
+        StringBuffer sb = new StringBuffer();
 		// 直接右移24位
 		sb.append(String.valueOf((ip >>> 24)));
 		sb.append(".");

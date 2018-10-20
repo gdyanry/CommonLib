@@ -16,6 +16,7 @@ public class ObjectUtil {
     public static int hashCode(Object object) {
         Class<?> type = object.getClass();
         ArrayList<Object> fields = new ArrayList<>();
+        fields.add(type);
         for (Method method : type.getMethods()) {
             if (method.isAnnotationPresent(HashAndEquals.class)) {
                 try {

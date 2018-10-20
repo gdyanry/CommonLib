@@ -76,6 +76,10 @@ public class StringUtil {
     public static String encrypt(String input, String charset, String algorithm)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance(algorithm);
+        return encrypt(input, charset, md);
+    }
+
+    public static String encrypt(String input, String charset, MessageDigest md) throws UnsupportedEncodingException {
         return HexUtil.bytesToHex(md.digest(input.getBytes(charset)));
     }
 

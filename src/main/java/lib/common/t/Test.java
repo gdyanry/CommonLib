@@ -10,6 +10,7 @@ import lib.common.util.StringUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +57,11 @@ public class Test {
             log(matcher.group(0));
             log(matcher.group(1));
         }
+        pattern = Pattern.compile("\\d+-\\d+");
+        matcher = pattern.matcher("紫外线辐射弱，无需特别防护。如果长期出门，建议你涂抹防晒指数在8-12之间的防晒霜");
+        if (matcher.find()) {
+            System.out.println(matcher.group());
+        }
 
         System.out.println("D1".matches("\\D[1-7](?:,\\D[1-7])?"));
         System.out.println("D1,D4,D5,D6,D5,D7,D3".matches("^\\D[1-7](?:(?:,\\D[1-7]){0,5},\\D[1-7])?$"));
@@ -74,6 +80,8 @@ public class Test {
         for (String s : "20℃~26℃".split("\\D+")) {
             System.out.println(": " + s);
         }
+
+        System.out.println(Path.of("abcd", "efg"));
     }
 
     private static void log(String msg, Object... args) {
