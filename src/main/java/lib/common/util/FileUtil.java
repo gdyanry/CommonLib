@@ -7,8 +7,6 @@ import lib.common.model.log.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -48,7 +46,7 @@ public class FileUtil {
             if (renameTo != null) {
                 File conflictFile = map.put(renameTo, file);
                 if (conflictFile == null) {
-                    Files.copy(file.toPath(), Path.of(destDir.getAbsolutePath(), renameTo));
+                    IOUtil.copyFile(file, new File(destDir, renameTo));
                 } else {
                     Logger.getDefault().e("%s has conflict mapping: %s, %s", renameTo, conflictFile, file);
                 }
