@@ -89,7 +89,7 @@ public abstract class CacheResourceAccess<K, R, O, H extends AccessHook<R>> {
             }
             taskCache.add(new TaskEntity(key, option, hook));
         } else {
-            Logger.getDefault().e("cache task is disable.");
+            Logger.getDefault().ee("cache task is disable.");
         }
     }
 

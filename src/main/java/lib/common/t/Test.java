@@ -56,17 +56,17 @@ public class Test {
         System.out.println(0x8f);
 
 //        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
-        Logger.getDefault().v("verbose");
+        Logger.getDefault().vv("verbose");
         Logger.getDefault().d("debug");
-        Logger.getDefault().i("info");
-        Logger.getDefault().w("warn");
-        Logger.getDefault().e("error");
+        Logger.getDefault().ii("info");
+        Logger.getDefault().ww("warn");
+        Logger.getDefault().ee("error");
 
         String temp = "20℃~26℃";
         System.out.println(new StringBuilder().append(temp, 0, temp.length()));
     }
 
     private static void log(String msg, Object... args) {
-        Logger.getDefault().log(1, LogLevel.Verbose, msg, args);
+        Logger.getDefault().format(1, LogLevel.Verbose, msg, args);
     }
 }

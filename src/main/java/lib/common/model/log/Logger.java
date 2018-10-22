@@ -61,16 +61,35 @@ public class Logger {
      *
      * @param encapsulationLayerCount 日志打点处距离此方法中间封装的方法层数。
      * @param level
-     * @param msg
+     * @param format
      * @param args
      */
-    public void log(int encapsulationLayerCount, LogLevel level, String msg, Object... args) {
+    public void format(int encapsulationLayerCount, LogLevel level, String format, Object... args) {
+        doLog(encapsulationLayerCount + 1, level, args.length == 0 ? format : String.format(format, args));
+    }
+
+    /**
+     * 对于日志方法先封装再使用的场景需要调用此方法输出日志，否则定位不到日志打点处。
+     *
+     * @param encapsulationLayerCount 日志打点处距离此方法中间封装的方法层数。
+     * @param level
+     * @param parts
+     */
+    public void concat(int encapsulationLayerCount, LogLevel level, Object... parts) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Object part : parts) {
+            stringBuilder.append(part);
+        }
+        doLog(encapsulationLayerCount + 1, level, stringBuilder.toString());
+    }
+
+    private void doLog(int encapsulationLayerCount, LogLevel level, String log) {
         if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
             for (LogHandler handler : handlers) {
                 if (handler.getLevel() == null || handler.getLevel().test(level)) {
                     if (record == null) {
-                        record = LogRecord.get(tag, level, args.length == 0 ? msg : String.format(msg, args), encapsulationLayerCount);
+                        record = LogRecord.get(tag, level, log, encapsulationLayerCount);
                     }
                     LogFormatter formatter = handler.getFormatter();
                     if (formatter == null) {
@@ -87,48 +106,52 @@ public class Logger {
         }
     }
 
-    public void log(LogLevel level, String msg, Object... args) {
-        log(1, level, msg, args);
+    public void format(LogLevel level, String msg, Object... args) {
+        format(1, level, msg, args);
+    }
+
+    public void concat(LogLevel level, Object... parts) {
+        concat(1, level, parts);
     }
 
     public void v(String msg, Object... args) {
-        log(1, LogLevel.Verbose, msg, args);
+        format(1, LogLevel.Verbose, msg, args);
     }
 
-    public void v(Object info) {
-        log(1, LogLevel.Verbose, info == null ? null : info.toString());
+    public void vv(Object... parts) {
+        concat(1, LogLevel.Verbose, parts);
     }
 
     public void d(String msg, Object... args) {
-        log(1, LogLevel.Debug, msg, args);
+        format(1, LogLevel.Debug, msg, args);
     }
 
-    public void d(Object info) {
-        log(1, LogLevel.Debug, info == null ? null : info.toString());
+    public void dd(Object... parts) {
+        concat(1, LogLevel.Debug, parts);
     }
 
     public void i(String msg, Object... args) {
-        log(1, LogLevel.Info, msg, args);
+        format(1, LogLevel.Info, msg, args);
     }
 
-    public void i(Object info) {
-        log(1, LogLevel.Info, info == null ? null : info.toString());
+    public void ii(Object... parts) {
+        concat(1, LogLevel.Info, parts);
     }
 
     public void w(String msg, Object... args) {
-        log(1, LogLevel.Warn, msg, args);
+        format(1, LogLevel.Warn, msg, args);
     }
 
-    public void w(Object info) {
-        log(1, LogLevel.Warn, info == null ? null : info.toString());
+    public void ww(Object... parts) {
+        concat(1, LogLevel.Warn, parts);
     }
 
     public void e(String msg, Object... args) {
-        log(1, LogLevel.Error, msg, args);
+        format(1, LogLevel.Error, msg, args);
     }
 
-    public void e(Object info) {
-        log(1, LogLevel.Error, info == null ? null : info.toString());
+    public void ee(Object... parts) {
+        concat(1, LogLevel.Error, parts);
     }
 
     public void catches(Exception e) {
