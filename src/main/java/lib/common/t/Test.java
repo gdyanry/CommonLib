@@ -3,14 +3,11 @@ package lib.common.t;
 import lib.common.model.log.ConsoleHandler;
 import lib.common.model.log.LogLevel;
 import lib.common.model.log.Logger;
-import lib.common.model.log.SimpleFormatterBuilder;
-import lib.common.util.HexUtil;
+import lib.common.model.log.SimpleFormatter;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,24 +21,12 @@ import java.util.regex.Pattern;
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatterBuilder().method(10).build(), null));
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().date().time().method(10), null));
 
-        System.out.println("\033[0;35m字符串\033[5m");
         log(IOUtil.getAppRelativeFile("").getAbsolutePath());
-        System.out.println();
-        System.out.println(Integer.parseInt("02"));
 
         System.out.println(49 >> 2);
-        System.out.println(Math.pow(2, 6));
         log(StringUtil.generateFixedLengthNumber(new Random(), 10));
-
-        System.out.println(1 << 2);
-
-        try {
-            log(HexUtil.charsetHex("中文", "utf-8", 20));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
         System.out.println(~1);
         System.out.println(~0);
@@ -77,14 +62,11 @@ public class Test {
         Logger.getDefault().w("warn");
         Logger.getDefault().e("error");
 
-        for (String s : "20℃~26℃".split("\\D+")) {
-            System.out.println(": " + s);
-        }
-
-        System.out.println(Path.of("abcd", "efg"));
+        String temp = "20℃~26℃";
+        System.out.println(new StringBuilder().append(temp, 0, temp.length()));
     }
 
     private static void log(String msg, Object... args) {
-        Logger.getDefault().log(1, LogLevel.Debug, msg, args);
+        Logger.getDefault().log(1, LogLevel.Verbose, msg, args);
     }
 }

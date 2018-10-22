@@ -17,15 +17,15 @@ import java.util.TimerTask;
  * <p>
  * 2014年7月7日下午3:33:11
  */
-public abstract class TimerObjectPool<E> {
+public abstract class TimedObjectPool<E> {
     private LinkedList<E> container;
     private LinkedList<Long> timeRecords;
 
-    public TimerObjectPool(int timeoutSeconds) {
+    public TimedObjectPool(int minTimeoutSecond) {
         super();
         container = new LinkedList<>();
         timeRecords = new LinkedList<>();
-        long timeout = timeoutSeconds * 1000;
+        long timeout = minTimeoutSecond * 1000;
         Singletons.get(DaemonTimer.class).schedule(new TimerTask() {
             @Override
             public void run() {

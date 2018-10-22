@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package lib.common.model.cache;
 
@@ -9,23 +9,23 @@ import java.util.TimerTask;
 
 /**
  * A map based cache with timeout mechanism.
- * 
+ *
  * @author yanry
  *
  *         2014年10月11日 上午11:18:00
  */
-public class TimerCache<V> {
+public class TimedCache<V> {
 	private HashMap<Object, V> cache;
 	private int timeout;
     private HashMap<Object, TimerTask> tasks;
     private Timer timer;
 	private CacheTimeoutListener<V> listener;
 
-	public TimerCache(int timeoutSecond, Timer timer) {
+    public TimedCache(int timeoutSecond, Timer timer) {
 		this(timeoutSecond, timer, null);
 	}
 
-	public TimerCache(int timeoutSecond, Timer timer, TimerCache<V> cache) {
+    public TimedCache(int timeoutSecond, Timer timer, TimedCache<V> cache) {
 		if (cache == null) {
 			this.cache = new HashMap<>();
 		} else {
@@ -41,7 +41,7 @@ public class TimerCache<V> {
 	}
 
 	/**
-	 * 
+     *
 	 * @return timeout in millisecond
 	 */
 	public int getTimeoutMilli() {

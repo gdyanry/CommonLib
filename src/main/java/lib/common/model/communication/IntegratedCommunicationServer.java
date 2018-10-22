@@ -4,8 +4,8 @@
 package lib.common.model.communication;
 
 import lib.common.model.PendingOperationManager;
-import lib.common.model.cache.TimerCache;
-import lib.common.model.cache.TimerObjectPool;
+import lib.common.model.cache.TimedCache;
+import lib.common.model.cache.TimedObjectPool;
 import lib.common.model.communication.entity.MemoryCommunicationCaches;
 import lib.common.model.communication.entity.RequestId;
 import lib.common.model.communication.interfaces.CommunicationCaches;
@@ -30,9 +30,9 @@ import java.util.*;
 public abstract class IntegratedCommunicationServer<U> {
     private PendingOperationManager<JSONObject> pom;
     private Map<String, CommunicationHandler> chCache;
-    private TimerObjectPool<CommunicationHandler> anonymousCHs;
+    private TimedObjectPool<CommunicationHandler> anonymousCHs;
     private Map<String, JSONObject> requestCache;
-    private TimerCache<byte[]> binaryCache;
+    private TimedCache<byte[]> binaryCache;
     private Map<String, ServerTagHandler<U>> handlers;
 
     /**
@@ -48,9 +48,9 @@ public abstract class IntegratedCommunicationServer<U> {
         chCache = new HashMap<>();
         requestCache = new HashMap<>();
         if (binaryTimeoutMinute > 0) {
-            binaryCache = new TimerCache<>(binaryTimeoutMinute * 60, timer);
+            binaryCache = new TimedCache<>(binaryTimeoutMinute * 60, timer);
         }
-        anonymousCHs = new TimerObjectPool<CommunicationHandler>(idleAnonymousCommunicationHandlerKeepAliveSeconds) {
+        anonymousCHs = new TimedObjectPool<CommunicationHandler>(idleAnonymousCommunicationHandlerKeepAliveSeconds) {
             @Override
             protected CommunicationHandler createInstance() {
                 return new AnonymousCommunicationHandler();

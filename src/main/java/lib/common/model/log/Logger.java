@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Logger {
     private static HashMap<Object, Logger> instances = new HashMap<>();
-    private final static LogFormatter defaultFormatter = new SimpleFormatterBuilder().build();
+    private final static LogFormatter defaultFormatter = new SimpleFormatter();
     private static Object defaultTag;
     private Object tag;
     private LogLevel level;
@@ -76,7 +76,9 @@ public class Logger {
                     if (formatter == null) {
                         formatter = defaultFormatter;
                     }
-                    handler.handleLog(level, tag, formatter.format(record));
+                    FormattedLog formattedLog = formatter.format(record);
+                    handler.handleLog(level, tag, formattedLog.getLog(), formattedLog.getMessageStart(), formattedLog.getMessageEnd());
+                    formattedLog.recycle();
                 }
             }
             if (record != null) {
