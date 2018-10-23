@@ -1,16 +1,19 @@
 package lib.common.util.object;
 
 @Presentable
-public abstract class EqualsObject {
-    @HashAndEquals
+public class HandyObject {
     @Override
     public final int hashCode() {
         return ObjectUtil.hashCode(this);
     }
 
-    @HashAndEquals
     @Override
     public final boolean equals(Object obj) {
         return ObjectUtil.equals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtil.getPresentation(this, "@").toString();
     }
 }
