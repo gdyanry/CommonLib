@@ -54,14 +54,14 @@ public class ObjectUtil {
 
     /**
      * @param object
-     * @param typeSymbol
      * @return the return object is one of these types: Boolean, Double, Integer, JSONArray, JSONObject, Long, String, or the JSONObject.NULL object.
      */
-    public static Object getPresentation(Object object, String typeSymbol) {
+    public static Object getPresentation(Object object) {
         if (object == null) {
             return null;
         }
         Class<?> type = object.getClass();
+        String typeSymbol = "@";
         if (type.isAnnotationPresent(Presentable.class)) {
             JSONObject jsonObject = new JSONObject().put(typeSymbol, StringUtil.getClassName(object));
             for (Method method : type.getMethods()) {
@@ -70,7 +70,7 @@ public class ObjectUtil {
                     try {
                         Object value = method.invoke(object);
                         if (value != null) {
-                            jsonObject.put(key, getPresentation(value, typeSymbol));
+                            jsonObject.put(key, getPresentation(value));
                         }
                     } catch (ReflectiveOperationException e) {
                         Logger.getDefault().catches(e);
@@ -86,21 +86,21 @@ public class ObjectUtil {
             JSONArray jsonArray = new JSONArray();
             int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
-                jsonArray.put(getPresentation(Array.get(object, i), typeSymbol));
+                jsonArray.put(getPresentation(Array.get(object, i)));
             }
             return jsonArray;
         } else if (object instanceof Collection) {
             JSONArray jsonArray = new JSONArray();
             Collection list = (Collection) object;
             for (Object item : list) {
-                jsonArray.put(getPresentation(item, typeSymbol));
+                jsonArray.put(getPresentation(item));
             }
             return jsonArray;
         } else if (object instanceof Map) {
             JSONArray jsonArray = new JSONArray();
             Map map = (Map) object;
             for (Object key : map.keySet()) {
-                jsonArray.put(new JSONArray().put(getPresentation(key, typeSymbol)).put(getPresentation(map.get(key), typeSymbol)));
+                jsonArray.put(new JSONArray().put(getPresentation(key)).put(getPresentation(map.get(key))));
             }
             return jsonArray;
         }

@@ -14,6 +14,6 @@ public class HandyObject {
 
     @Override
     public String toString() {
-        return ObjectUtil.getPresentation(this, "@").toString();
+        return ObjectUtil.getPresentation(this).toString();
     }
 }
