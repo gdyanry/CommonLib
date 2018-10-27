@@ -18,7 +18,7 @@ public class ObjectUtil {
         ArrayList<Object> fields = new ArrayList<>();
         fields.add(type);
         for (Method method : type.getMethods()) {
-            if (method.isAnnotationPresent(HashAndEquals.class)) {
+            if (method.isAnnotationPresent(EqualsPart.class)) {
                 try {
                     fields.add(method.invoke(object));
                 } catch (ReflectiveOperationException e) {
@@ -38,7 +38,7 @@ public class ObjectUtil {
             return false;
         }
         for (Method method : type.getMethods()) {
-            if (method.isAnnotationPresent(HashAndEquals.class)) {
+            if (method.isAnnotationPresent(EqualsPart.class)) {
                 try {
                     if (!Objects.equals(method.invoke(object), method.invoke(that))) {
                         return false;
@@ -62,10 +62,10 @@ public class ObjectUtil {
         }
         Class<?> type = object.getClass();
         String typeSymbol = "@";
-        if (type.isAnnotationPresent(Presentable.class)) {
+        if (type.isAnnotationPresent(Visible.class)) {
             JSONObject jsonObject = new JSONObject().put(typeSymbol, StringUtil.getClassName(object));
             for (Method method : type.getMethods()) {
-                if (method.isAnnotationPresent(Presentable.class)) {
+                if (method.isAnnotationPresent(Visible.class)) {
                     String key = StringUtil.setFirstLetterCase(method.getName().replaceFirst("^get", ""), false);
                     try {
                         Object value = method.invoke(object);

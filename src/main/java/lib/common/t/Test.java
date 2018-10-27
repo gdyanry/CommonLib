@@ -8,6 +8,7 @@ import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,13 +58,19 @@ public class Test {
 
 //        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
         Logger.getDefault().vv("verbose");
-        Logger.getDefault().d("debug");
+        Logger.getDefault().dd("debug");
         Logger.getDefault().ii("info");
         Logger.getDefault().ww("warn");
         Logger.getDefault().ee("error");
 
-        String temp = "20℃~26℃";
-        System.out.println(new StringBuilder().append(temp, 0, temp.length()));
+        String input = "我哈哈哈哈手足口病";
+        byte[] bytes = input.getBytes("utf-8");
+        byte[] target = new byte[bytes.length - 1];
+        byte[] sub = Arrays.copyOf(bytes, 7);
+        System.arraycopy(bytes, 1, target, 0, bytes.length - 1);
+        System.out.println(Arrays.toString(target));
+        System.out.println(new String(target, "utf-8"));
+        System.out.println(new String(sub, "utf-8"));
     }
 
     private static void log(String msg, Object... args) {

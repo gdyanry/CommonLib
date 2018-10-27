@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package lib.common.util;
 
@@ -10,26 +10,27 @@ import java.lang.reflect.Modifier;
 
 /**
  * @author yanry
- *
- *         2016年2月5日
+ * <p>
+ * 2016年2月5日
  */
 public class ReflectionUtil {
 
-	/**
-	 * Initialize all "public static String" fields's value as the field names.
-	 * 
-	 * @param c
-	 */
-	public static void initStaticStringFields(Class<?> c) {
-		for (Field f : c.getFields()) {
-			if (f.getType().equals(String.class) && Modifier.isPublic(f.getModifiers())
-					&& Modifier.isStatic(f.getModifiers())) {
-				try {
-					f.set(null, f.getName());
-				} catch (Exception e) {
+    /**
+     * Initialize all "public static String" fields's value as the field names.
+     * 此方法可以在目标类的静态代码块中调用并且不受代码混淆影响。
+     *
+     * @param c
+     */
+    public static void initStaticStringFields(Class<?> c) {
+        for (Field f : c.getFields()) {
+            if (f.getType().equals(String.class) && Modifier.isPublic(f.getModifiers())
+                    && Modifier.isStatic(f.getModifiers())) {
+                try {
+                    f.set(null, f.getName());
+                } catch (Exception e) {
                     Logger.getDefault().catches(e);
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 }
