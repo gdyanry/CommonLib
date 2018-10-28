@@ -2,7 +2,7 @@ package lib.common.model.log;
 
 import lib.common.model.cache.TimedObjectPool;
 
-class FormattedLog {
+public class FormattedLog {
     private static Pool pool = new Pool();
     private String log;
     private int messageStart;

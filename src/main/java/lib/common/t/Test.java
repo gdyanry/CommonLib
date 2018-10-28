@@ -8,7 +8,8 @@ import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,14 +64,8 @@ public class Test {
         Logger.getDefault().ww("warn");
         Logger.getDefault().ee("error");
 
-        String input = "我哈哈哈哈手足口病";
-        byte[] bytes = input.getBytes("utf-8");
-        byte[] target = new byte[bytes.length - 1];
-        byte[] sub = Arrays.copyOf(bytes, 7);
-        System.arraycopy(bytes, 1, target, 0, bytes.length - 1);
-        System.out.println(Arrays.toString(target));
-        System.out.println(new String(target, "utf-8"));
-        System.out.println(new String(sub, "utf-8"));
+        Calendar calendar = GregorianCalendar.getInstance();
+        System.out.println(calendar.get(Calendar.DAY_OF_YEAR));
     }
 
     private static void log(String msg, Object... args) {

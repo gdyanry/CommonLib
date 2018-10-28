@@ -40,7 +40,7 @@ public class ObjectUtil {
         for (Method method : type.getMethods()) {
             if (method.isAnnotationPresent(EqualsPart.class)) {
                 try {
-                    if (!Objects.equals(method.invoke(object), method.invoke(that))) {
+                    if (!checkEquals(method.invoke(object), method.invoke(that))) {
                         return false;
                     }
                 } catch (ReflectiveOperationException e) {
@@ -50,6 +50,22 @@ public class ObjectUtil {
             }
         }
         return true;
+    }
+
+    private static boolean checkEquals(Object value1, Object value2) {
+        if (value1.getClass().isArray() && value2.getClass().isArray()) {
+            int length = Array.getLength(value1);
+            if (length == Array.getLength(value2)) {
+                for (int i = 0; i < length; i++) {
+                    if (!checkEquals(Array.get(value1, i), Array.get(value2, i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+        return Objects.equals(value1, value2);
     }
 
     /**
