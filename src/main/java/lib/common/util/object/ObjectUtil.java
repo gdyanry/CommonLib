@@ -86,7 +86,7 @@ public class ObjectUtil {
      */
     public static Object getPresentation(Object object) {
         if (object == null) {
-            return null;
+            return JSONObject.NULL;
         }
         Class<?> type = object.getClass();
         String typeSymbol = "@";
