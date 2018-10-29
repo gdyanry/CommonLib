@@ -53,7 +53,7 @@ public class ObjectUtil {
     }
 
     private static boolean checkEquals(Object value1, Object value2) {
-        if (value1.getClass().isArray() && value2.getClass().isArray()) {
+        if (value1 != null && value2 != null && value1.getClass().isArray() && value2.getClass().isArray()) {
             int length = Array.getLength(value1);
             if (length == Array.getLength(value2)) {
                 for (int i = 0; i < length; i++) {
