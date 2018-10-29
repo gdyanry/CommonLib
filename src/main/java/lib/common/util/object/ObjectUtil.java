@@ -14,6 +14,9 @@ import java.util.Objects;
 
 public class ObjectUtil {
     public static int hashCode(Object object) {
+        if (object == null) {
+            return 0;
+        }
         Class<?> type = object.getClass();
         ArrayList<Object> fields = new ArrayList<>();
         fields.add(type);
@@ -33,8 +36,11 @@ public class ObjectUtil {
         if (that == object) {
             return true;
         }
+        if (object == null || that == null) {
+            return false;
+        }
         Class<?> type = object.getClass();
-        if (that == null || !that.getClass().equals(type)) {
+        if (!that.getClass().equals(type)) {
             return false;
         }
         for (Method method : type.getMethods()) {
