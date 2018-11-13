@@ -44,6 +44,6 @@ public class HexUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(String.format("%02x", Math.round(0xff * 0.80f)));
+		System.out.println(String.format("%02x", Math.round(0xff * 0.98f)));
 	}
 }

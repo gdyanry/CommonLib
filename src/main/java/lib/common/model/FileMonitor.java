@@ -37,7 +37,7 @@ public class FileMonitor implements Runnable {
     /**
      * For directory, all events are related to its children! Create and delete
      * event of an item will cause modify event of its parent folder, and this
-     * modify event can be trigger on folder' parent folder; imagine file system
+     * modify event can be triggered on current folder's parent folder; imagine file system
      * hierarchy as linked list structure may help understand this. Monitor the
      * same item more than once is allowed and has little performance effect.
      *
@@ -46,10 +46,10 @@ public class FileMonitor implements Runnable {
      */
     public void monitor(WatchItem item) throws IOException {
         if (item.p == null) {
-            Logger.getDefault().e("%s does not exist!", item.f.getAbsoluteFile());
+            Logger.getDefault().ee(item.f.getAbsoluteFile(), " does not exist!");
             return;
         }
-        Logger.getDefault().d("monitor: %s", item);
+        Logger.getDefault().dd("monitor: ", item);
         Set<WatchItem> items = watchItems.get(item.p);
         if (items == null) {
             items = new HashSet<>();
@@ -89,7 +89,7 @@ public class FileMonitor implements Runnable {
 
     /**
      * @param item this watch item doesn't have to be monitored before, for
-     *             example, a child file who's parent have been monitored can be
+     *             example, a file whose folder have been monitored can be
      *             unmonitored alone.
      * @throws IOException
      */
@@ -100,7 +100,7 @@ public class FileMonitor implements Runnable {
                 Set<Kind<?>> before = new HashSet<WatchEvent.Kind<?>>();
                 before.addAll(getKinds(items));
                 if (items.remove(item)) {
-                    Logger.getDefault().d("un-monitor: %s", item);
+                    Logger.getDefault().dd("un-monitor: ", item);
                     Set<Kind<?>> after = getKinds(items);
                     if (!after.containsAll(before)) {
                         // kinds have been decreased
@@ -137,7 +137,7 @@ public class FileMonitor implements Runnable {
                             if (item.f.getName().equals(e.context().toString()) || item.f.toPath().equals(key.watchable())) {
                                 for (Kind<?> k : item.kinds) {
                                     if (k == e.kind() && (item.f.exists() || k.equals(StandardWatchEventKinds.ENTRY_DELETE))) {
-                                        Logger.getDefault().d("%n  path: %s%n  event: %s - %s%n  item: %s", key.watchable(), e.context(), e.kind().name(), item);
+                                        Logger.getDefault().dd("event: ", key.watchable(), ' ', e.kind().name());
                                         item.onEvent(e);
                                         break;
                                     }
@@ -147,10 +147,10 @@ public class FileMonitor implements Runnable {
                     }
                 }
                 key.reset();
-            } catch (InterruptedException e) {
-                Logger.getDefault().catches(e);
             } catch (ClosedWatchServiceException e) {
                 Logger.getDefault().d("exit.");
+            } catch (Exception e) {
+                Logger.getDefault().catches(e);
             }
         }
     }
@@ -178,6 +178,6 @@ public class FileMonitor implements Runnable {
             return String.format("%s %s", f.getName(), Arrays.toString(kinds));
         }
 
-        protected abstract void onEvent(WatchEvent<?> e);
+        protected abstract void onEvent(WatchEvent<?> e) throws Exception;
     }
 }

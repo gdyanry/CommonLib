@@ -2,6 +2,9 @@ package lib.common.t;
 
 import lib.common.model.FileMonitor;
 import lib.common.model.FileMonitor.WatchItem;
+import lib.common.model.log.ConsoleHandler;
+import lib.common.model.log.Logger;
+import lib.common.model.log.SimpleFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,15 +36,16 @@ public class FileMonitorTest {
         // // TODO Auto-generated catch block
         // e.printStackTrace();
         // }
-
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread(), null));
         try {
             FileMonitor fcm = new FileMonitor();
-            fcm.monitor(new WatchItem(new File("e:/aa/"), StandardWatchEventKinds.ENTRY_MODIFY,
+            fcm.monitor(new WatchItem(new File("e:/aa/cc.txt"), StandardWatchEventKinds.ENTRY_MODIFY,
                     StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_CREATE,
                     StandardWatchEventKinds.OVERFLOW) {
 
                 @Override
                 protected void onEvent(WatchEvent<?> e) {
+                    Logger.getDefault().dd(e.kind(), ' ', e.context(), ' ', e.count());
                 }
             });
             new Thread(fcm).start();

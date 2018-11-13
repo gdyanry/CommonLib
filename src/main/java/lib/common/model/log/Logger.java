@@ -5,8 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Logger {
-    private static HashMap<Object, Logger> instances = new HashMap<>();
+    private final static HashMap<Object, Logger> instances = new HashMap<>();
     private final static LogFormatter defaultFormatter = new SimpleFormatter();
+    private final static ConsoleHandler defaultHandler = new ConsoleHandler(null, null);
     private static Object defaultTag;
     private Object tag;
     private LogLevel level;
@@ -86,24 +87,33 @@ public class Logger {
     private void doLog(int encapsulationLayerCount, LogLevel level, String log) {
         if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
-            for (LogHandler handler : handlers) {
-                if (handler.getLevel() == null || handler.getLevel().test(level)) {
-                    if (record == null) {
-                        record = LogRecord.get(tag, level, log, encapsulationLayerCount);
-                    }
-                    LogFormatter formatter = handler.getFormatter();
-                    if (formatter == null) {
-                        formatter = defaultFormatter;
-                    }
-                    FormattedLog formattedLog = formatter.format(record);
-                    handler.handleLog(level, tag, formattedLog.getLog(), formattedLog.getMessageStart(), formattedLog.getMessageEnd());
-                    formattedLog.recycle();
+            if (handlers.isEmpty()) {
+                handleLog(encapsulationLayerCount, level, log, null, defaultHandler);
+            } else {
+                for (LogHandler handler : handlers) {
+                    record = handleLog(encapsulationLayerCount, level, log, record, handler);
                 }
             }
             if (record != null) {
                 record.recycle();
             }
         }
+    }
+
+    private LogRecord handleLog(int encapsulationLayerCount, LogLevel level, String log, LogRecord record, LogHandler handler) {
+        if (handler.getLevel() == null || handler.getLevel().test(level)) {
+            if (record == null) {
+                record = LogRecord.get(tag, level, log, encapsulationLayerCount + 1);
+            }
+            LogFormatter formatter = handler.getFormatter();
+            if (formatter == null) {
+                formatter = defaultFormatter;
+            }
+            FormattedLog formattedLog = formatter.format(record);
+            handler.handleLog(level, tag, formattedLog.getLog(), formattedLog.getMessageStart(), formattedLog.getMessageEnd());
+            formattedLog.recycle();
+        }
+        return record;
     }
 
     public void format(LogLevel level, String msg, Object... args) {
