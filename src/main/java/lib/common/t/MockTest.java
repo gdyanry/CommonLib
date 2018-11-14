@@ -15,13 +15,15 @@ public class MockTest extends MockAsMap {
     private Executor executor;
 
     public MockTest() throws IOException {
-        super("e:/aa/cc.txt", "gbk", System.lineSeparator(), "=");
+        super("e:/aa/alarm.txt", "gbk", System.lineSeparator(), "=");
         executor = Executors.newCachedThreadPool();
     }
 
     public static void main(String... args) throws IOException {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread().sequenceNumber(), null));
-        new MockTest().start();
+        MockTest mockTest = new MockTest();
+        mockTest.monitor();
+        mockTest.loadFile();
     }
 
     @Override

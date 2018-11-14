@@ -10,37 +10,38 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.util.concurrent.Executor;
 
-public abstract class FileMock extends FileMonitor implements Executor {
+public abstract class FileMock implements Executor {
+    private File file;
     private Runnable loadFile;
 
-    public FileMock(String filePath, String charset) throws IOException {
+    public FileMock(String filePath, String charset) {
         super();
-        File file = new File(filePath);
-        monitor(new WatchItem(file, StandardWatchEventKinds.ENTRY_MODIFY) {
-            @Override
-            protected void onEvent(WatchEvent<?> e) throws IOException {
-                execute(loadFile);
-            }
-        });
+        file = new File(filePath);
         loadFile = () -> {
             try {
-                loadFile(file, charset);
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                parseContent(IOUtil.fileToString(file, charset));
             } catch (IOException e) {
                 Logger.getDefault().catches(e);
             }
         };
     }
 
-    public void start() {
+    public void loadFile() {
         execute(loadFile);
-        execute(this);
     }
 
-    private void loadFile(File file, String charset) throws IOException {
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        parseContent(IOUtil.fileToString(file, charset));
+    public void monitor() throws IOException {
+        FileMonitor fileMonitor = new FileMonitor();
+        fileMonitor.monitor(new FileMonitor.WatchItem(file, StandardWatchEventKinds.ENTRY_MODIFY) {
+            @Override
+            protected void onEvent(WatchEvent<?> e) {
+                execute(loadFile);
+            }
+        });
+        execute(fileMonitor);
     }
 
     protected abstract void parseContent(String fileContent);
