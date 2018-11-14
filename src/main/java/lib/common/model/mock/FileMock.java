@@ -37,6 +37,9 @@ public abstract class FileMock extends FileMonitor implements Executor {
     }
 
     private void loadFile(File file, String charset) throws IOException {
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
         parseContent(IOUtil.fileToString(file, charset));
     }
 

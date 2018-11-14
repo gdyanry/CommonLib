@@ -18,7 +18,7 @@ public abstract class MockAsMap extends FileMock {
     }
 
     @Override
-    protected void parseContent(String fileContent) {
+    protected synchronized void parseContent(String fileContent) {
         map.clear();
         String[] entries = fileContent.split(entrySplitter);
         for (String entry : entries) {

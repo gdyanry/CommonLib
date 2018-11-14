@@ -20,7 +20,7 @@ public class MockTest extends MockAsMap {
     }
 
     public static void main(String... args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread().method(3), null));
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread().sequenceNumber(), null));
         new MockTest().start();
     }
 
