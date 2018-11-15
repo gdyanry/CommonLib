@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 public class MockTest extends MockAsMap {
     private Executor executor;
 
-    public MockTest() throws IOException {
-        super("e:/aa/alarm.txt", "gbk", System.lineSeparator(), "=");
+    public MockTest() {
+        super("e:/aa/alarm.txt", "utf-8", System.lineSeparator(), "=");
         executor = Executors.newCachedThreadPool();
     }
 

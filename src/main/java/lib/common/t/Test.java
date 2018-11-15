@@ -1,6 +1,5 @@
 package lib.common.t;
 
-import lib.common.model.json.JSONObject;
 import lib.common.model.log.ConsoleHandler;
 import lib.common.model.log.LogLevel;
 import lib.common.model.log.Logger;
@@ -9,6 +8,7 @@ import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,7 +69,7 @@ public class Test {
             concat(matcher.group());
         }
 
-        concat(new JSONObject(StringUtil.formatJson("{\"@\":\"Select\",\"options\":[{\"@\":\"NoWindow\"},{\"@\":\"EditPage\"},{\"@\":\"FilterPage\"},{\"@\":\"MainPage\"},{\"@\":\"DetailPage\"}],\"property\":{\"@\":\"CurrentWindow\"}}")));
+        System.out.println(Arrays.toString("eess\naaa".split("\r\n|\n")));
     }
 
     private static void format(String msg, Object... args) {

@@ -2,7 +2,6 @@ package lib.common.model.mock;
 
 import lib.common.model.log.Logger;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class MockAsMap extends FileMock {
@@ -10,7 +9,7 @@ public abstract class MockAsMap extends FileMock {
     private String keyValueSplitter;
     private HashMap<String, String> map;
 
-    public MockAsMap(String filePath, String charset, String entrySplitter, String keyValueSplitter) throws IOException {
+    public MockAsMap(String filePath, String charset, String entrySplitter, String keyValueSplitter) {
         super(filePath, charset);
         this.entrySplitter = entrySplitter;
         this.keyValueSplitter = keyValueSplitter;
