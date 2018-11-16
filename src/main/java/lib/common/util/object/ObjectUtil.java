@@ -96,10 +96,7 @@ public class ObjectUtil {
                 if (method.isAnnotationPresent(Visible.class)) {
                     String key = StringUtil.setFirstLetterCase(method.getName().replaceFirst("^get", ""), false);
                     try {
-                        Object value = method.invoke(object);
-                        if (value != null) {
-                            jsonObject.put(key, getPresentation(value));
-                        }
+                        jsonObject.put(key, getPresentation(method.invoke(object)));
                     } catch (ReflectiveOperationException e) {
                         Logger.getDefault().catches(e);
                     }
