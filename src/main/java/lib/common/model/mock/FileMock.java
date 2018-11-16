@@ -22,7 +22,9 @@ public abstract class FileMock implements Executor {
                 if (!file.getParentFile().exists()) {
                     file.getParentFile().mkdirs();
                 }
-                parseContent(IOUtil.fileToString(file, charset));
+                if (file.exists()) {
+                    parseContent(IOUtil.fileToString(file, charset));
+                }
             } catch (IOException e) {
                 Logger.getDefault().catches(e);
             }
