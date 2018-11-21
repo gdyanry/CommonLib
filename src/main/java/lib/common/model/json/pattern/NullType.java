@@ -24,4 +24,9 @@ public class NullType implements JsonType {
         }
         return obj instanceof JsonType;
     }
+
+    @Override
+    public String toJSONString() {
+        return "Null";
+    }
 }

@@ -5,7 +5,6 @@ import lib.common.model.json.JSONObject;
 import lib.common.model.log.Logger;
 import lib.common.util.object.EqualsPart;
 import lib.common.util.object.HandyObject;
-import lib.common.util.object.Visible;
 
 import java.util.HashMap;
 
@@ -43,9 +42,18 @@ public class JsonPattern extends HandyObject implements JsonType {
         return equals(get(jsonObject));
     }
 
-    @Visible
     @EqualsPart
     public HashMap<String, Object> getMap() {
         return map;
+    }
+
+    @Override
+    public String toString() {
+        return new JSONObject(map).toString();
+    }
+
+    @Override
+    public String toJSONString() {
+        return new JSONObject(map).toString();
     }
 }

@@ -1,4 +1,6 @@
 package lib.common.model.json.pattern;
 
-public interface JsonType {
+import lib.common.model.json.JSONString;
+
+public interface JsonType extends JSONString {
 }
