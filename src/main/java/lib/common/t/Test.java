@@ -1,7 +1,5 @@
 package lib.common.t;
 
-import lib.common.model.json.JSONObject;
-import lib.common.model.json.pattern.JsonPattern;
 import lib.common.model.log.ConsoleHandler;
 import lib.common.model.log.LogLevel;
 import lib.common.model.log.Logger;
@@ -73,8 +71,8 @@ public class Test {
 
         System.out.println(Arrays.toString("eess\naaa".split("\r\n|\n")));
 
-        JSONObject jsonObject = new JSONObject("{\"result\":{\"bot_id\":\"aries_general\",\"bot_meta\":{\"version\":\"1.0.0\",\"type\":\"其他\",\"description\":\"desc\"},\"nlu\":{\"domain\":\"universal_search\",\"intent\":\"kg\",\"sub_intent\":\"\",\"slots\":{}},\"speech\":{\"type\":\"Text\",\"content\":\"岳云鹏饰演贝小贝，吴京饰演梅办法，吴秀波饰演梅前途。\"},\"views\":[{\"type\":\"txt\",\"content\":\"岳云鹏饰演贝小贝，吴京饰演梅办法，吴秀波饰演梅前途。\"}],\"hint\":[\"竹篮打水一场空是什么意思\",\"明日限号多少\",\"鳄鱼的资料\",\"茅台股份价格\",\"刘德华的资料\",\"现在什么时间\",\"3d开奖结果\",\"深圳能源股价多少\",\"北京今天什么尾号限行\",\"荷花的图片\"],\"show_hint\":[{\"cue_words\":[\"竹篮打水一场空是什么意思\",\"明日限号多少\",\"鳄鱼的资料\",\"茅台股份价格\",\"刘德华的资料\",\"现在什么时间\",\"3d开奖结果\",\"深圳能源股价多少\",\"北京今天什么尾号限行\",\"荷花的图片\"]}],\"resources\":[]},\"id\":\"1542782419_009fundxs\",\"logid\":\"fc2f2b21a7204bec985378a07a03ef52\",\"user_id\":\"1fbd9f106ff68b1cfc8f2561fd7e7d55\",\"time\":1542782419,\"cuid\":\"1fbd9f106ff68b1cfc8f2561fd7e7d55\",\"se_query\":\"祖宗19的演员表\",\"msg\":\"ok\",\"status\":0,\"client_msg_id\":\"690d4929-c7f3-4736-b3f1-944928dfe31b\"}");
-        System.out.println(StringUtil.formatJson(JsonPattern.get(jsonObject).toJSONString()));
+        String file = "e:/baike/nlu_patterns_ex.txt";
+        IOUtil.stringToFile(StringUtil.formatJson(IOUtil.fileToString(file, "utf-8")), file, "utf-8", false);
     }
 
     private static void format(String msg, Object... args) {

@@ -5,6 +5,7 @@ import lib.common.model.json.JSONObject;
 import lib.common.model.log.Logger;
 import lib.common.util.object.EqualsPart;
 import lib.common.util.object.HandyObject;
+import lib.common.util.object.Visible;
 
 import java.util.HashMap;
 
@@ -42,6 +43,25 @@ public class JsonPattern extends HandyObject implements JsonType {
         return equals(get(jsonObject));
     }
 
+    public JsonPattern and(JsonPattern pattern) {
+        JsonPattern result = new JsonPattern();
+        for (String key : map.keySet()) {
+            Object val2 = pattern.map.get(key);
+            if (val2 != null) {
+                Object val1 = map.get(key);
+                if (val1.equals(val2)) {
+                    result.map.put(key, val1);
+                } else if (val1 instanceof JsonPattern && val2 instanceof JsonPattern) {
+                    JsonPattern pattern1 = (JsonPattern) val1;
+                    JsonPattern pattern2 = (JsonPattern) val2;
+                    result.map.put(key, pattern1.and(pattern2));
+                }
+            }
+        }
+        return result;
+    }
+
+    @Visible
     @EqualsPart
     public HashMap<String, Object> getMap() {
         return map;

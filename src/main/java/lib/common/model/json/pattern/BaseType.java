@@ -5,6 +5,6 @@ public enum BaseType implements JsonType {
 
     @Override
     public java.lang.String toJSONString() {
-        return name();
+        return null;
     }
 }

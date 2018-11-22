@@ -27,6 +27,11 @@ public class NullType implements JsonType {
 
     @Override
     public String toJSONString() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
         return "Null";
     }
 }

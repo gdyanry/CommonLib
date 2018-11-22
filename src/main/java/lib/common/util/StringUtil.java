@@ -105,7 +105,7 @@ public class StringUtil {
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
             if (level > 0 && newLine == stringBuilder.charAt(stringBuilder.length() - 1)) {
-                appendSpace(stringBuilder, level);
+                appendSpace(stringBuilder, c == '}' || c == ']' ? level - 1 : level);
             }
             switch (c) {
                 case '{':
@@ -122,17 +122,17 @@ public class StringUtil {
                 case '}':
                     if (lastChar != '{') {
                         stringBuilder.append(newLine);
+                        appendSpace(stringBuilder, level - 1);
                     }
                     level--;
-                    appendSpace(stringBuilder, level);
                     stringBuilder.append(c);
                     break;
                 case ']':
                     if (lastChar != '[') {
                         stringBuilder.append(newLine);
+                        appendSpace(stringBuilder, level - 1);
                     }
                     level--;
-                    appendSpace(stringBuilder, level);
                     stringBuilder.append(c);
                     break;
                 case '"':
