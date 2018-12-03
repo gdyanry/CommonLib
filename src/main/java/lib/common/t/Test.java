@@ -6,6 +6,7 @@ import lib.common.model.log.Logger;
 import lib.common.model.log.SimpleFormatter;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
+import lib.common.util.console.ConsoleUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -71,8 +72,7 @@ public class Test {
 
         System.out.println(Arrays.toString("eess\naaa".split("\r\n|\n")));
 
-        String file = "e:/baike/nlu_patterns_ex.txt";
-        IOUtil.stringToFile(StringUtil.formatJson(IOUtil.fileToString(file, "utf-8")), file, "utf-8", false);
+        ConsoleUtil.query(repeatCount -> String.format("%s 请输入数字：", repeatCount), read -> read.matches("^([1-9]\\d*)|0$"));
     }
 
     private static void format(String msg, Object... args) {
