@@ -6,7 +6,7 @@ import lib.common.model.log.Logger;
 import lib.common.model.log.SimpleFormatter;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
-import lib.common.util.console.ConsoleUtil;
+import lib.common.util.console.query.ConsoleQuery;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -72,7 +72,22 @@ public class Test {
 
         System.out.println(Arrays.toString("eess\naaa".split("\r\n|\n")));
 
-        ConsoleUtil.query(repeatCount -> String.format("%s 请输入数字：", repeatCount), read -> read.matches("^([1-9]\\d*)|0$"));
+        new ConsoleQuery<Integer>() {
+            @Override
+            protected void appendPromptInfo(StringBuilder promptBuilder) {
+
+            }
+
+            @Override
+            protected boolean isValid(String input) {
+                return input.matches("^([1-9]\\d*)|0$");
+            }
+
+            @Override
+            protected Integer map(String input) {
+                return Integer.parseInt(input);
+            }
+        }.getValue("请输入数字");
     }
 
     private static void format(String msg, Object... args) {
