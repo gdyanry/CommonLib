@@ -6,10 +6,8 @@ import lib.common.model.log.Logger;
 import lib.common.model.log.SimpleFormatter;
 import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
-import lib.common.util.console.query.ConsoleQuery;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,25 +67,6 @@ public class Test {
         while (matcher.find()) {
             concat(matcher.group());
         }
-
-        System.out.println(Arrays.toString("eess\naaa".split("\r\n|\n")));
-
-        new ConsoleQuery<Integer>() {
-            @Override
-            protected void appendPromptInfo(StringBuilder promptBuilder) {
-
-            }
-
-            @Override
-            protected boolean isValid(String input) {
-                return input.matches("^([1-9]\\d*)|0$");
-            }
-
-            @Override
-            protected Integer map(String input) {
-                return Integer.parseInt(input);
-            }
-        }.getValue("请输入数字");
     }
 
     private static void format(String msg, Object... args) {

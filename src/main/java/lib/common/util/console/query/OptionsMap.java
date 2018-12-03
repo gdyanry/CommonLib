@@ -17,20 +17,17 @@ public class OptionsMap<T> extends ConsoleQuery<T> {
 
     @Override
     protected void appendPromptInfo(StringBuilder promptBuilder) {
-        boolean isFirst = true;
         for (Map.Entry<String, T> entry : mapping.entrySet()) {
             promptBuilder.append(entry.getKey()).append('(').append(entry.getValue()).append(')');
-            if (!isFirst) {
-                promptBuilder.append('/');
-            } else {
-                isFirst = false;
-            }
+        }
+        if (mapping.size() > 0) {
+            promptBuilder.deleteCharAt(promptBuilder.length() - 1);
         }
     }
 
     @Override
     protected boolean isValid(String input) {
-        return mapping.containsValue(input);
+        return mapping.containsKey(input);
     }
 
     @Override
