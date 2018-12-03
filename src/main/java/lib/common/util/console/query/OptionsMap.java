@@ -18,7 +18,7 @@ public class OptionsMap<T> extends ConsoleQuery<T> {
     @Override
     protected void appendPromptInfo(StringBuilder promptBuilder) {
         for (Map.Entry<String, T> entry : mapping.entrySet()) {
-            promptBuilder.append(entry.getKey()).append('(').append(entry.getValue()).append(')');
+            promptBuilder.append(entry.getKey()).append('(').append(entry.getValue()).append(')').append('/');
         }
         if (mapping.size() > 0) {
             promptBuilder.deleteCharAt(promptBuilder.length() - 1);
