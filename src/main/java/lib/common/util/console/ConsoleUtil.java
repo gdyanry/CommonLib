@@ -6,7 +6,6 @@ package lib.common.util.console;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 import java.util.function.Consumer;
 
 /**
@@ -35,21 +34,5 @@ public class ConsoleUtil {
     public static StringBuilder appendStackTrace(StringBuilder builder, StackTraceElement e) {
         return builder.append("    at ").append(e.getClassName()).append('.').append(e.getMethodName())
                 .append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')');
-    }
-
-    public static void query(QueryPrompt prompt, QueryResult result) {
-        Scanner scanner = new Scanner(System.in);
-        int repeatTimes = 0;
-        while (!query(prompt, result, scanner, repeatTimes)) {
-            repeatTimes++;
-        }
-        scanner.close();
-    }
-
-    private static boolean query(QueryPrompt prompt, QueryResult result, Scanner scanner, int repeatTimes) {
-        String hint = prompt.getPrompt(repeatTimes);
-        System.out.println(hint);
-        String read = scanner.nextLine();
-        return result.isValidResult(read);
     }
 }
