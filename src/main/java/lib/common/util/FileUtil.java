@@ -6,7 +6,9 @@ package lib.common.util;
 import lib.common.model.log.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -18,6 +20,18 @@ import java.util.Set;
  * 2015年5月12日 下午1:03:18
  */
 public class FileUtil {
+
+    public static String getMD5(File file) throws IOException, NoSuchAlgorithmException {
+        byte[] buffer = new byte[8192];
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        FileInputStream fis = new FileInputStream(file);
+        int len;
+        while ((len = fis.read(buffer)) != -1) {
+            md.update(buffer, 0, len);
+        }
+        fis.close();
+        return new BigInteger(1, md.digest()).toString(16);
+    }
 
     public static long getDirSize(File rootDir, boolean clear, Set<File> exclusive) {
         long size = 0;
