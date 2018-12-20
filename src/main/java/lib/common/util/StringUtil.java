@@ -24,12 +24,16 @@ public class StringUtil {
         }
     }
 
-    public static String getClassName(Object o) {
-        String c = o.getClass().getSimpleName();
-        if (c.length() == 0) {
-            return o.getClass().getSuperclass().getSimpleName();
+    public static String getSimpleClassName(Object o) {
+        return getSimpleName(o.getClass());
+    }
+
+    public static String getSimpleName(Class<?> type) {
+        String name = type.getSimpleName();
+        if (name.length() == 0) {
+            return getSimpleName(type.getSuperclass());
         }
-        return c;
+        return name;
     }
 
     public static String setFirstLetterCase(String word, boolean upper) {

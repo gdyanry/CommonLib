@@ -3,73 +3,33 @@ package lib.common.util.object;
 import lib.common.model.json.JSONArray;
 import lib.common.model.json.JSONObject;
 import lib.common.model.log.Logger;
+import lib.common.util.HexUtil;
+import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
 public class ObjectUtil {
-    public static int hashCode(Object object) {
-        if (object == null) {
-            return 0;
-        }
-        Class<?> type = object.getClass();
-        ArrayList<Object> fields = new ArrayList<>();
-        fields.add(type);
-        for (Method method : type.getMethods()) {
-            if (method.isAnnotationPresent(EqualsPart.class)) {
-                try {
-                    fields.add(method.invoke(object));
-                } catch (ReflectiveOperationException e) {
-                    Logger.getDefault().catches(e);
-                }
-            }
-        }
-        return Objects.hash(fields.toArray());
-    }
 
-    public static boolean equals(Object object, Object that) {
-        if (that == object) {
+    public static boolean equals(Object a, Object b) {
+        if (a == b) {
             return true;
         }
-        if (object == null || that == null) {
+        if (a == null || b == null) {
             return false;
         }
-        Class<?> type = object.getClass();
-        if (!that.getClass().equals(type)) {
-            return false;
-        }
-        for (Method method : type.getMethods()) {
-            if (method.isAnnotationPresent(EqualsPart.class)) {
-                try {
-                    if (!checkEquals(method.invoke(object), method.invoke(that))) {
-                        return false;
-                    }
-                } catch (ReflectiveOperationException e) {
-                    Logger.getDefault().catches(e);
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private static boolean checkEquals(Object value1, Object value2) {
-        if (value1 == value2) {
-            return true;
-        }
-        if (value1 == null || value2 == null) {
-            return false;
-        }
-        if (value1.getClass().isArray() && value2.getClass().isArray()) {
-            int length = Array.getLength(value1);
-            if (length == Array.getLength(value2)) {
+        if (a.getClass().isArray() && b.getClass().isArray()) {
+            int length = Array.getLength(a);
+            if (length == Array.getLength(b)) {
                 for (int i = 0; i < length; i++) {
-                    if (!checkEquals(Array.get(value1, i), Array.get(value2, i))) {
+                    if (!equals(Array.get(a, i), Array.get(b, i))) {
                         return false;
                     }
                 }
@@ -77,7 +37,7 @@ public class ObjectUtil {
             }
             return false;
         }
-        return Objects.equals(value1, value2);
+        return a.equals(b);
     }
 
     /**
@@ -91,7 +51,7 @@ public class ObjectUtil {
         Class<?> type = object.getClass();
         String typeSymbol = "@";
         if (type.isAnnotationPresent(Visible.class)) {
-            JSONObject jsonObject = new JSONObject().put(typeSymbol, StringUtil.getClassName(object));
+            JSONObject jsonObject = new JSONObject().put(typeSymbol, StringUtil.getSimpleClassName(object));
             for (Method method : type.getMethods()) {
                 if (method.isAnnotationPresent(Visible.class)) {
                     String key = StringUtil.setFirstLetterCase(method.getName().replaceFirst("^get", ""), false);
@@ -130,6 +90,17 @@ public class ObjectUtil {
             return jsonArray;
         }
         return object;
+    }
+
+    public static byte[] getSnapShoot(Object object) throws IOException {
+        if (!(object instanceof Serializable)) {
+            object = object.getClass();
+        }
+        return IOUtil.object2Bytes(object);
+    }
+
+    public static String getSnapShootMd5(Object object) throws IOException, NoSuchAlgorithmException {
+        return HexUtil.bytesToHex(MessageDigest.getInstance("MD5").digest(getSnapShoot(object)));
     }
 }
 

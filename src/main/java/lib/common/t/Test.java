@@ -8,6 +8,7 @@ import lib.common.util.IOUtil;
 import lib.common.util.StringUtil;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class Test {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().date().time().method(10), null));
 
         format(IOUtil.getAppRelativeFile("").getAbsolutePath());
@@ -56,11 +57,6 @@ public class Test {
         concat(0x8f);
 
 //        ConsoleUtil.execCommand(Runtime.getRuntime().exec("cmd /c start cmd.bat", null, new File("d:/")), System.out::println);
-        Logger.getDefault().vv("verbose");
-        Logger.getDefault().dd("debug");
-        Logger.getDefault().ii("info");
-        Logger.getDefault().ww("warn");
-        Logger.getDefault().ee("error");
 
         pattern = Pattern.compile("-?\\d+");
         matcher = pattern.matcher("-2℃~-5℃");
