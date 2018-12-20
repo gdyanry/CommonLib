@@ -59,7 +59,7 @@ public class HandyObject extends VisibleObject implements Externalizable {
                 try {
                     Object invoke = method.invoke(this);
                     if (invoke instanceof Serializable) {
-                        out.writeObject(out);
+                        out.writeObject(invoke);
                     } else {
                         out.writeObject(invoke.getClass());
                     }
