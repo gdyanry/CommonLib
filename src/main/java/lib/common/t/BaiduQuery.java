@@ -22,9 +22,9 @@ import java.util.function.Function;
 
 public class BaiduQuery {
     public static void main(String... args) throws IOException {
-//        parseBaikeNluPatterns();
+        parseBaikeNluPatterns();
 //        parseBaikePatterns();
-        userInteract();
+//        userInteract();
     }
 
     private static void parseBaikeNluPatterns() throws IOException {

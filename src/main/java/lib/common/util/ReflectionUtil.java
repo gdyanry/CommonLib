@@ -7,6 +7,7 @@ import lib.common.model.log.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 /**
  * @author yanry
@@ -32,5 +33,16 @@ public class ReflectionUtil {
                 }
             }
         }
+    }
+
+    public static ArrayList<String> getStaticStringFieldNames(Class<?> c) {
+        ArrayList<String> list = new ArrayList<>();
+        for (Field f : c.getFields()) {
+            if (f.getType().equals(String.class) && Modifier.isPublic(f.getModifiers())
+                    && Modifier.isStatic(f.getModifiers())) {
+                list.add(f.getName());
+            }
+        }
+        return list;
     }
 }

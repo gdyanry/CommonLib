@@ -15,9 +15,10 @@ public class Push {
         System.out.println(resp);
         JSONObject respJson = new JSONObject(resp);
         String token = respJson.getJSONObject("data").getString("accessToken");
-        String dataToPush = "{\"signName\":\"腾讯天气\",\"templateCode\":\"10025\",\"param\":{\"locale\":\"南山区\",\"date\":\"2018-03-05\",\"type\":\"黄色\",\"level\":\"1\"},\"region\":\"\",\"did\":\"test1\",\"custom\":null}";
+        String dataToPush = "{\"signName\":\"腾讯天气\",\"templateCode\":\"10025\",\"param\":{\"locale\":\"深圳市南山区\",\"date\":\"2018-03-05\",\"type\":\"暴雨\",\"level\":\"红色\"},\"region\":\"\",\"did\":\"%s\",\"custom\":null}";
+        String deviceId = "4ea04644d75511875a56edfb760825d2d66914fd";
+        dataToPush = String.format(dataToPush, deviceId);
         HashMap<String, Object> params = new HashMap<>();
-        params.put("alias", "dnum");
         params.put("accessToken", token);
         params.put("ver", 1.0f);
         HttpPost post = new HttpPost("http://bigdata.tclking.com/push/3rd", params, "application/json") {
