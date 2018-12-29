@@ -4,10 +4,9 @@
 package lib.common.model.http;
 
 import lib.common.model.log.Logger;
+import lib.common.util.IOUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.Map;
 
@@ -68,17 +67,7 @@ public abstract class HttpRequest {
     }
 
     public String getString(String charset) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), charset));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append(System.getProperty("line.separator"));
-        }
-        int i = sb.lastIndexOf(System.getProperty("line.separator"));
-        if (i != -1) {
-            sb.delete(i, sb.length());
-        }
-        return sb.toString();
+        return IOUtil.streamToString(conn.getInputStream(), charset);
     }
 
     public boolean isSuccess() throws IOException {
