@@ -1,12 +1,12 @@
 package lib.common.model.resourceaccess;
 
+import lib.common.util.StringUtil;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-
-import lib.common.util.StringUtil;
 
 /**
  * Created by yanry on 2015/8/15.
@@ -41,7 +41,7 @@ public abstract class FileHashMapper {
     }
 
     public String getMD5FileName(String key, String fileSubfix) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String fileName = StringUtil.encrypt(key, "UTF-8", "MD5");
+        String fileName = StringUtil.digest(key, "UTF-8", "MD5");
         if (fileSubfix != null && fileSubfix.length() > 0) {
             fileName = fileName + "." + fileSubfix;
         }

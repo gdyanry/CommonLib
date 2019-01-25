@@ -46,7 +46,7 @@ public abstract class Tache<I> implements Runnable {
                 }
                 process(in);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger.getDefault().catches(e);
             }
         }
         Logger.getDefault().d("exit running.");

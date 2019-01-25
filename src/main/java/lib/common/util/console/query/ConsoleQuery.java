@@ -3,6 +3,11 @@ package lib.common.util.console.query;
 import java.util.Scanner;
 
 public abstract class ConsoleQuery<T> {
+    private Scanner scanner;
+
+    public ConsoleQuery() {
+        scanner = new Scanner(System.in);
+    }
 
     public T getValue(String hint) {
         StringBuilder promptBuilder;
@@ -13,16 +18,17 @@ public abstract class ConsoleQuery<T> {
         }
         appendPromptInfo(promptBuilder);
         String prompt = promptBuilder.toString();
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        while (!isValid(input = readInput(scanner, prompt))) {
+        while (true) {
+            System.out.println(prompt);
+            String input = scanner.nextLine();
+            if (isValid(input)) {
+                return map(input);
+            }
         }
-        return map(input);
     }
 
-    private String readInput(Scanner scanner, String prompt) {
-        System.out.println(prompt);
-        return scanner.nextLine();
+    public void close() {
+        scanner.close();
     }
 
     protected abstract void appendPromptInfo(StringBuilder promptBuilder);

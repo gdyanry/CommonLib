@@ -73,7 +73,7 @@ public class FileUtil {
         copyAndRename(srcDir, destDir, file -> {
             if (file.isFile()) {
                 try {
-                    return StringUtil.encrypt(file.getName(), charset, md);
+                    return StringUtil.digest(file.getName(), charset, md);
                 } catch (Exception e) {
                     Logger.getDefault().catches(e);
                 }

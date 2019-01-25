@@ -68,9 +68,9 @@ public class AdvancedExecutor extends ThreadPoolExecutor {
                 if (contains(e)) {
                     if (duplicatePolicy == DuplicatePolicy.DISCARD_OLD) {
                         remove(e);
-                        Logger.getDefault().d("drop old task: %s", e);
-                    } else {
-                        Logger.getDefault().d("drop new task: %s", e);
+                        Logger.getDefault().vv("drop old task: ", e);
+                    } else if (duplicatePolicy == DuplicatePolicy.DISCARD_NEW) {
+                        Logger.getDefault().vv("drop new task: ", e);
                         // drop the new task by doing nothing and telling the
                         // caller that everything goes well.
                         return true;

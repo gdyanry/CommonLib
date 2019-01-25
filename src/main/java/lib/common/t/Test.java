@@ -31,9 +31,7 @@ public class Test {
 
         System.out.println(~1);
         System.out.println(~0);
-        format("%tF", 1466776535000L);
-        format("%tR", 1466776535000L);
-        format("%tT  %1$s", 1466776535000L);
+        format("%tF %<tT", 1548226545194L);
 
         format(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
 
@@ -63,6 +61,7 @@ public class Test {
         while (matcher.find()) {
             concat(matcher.group());
         }
+
     }
 
     private static void format(String msg, Object... args) {

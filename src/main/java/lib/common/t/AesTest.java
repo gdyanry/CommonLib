@@ -13,7 +13,7 @@ import java.util.Base64;
 
 public class AesTest {
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
-        String content = "中午回去吃饭";
+        String content = "527512505";
         String password = "tcl_push";
         System.out.println("加密之前：" + content);
         System.out.println(content.getBytes().length);
@@ -21,8 +21,7 @@ public class AesTest {
         byte[] key = AesUtil.generateKey(password.getBytes());
         System.out.println(Arrays.toString(key));
 
-        byte[] iv = AesUtil.generateIv();
-        System.out.println(Arrays.toString(iv));
+        byte[] iv = new byte[]{65, 20, -91, 123, -102, 126, 105, -28, -15, 13, 51, 32, 53, 45, -97, -40};
 
 //         加密
         byte[] encrypt = AesUtil.encrypt(iv, key, content.getBytes());

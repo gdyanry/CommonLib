@@ -1,8 +1,11 @@
 package lib.common.util;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -77,14 +80,21 @@ public class StringUtil {
         return null;
     }
 
-    public static String encrypt(String input, String charset, String algorithm)
+    public static String digest(String input, String charset, String algorithm)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance(algorithm);
-        return encrypt(input, charset, md);
+        return digest(input, charset, md);
     }
 
-    public static String encrypt(String input, String charset, MessageDigest md) throws UnsupportedEncodingException {
+    public static String digest(String input, String charset, MessageDigest md) throws UnsupportedEncodingException {
         return HexUtil.bytesToHex(md.digest(input.getBytes(charset)));
+    }
+
+    public static String hmac(byte[] input, byte[] key, String algorithm) throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac mac = Mac.getInstance(algorithm);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, algorithm);
+        mac.init(secretKeySpec);
+        return HexUtil.bytesToHex(mac.doFinal(input));
     }
 
     public static String generateFixedLengthNumber(Random r, int length) {
