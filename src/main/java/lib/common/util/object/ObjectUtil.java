@@ -92,15 +92,15 @@ public class ObjectUtil {
         return object;
     }
 
-    public static byte[] getSnapShoot(Object object) throws IOException {
+    public static byte[] getSnapshot(Object object) throws IOException {
         if (!(object instanceof Serializable)) {
-            object = object.getClass();
+            object = object.toString();
         }
         return IOUtil.object2Bytes(object);
     }
 
-    public static String getSnapShootMd5(Object object) throws IOException, NoSuchAlgorithmException {
-        return HexUtil.bytesToHex(MessageDigest.getInstance("MD5").digest(getSnapShoot(object)));
+    public static String getSnapshotMd5(Object object) throws IOException, NoSuchAlgorithmException {
+        return HexUtil.bytesToHex(MessageDigest.getInstance("MD5").digest(getSnapshot(object)));
     }
 }
 

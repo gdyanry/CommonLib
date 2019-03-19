@@ -37,7 +37,7 @@ public class TencentQuery {
         }
     }
 
-    private static void query(String text) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public static void query(String text) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         String botKey = "af86caf0c25711e89e580b8507394334";
         String botSecret = "b4e25a72b69a4bc193fecefec2e66f91";
 

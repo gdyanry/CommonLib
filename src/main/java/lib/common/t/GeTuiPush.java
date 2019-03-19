@@ -14,33 +14,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class Push {
+public class GeTuiPush {
     public static void main(String... args) throws IOException, GeneralSecurityException {
         Map<String, InputStream> certificates = new HashMap<>();
         certificates.put("tclking", new FileInputStream("f:/tclking_cert/tclking.crt"));
         Https.initSSL(null, certificates, null, null);
-//        pushWeatherAlarm(false);
-        pushAiUpdate();
-        getTaskId(10324);
+        pushWeatherAlarm(false, false);
+//        pushAiUpdate();
+//        getTaskId(10324);
     }
 
-    private static void pushWeatherAlarm(boolean isDebug) throws IOException {
+    private static void pushWeatherAlarm(boolean isDebug, boolean byRegion) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
         String requestPrefix = isDebug ? "http://bigdata" : "https://open";
         String appId = isDebug ? "8cf1ffc22a04982c8e435223dd951fb7" : "x0oTtOgtzOPM1dRui3pLIsts4nC0CUjX";
         String secret = isDebug ? "35223dd9b797db9e2a04982c8e435223" : "qGai6LBHLE6idnwhuAMpoKC6UDavmboh";
         HttpGet get = new HttpGet(String.format("%s.tclking.com/push/token?appid=%s&secret=%s&ver=1.0", requestPrefix, appId, secret));
         String resp = get.getString("utf-8");
         System.out.println(resp);
+        TencentQuery.query("天气");
         JSONObject respJson = new JSONObject(resp);
         String token = respJson.getJSONObject("data").getString("accessToken");
         String dataToPush = "{\"signName\":\"腾讯天气\",\"templateCode\":\"10025\",\"param\":{\"locale\":\"深圳市南山区\",\"date\":\"2018-03-05 18:06\",\"type\":\"台风\",\"level\":\"黄色\"},\"region\":\"%s\",\"did\":\"%s\",\"custom\":null}";
-        String region = "110105";
-        String deviceId = "";
+        String region = byRegion ? "440305" : "";
+        String deviceId = byRegion ? "" : "LIrsAMgFGoUzPk5veKVSIQ二二";
         dataToPush = String.format(dataToPush, region, deviceId);
         HashMap<String, Object> params = new HashMap<>();
         params.put("accessToken", token);

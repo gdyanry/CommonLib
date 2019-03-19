@@ -161,4 +161,27 @@ public class StringUtil {
         }
         return stringBuilder.toString();
     }
+
+    public static int getMinEditDistance(String a, String b) {
+        if (a == null || b == null) {
+            return -1;
+        }
+        int[][] d = new int[a.length() + 1][b.length() + 1];
+        for (int i = 0; i <= a.length(); i++) {
+            d[i][0] = i;
+        }
+        for (int i = 0; i <= b.length(); i++) {
+            d[0][i] = i;
+        }
+        for (int i = 0; i < a.length(); i++) {
+            for (int j = 0; j < b.length(); j++) {
+                int r = a.charAt(i) == b.charAt(j) ? 0 : 1;
+                int firstAppend = d[i][j + 1] + 1;
+                int secondAppend = d[i + 1][j] + 1;
+                int replace = d[i][j] + r;
+                d[i + 1][j + 1] = Math.min(replace, Math.min(firstAppend, secondAppend));
+            }
+        }
+        return d[a.length()][b.length()];
+    }
 }

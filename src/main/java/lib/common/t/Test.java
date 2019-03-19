@@ -31,7 +31,7 @@ public class Test {
 
         System.out.println(~1);
         System.out.println(~0);
-        format("%tF %<tT", 1548226545194L);
+        format("%tF %<tT", 1548314565000L);
 
         format(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
 
@@ -62,6 +62,7 @@ public class Test {
             concat(matcher.group());
         }
 
+        concat(StringUtil.getMinEditDistance("我想回家", "我想回山东老家"));
     }
 
     private static void format(String msg, Object... args) {

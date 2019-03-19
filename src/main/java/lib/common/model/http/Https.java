@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.cert.CertificateFactory;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -36,21 +35,6 @@ public class Https {
      */
     public static void initSSL(HostnameVerifier verifier, Map<String, InputStream> certificates, InputStream clientKey,
                                String password) throws GeneralSecurityException, IOException {
-        // server certificate
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        KeyStore serverKs = KeyStore.getInstance(KeyStore.getDefaultType());
-        serverKs.load(null);
-        if (certificates != null) {
-            for (String alias : certificates.keySet()) {
-                InputStream cer = certificates.get(alias);
-                if (cer != null) {
-                    serverKs.setCertificateEntry(alias, cf.generateCertificate(cer));
-                    cer.close();
-                }
-            }
-        }
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        tmf.init(serverKs);
         // client key
         KeyManagerFactory kmf = null;
         if (clientKey != null && password != null) {
@@ -61,7 +45,7 @@ public class Https {
         }
 
         SSLContext ssl = SSLContext.getInstance("TLS");
-        ssl.init(kmf == null ? null : kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        ssl.init(kmf == null ? null : kmf.getKeyManagers(), new TrustManager[]{new CombinedX509TrustManager(certificates)}, null);
         HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
         if (verifier != null) {
             HttpsURLConnection.setDefaultHostnameVerifier(verifier);
