@@ -34,6 +34,7 @@ public class MessageBox {
         addParam(form, "appKey", APPKEY);
         addParam(form, "timestamp", System.currentTimeMillis());
 //        addParam(form, "sign", );
+
     }
 
     private static void addParam(HttpMultipart form, String param, Object value) throws IOException {
