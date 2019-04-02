@@ -59,7 +59,7 @@ public class FileUtil {
                 if (conflictFile == null) {
                     IOUtil.copyFile(file, new File(destDir, renameTo));
                 } else {
-                    Logger.getDefault().e("%s has conflict mapping: %s, %s", renameTo, conflictFile, file);
+                    Logger.getDefault().w("%s has conflict mapping: %s, %s", renameTo, conflictFile, file);
                 }
             }
         }

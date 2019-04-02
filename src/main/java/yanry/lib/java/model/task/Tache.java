@@ -34,7 +34,7 @@ public abstract class Tache<I> implements Runnable {
 
     @Override
     public void run() {
-        Logger.getDefault().d("start running.");
+        Logger.getDefault().dd("start running.");
         while (!exit) {
             try {
                 I in = q.take();
@@ -46,7 +46,7 @@ public abstract class Tache<I> implements Runnable {
                 Logger.getDefault().catches(e);
             }
         }
-        Logger.getDefault().d("exit running.");
+        Logger.getDefault().dd("exit running.");
     }
 
     /**

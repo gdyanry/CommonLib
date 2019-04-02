@@ -49,12 +49,12 @@ public abstract class UdpClient {
 
     private synchronized void prepareChannel() throws IOException {
         if (dc == null) {
-            Logger.getDefault().d("open datagram channel.");
+            Logger.getDefault().dd("open datagram channel.");
             dc = DatagramChannel.open();
             dc.configureBlocking(false);
         }
         if (!dc.isConnected()) {
-            Logger.getDefault().d("connect to server %s", server);
+            Logger.getDefault().dd("connect to server ", server);
             dc.socket().bind(bindAddr);
             dc.connect(server);
         }
@@ -77,7 +77,7 @@ public abstract class UdpClient {
                     s = Selector.open();
                     dc.register(s, SelectionKey.OP_READ);
                 }
-                Logger.getDefault().d("start listening...");
+                Logger.getDefault().dd("start listening...");
                 while (!exit && start && s.select() > 0) {
                     Iterator<SelectionKey> it = s.selectedKeys().iterator();
                     while (it.hasNext()) {
@@ -88,14 +88,14 @@ public abstract class UdpClient {
                         receiveBuf.flip();
                         if (i > 0) {
                             String text = UdpClient.this.charset.decode(receiveBuf).toString();
-                            Logger.getDefault().d("<<< %s", text);
+                            Logger.getDefault().vv("<<< ", text);
                             listener.onServerRequest(text);
                         }
                     }
                 }
-                Logger.getDefault().d("stop listening.");
+                Logger.getDefault().dd("stop listening.");
                 if (exit) {
-                    Logger.getDefault().d("exit.");
+                    Logger.getDefault().dd("exit.");
                     s.close();
                     dc.close();
                     s = null;
@@ -117,7 +117,7 @@ public abstract class UdpClient {
         sendBuf.put(charset.encode(text));
         sendBuf.flip();
         prepareChannel();
-        Logger.getDefault().d("%s>>> %s", dc.socket().getLocalPort(), text);
+        Logger.getDefault().vv("%s>>> %s", dc.socket().getLocalPort(), text);
         dc.write(sendBuf);
     }
 

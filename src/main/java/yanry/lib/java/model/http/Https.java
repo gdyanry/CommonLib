@@ -51,7 +51,7 @@ public class Https {
 
     public static HttpURLConnection getConnection(String url) throws IOException {
         URL u = URI.create(url).toURL();
-        Logger.getDefault().d("open connection: %s", u);
+        Logger.getDefault().dd("open connection: ", u);
         return (HttpURLConnection) u.openConnection();
     }
 

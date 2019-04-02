@@ -41,7 +41,7 @@ public abstract class UdpServer {
         dc.configureBlocking(false);
         if (port > 0) {
             SocketAddress localAddress = new InetSocketAddress(port);
-            Logger.getDefault().d("bind: %s", localAddress);
+            Logger.getDefault().dd("bind: ", localAddress);
             dc.bind(localAddress);
         }
         s = Selector.open();
@@ -59,7 +59,7 @@ public abstract class UdpServer {
         start = true;
         execute(() -> {
             try {
-                Logger.getDefault().d("start listening...");
+                Logger.getDefault().dd("start listening...");
                 while (!exit && start && s.select() > 0) {
                     Iterator<SelectionKey> it = s.selectedKeys().iterator();
                     while (it.hasNext()) {
@@ -70,14 +70,14 @@ public abstract class UdpServer {
                         receiveBuf.flip();
                         if (client != null) {
                             String text = UdpServer.this.charset.decode(receiveBuf).toString();
-                            Logger.getDefault().d("%s >>> %s", client, text);
+                            Logger.getDefault().v("%s >>> %s", client, text);
                             listener.onReceive((InetSocketAddress) client, text);
                         }
                     }
                 }
-                Logger.getDefault().d("stop listening.");
+                Logger.getDefault().dd("stop listening.");
                 if (exit) {
-                    Logger.getDefault().d("exit.");
+                    Logger.getDefault().dd("exit.");
                     s.close();
                     dc.disconnect();
                     dc.close();

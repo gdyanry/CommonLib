@@ -42,7 +42,7 @@ public abstract class HttpPost extends HttpRequest {
         if (uploadHook == null) {
             os.write(entity);
             os.flush();
-            Logger.getDefault().d("post bytes length: %sb", entity.length);
+            Logger.getDefault().v("post bytes length: %sb", entity.length);
         } else {
             IOUtil.bytesToOutputStream(entity, os, uploadHook);
         }
@@ -54,7 +54,7 @@ public abstract class HttpPost extends HttpRequest {
         StreamTransferHook uploadHook = getUploadHook();
         if (uploadHook == null) {
             long length = IOUtil.transferStream(entity, os);
-            Logger.getDefault().d("post input stream length: %sb", length);
+            Logger.getDefault().v("post input stream length: %sb", length);
         } else {
             IOUtil.transferStream(entity, os, uploadHook);
         }

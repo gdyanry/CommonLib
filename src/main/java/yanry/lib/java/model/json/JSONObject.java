@@ -991,7 +991,7 @@ public class JSONObject {
      * @throws JSONException If the key is null or if the number is invalid.
      */
     public JSONObject put(String key, double value) throws JSONException {
-        this.put(key, value);
+        this.put(key, Double.valueOf(value));
         return this;
     }
 

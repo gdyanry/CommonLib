@@ -134,7 +134,7 @@ public class FileMonitor implements Runnable {
                             if (item.f.getName().equals(e.context().toString()) || item.f.toPath().equals(key.watchable())) {
                                 for (Kind<?> k : item.kinds) {
                                     if (k == e.kind() && (item.f.exists() || k.equals(StandardWatchEventKinds.ENTRY_DELETE))) {
-                                        Logger.getDefault().dd("event: ", key.watchable(), ' ', e.kind().name());
+                                        Logger.getDefault().vv("event: ", key.watchable(), ' ', e.kind().name());
                                         item.onEvent(e);
                                         break;
                                     }
@@ -145,7 +145,7 @@ public class FileMonitor implements Runnable {
                 }
                 key.reset();
             } catch (ClosedWatchServiceException e) {
-                Logger.getDefault().d("exit.");
+                Logger.getDefault().dd("exit.");
             } catch (Exception e) {
                 Logger.getDefault().catches(e);
             }

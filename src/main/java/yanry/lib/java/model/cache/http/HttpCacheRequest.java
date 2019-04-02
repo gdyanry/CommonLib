@@ -16,7 +16,7 @@ public abstract class HttpCacheRequest extends Cancelable implements CacheDataHo
     private boolean hasCache;
 
     public void start() {
-        Logger.getDefault().d("start: %s", getCacheKey());
+        Logger.getDefault().dd("start: ", getCacheKey());
         if (getCachePolicy() != CachePolicy.NetworkOnly) {
             // get cache
             getCacheDataManager().getData(getCacheKey(), this);
@@ -29,7 +29,7 @@ public abstract class HttpCacheRequest extends Cancelable implements CacheDataHo
             sendRequest();
         }
         release();
-        Logger.getDefault().d("finish: %s", getCacheKey());
+        Logger.getDefault().dd("finish: ", getCacheKey());
     }
 
     public void handleResponse(Object dataToCache) {

@@ -24,7 +24,9 @@ public class ReflectionUtil {
             if (f.getType().equals(String.class) && Modifier.isPublic(f.getModifiers())
                     && Modifier.isStatic(f.getModifiers())) {
                 try {
-                    f.set(null, f.getName());
+                    if (f.get(null) == null) {
+                        f.set(null, f.getName());
+                    }
                 } catch (Exception e) {
                     Logger.getDefault().catches(e);
                 }

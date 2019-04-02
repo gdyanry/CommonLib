@@ -48,7 +48,7 @@ public abstract class HttpRequest {
             if (contentLength != null) {
                 this.contentLength = Long.parseLong(contentLength);
             } else {
-                Logger.getDefault().e("content contentLength is unreachable for %s", conn.getURL());
+                Logger.getDefault().ee("content contentLength is unreachable for ", conn.getURL());
                 this.contentLength = -1;
             }
         }

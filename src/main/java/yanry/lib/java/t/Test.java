@@ -8,7 +8,6 @@ import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,7 +61,6 @@ public class Test {
             concat(matcher.group());
         }
 
-        concat(StringUtil.getMinEditDistance("我想回家", "我想回山东老家"));
     }
 
     private static void format(String msg, Object... args) {

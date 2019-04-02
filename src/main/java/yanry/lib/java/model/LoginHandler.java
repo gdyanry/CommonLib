@@ -54,7 +54,7 @@ public abstract class LoginHandler {
     }
 
     public void logout() {
-        Logger.getDefault().d("logout: %s", getValue(SESSION_ID));
+        Logger.getDefault().dd("logout: ", getValue(SESSION_ID));
         removeEntry(SESSION_ID);
         removeEntry(USER_ID);
         initialized = false;
