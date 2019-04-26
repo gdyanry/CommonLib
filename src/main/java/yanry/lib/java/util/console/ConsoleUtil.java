@@ -1,5 +1,7 @@
 package yanry.lib.java.util.console;
 
+import yanry.lib.java.util.console.query.ConsoleQuery;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,5 +33,32 @@ public class ConsoleUtil {
     public static StringBuilder appendStackTrace(StringBuilder builder, StackTraceElement e) {
         return builder.append("    at ").append(e.getClassName()).append('.').append(e.getMethodName())
                 .append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')');
+    }
+
+    public static void interact(String prompt, String exitOnInput, Consumer<String> inputCallback) {
+        ConsoleQuery<String> query = new ConsoleQuery<>() {
+            @Override
+            protected void appendPromptInfo(StringBuilder promptBuilder) {
+            }
+
+            @Override
+            protected boolean isValid(String input) {
+                return true;
+            }
+
+            @Override
+            protected String map(String input) {
+                return input;
+            }
+        };
+        while (true) {
+            String input = query.getValue(prompt);
+            if (input.equals(exitOnInput)) {
+                break;
+            }
+            if (inputCallback != null) {
+                inputCallback.accept(input);
+            }
+        }
     }
 }
