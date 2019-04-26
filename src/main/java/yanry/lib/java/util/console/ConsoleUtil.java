@@ -36,7 +36,7 @@ public class ConsoleUtil {
     }
 
     public static void interact(String prompt, String exitOnInput, Consumer<String> inputCallback) {
-        ConsoleQuery<String> query = new ConsoleQuery<>() {
+        ConsoleQuery<String> query = new ConsoleQuery<String>() {
             @Override
             protected void appendPromptInfo(StringBuilder promptBuilder) {
             }
