@@ -28,11 +28,10 @@ public abstract class TimedObjectPool<E> {
             public void run() {
                 long now = System.currentTimeMillis();
                 Long time;
-                while ((time = timeRecords.peekFirst()) != null && now - time > timeout) {
-                    timeRecords.pollFirst();
-                    E obj = container.pollFirst();
-                    if (obj != null) {
-                        onDiscard(obj);
+                synchronized (this) {
+                    while ((time = timeRecords.peekFirst()) != null && now - time > timeout) {
+                        timeRecords.removeFirst();
+                        onDiscard(container.pollFirst());
                     }
                 }
                 onCleared(container.size());
@@ -48,8 +47,10 @@ public abstract class TimedObjectPool<E> {
     public void giveBack(E element) {
         if (element != null) {
             onReturn(element);
-            container.addLast(element);
-            timeRecords.addLast(System.currentTimeMillis());
+            synchronized (this) {
+                container.addLast(element);
+                timeRecords.addLast(System.currentTimeMillis());
+            }
         }
     }
 
@@ -59,13 +60,17 @@ public abstract class TimedObjectPool<E> {
      * @return
      */
     public E borrow() {
-        E e = container.pollFirst();
-        if (e == null) {
-            e = createInstance();
-        } else {
-            timeRecords.pollFirst();
+        if (container.size() == 0) {
+            return createInstance();
         }
-        return e;
+        synchronized (this) {
+            if (container.size() == 0) {
+                return createInstance();
+            } else {
+                timeRecords.removeFirst();
+                return container.pollFirst();
+            }
+        }
     }
 
     protected abstract E createInstance();

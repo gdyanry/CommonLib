@@ -4,11 +4,13 @@ import yanry.lib.java.model.log.ConsoleHandler;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.SimpleFormatter;
+import yanry.lib.java.util.HexUtil;
 import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
 
 import java.io.IOException;
-import java.util.Random;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +32,10 @@ public class Test {
 
         System.out.println(~1);
         System.out.println(~0);
-        format("%tF %<tT", 1548314565000L);
+        Calendar calendar = GregorianCalendar.getInstance();
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.add(Calendar.WEEK_OF_MONTH, -1);
+        format("%tF %<tT", calendar.getTimeInMillis());
 
         format(IOUtil.resourceToString(IOUtil.class, "..", "utf-8"));
 
@@ -60,6 +65,11 @@ public class Test {
         while (matcher.find()) {
             concat(matcher.group());
         }
+        System.out.println(HexUtil.bytesToHex((byte) (0xff * 0.6)));
+        List<Test> list = new LinkedList<>() {
+        };
+        System.out.println(((ParameterizedType) list.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+
 
     }
 

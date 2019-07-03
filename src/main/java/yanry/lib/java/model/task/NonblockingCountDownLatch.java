@@ -20,19 +20,17 @@ public abstract class NonblockingCountDownLatch {
     }
 
     public void setTimeout(long timeout) {
-        if (timeout > 0) {
-            if (counter.get() > 0) {
-                cleanTimeout();
-                timeoutTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (counter.getAndSet(0) > 0) {
-                            onComplete(STATE_TIMEOUT);
-                        }
+        if (timeout > 0 && counter.get() > 0) {
+            cleanTimeout();
+            timeoutTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (counter.getAndSet(0) > 0) {
+                        onComplete(STATE_TIMEOUT);
                     }
-                };
-                Singletons.get(DaemonTimer.class).schedule(timeoutTask, timeout);
-            }
+                }
+            };
+            Singletons.get(DaemonTimer.class).schedule(timeoutTask, timeout);
         }
     }
 

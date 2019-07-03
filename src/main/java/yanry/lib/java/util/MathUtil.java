@@ -2,8 +2,8 @@ package yanry.lib.java.util;
 
 /**
  * @author yanry
- *         <p>
- *         2015年5月14日 上午9:38:36
+ * <p>
+ * 2015年5月14日 上午9:38:36
  */
 public class MathUtil {
 
@@ -65,17 +65,17 @@ public class MathUtil {
     /**
      * 贝塞尔曲线公式
      *
-     * @param t
+     * @param fraction     the proportion between the start and end values.
      * @param startValue
      * @param endValue
      * @param medianValues
      * @return
      */
-    public static int bezierEvaluate(float t, int startValue, int endValue, int... medianValues) {
+    public static int bezierEvaluate(float fraction, int startValue, int endValue, int... medianValues) {
         int n = medianValues.length + 1;
-        int value = (int) (startValue * Math.pow(1 - t, n) + endValue * Math.pow(t, n));
+        int value = (int) (startValue * Math.pow(1 - fraction, n) + endValue * Math.pow(fraction, n));
         for (int i = 1; i < n; i++) {
-            value += getPascalTriangleCoefficient(n, i) * medianValues[i - 1] * Math.pow(1 - t, n - i) * Math.pow(t, i);
+            value += getPascalTriangleCoefficient(n, i) * medianValues[i - 1] * Math.pow(1 - fraction, n - i) * Math.pow(fraction, i);
         }
         return value;
     }
