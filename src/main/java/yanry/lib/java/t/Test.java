@@ -9,8 +9,9 @@ import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,11 +67,6 @@ public class Test {
             concat(matcher.group());
         }
         System.out.println(HexUtil.bytesToHex((byte) (0xff * 0.6)));
-        List<Test> list = new LinkedList<>() {
-        };
-        System.out.println(((ParameterizedType) list.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
-
-
     }
 
     private static void format(String msg, Object... args) {
