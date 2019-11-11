@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
  */
 public class Test {
 
+    private static final byte[] IV = new byte[]{65, 20, -91, 123, -102, 126, 105, -28, -15, 13, 51, 32, 53, 45, -97, -40};
+    private static final byte[] KEY = new byte[]{-49, 59, -97, -82, 5, -125, -92, -15, -7, -4, 95, -87, 85, -47, -34, -10};
+
     public static void main(String[] args) throws IOException {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().date().time().method(10), null));
 
@@ -66,7 +69,10 @@ public class Test {
         while (matcher.find()) {
             concat(matcher.group());
         }
-        System.out.println(HexUtil.bytesToHex((byte) (0xff * 0.6)));
+        System.out.println(HexUtil.bytesToHex(KEY));
+        System.out.println(HexUtil.bytesToHex(IV));
+        String t = null;
+        System.out.println(new StringBuilder("a").append(t).append("b"));
     }
 
     private static void format(String msg, Object... args) {

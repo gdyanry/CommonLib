@@ -4,6 +4,6 @@ import java.util.Timer;
 
 public class DaemonTimer extends Timer {
     public DaemonTimer() {
-        super(true);
+        super("DaemonTimer", true);
     }
 }

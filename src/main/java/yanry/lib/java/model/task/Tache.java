@@ -33,7 +33,7 @@ public abstract class Tache<I> implements Runnable {
     }
 
     @Override
-    public void run() {
+    public final void run() {
         Logger.getDefault().dd("start running.");
         while (!exit) {
             try {

@@ -2,7 +2,6 @@ package yanry.lib.java.model.tree;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @param <I>
@@ -13,7 +12,7 @@ import java.util.Map;
  */
 public class Node<I> {
 	private I id;
-	private Map<Object, Node<I>> children;
+    private HashMap<Object, Node<I>> children;
 	private Node<I> parent;
 
 	public Node(I id) {
@@ -68,8 +67,7 @@ public class Node<I> {
 		if (node == null || hook.getNodeText(node) == null) {
 			return currentName;
 		} else {
-			currentName = String.format("%s%s%s", hook.getNodeText(node), hook.getJoint(), currentName);
-			return appendName(currentName, hook, node.parent);
+            return appendName(new StringBuilder(hook.getNodeText(node)).append(hook.getJoint()).append(currentName).toString(), hook, node.parent);
 		}
 	}
 }
