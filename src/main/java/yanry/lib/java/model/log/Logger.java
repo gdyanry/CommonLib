@@ -94,9 +94,6 @@ public class Logger {
                     record = handleLog(encapsulationLayerCount, level, log, record, handler);
                 }
             }
-            if (record != null) {
-                record.recycle();
-            }
         }
     }
 

@@ -60,11 +60,7 @@ public abstract class IntegratedCommunicationServer<U> {
             }
 
             @Override
-            protected void onDiscard(CommunicationHandler obj) {
-            }
-
-            @Override
-            protected void onCleared(int poolSize) {
+            protected void onClean(List<CommunicationHandler> discarded) {
             }
         };
         handlers = new HashMap<>();

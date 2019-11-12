@@ -37,27 +37,35 @@ public class ConsoleHandler extends LogHandler {
         int mark = 0;
         Matcher matcher = stackTracePattern.matcher(log);
         while (matcher.find()) {
+            // 含有调用栈信息
             int start = matcher.start();
             if (mark < start) {
                 boolean handleMessageStart = messageStart >= mark && messageStart <= start;
                 if (handleMessageStart) {
+                    // 添加日志内容前面的附加信息
                     sb.append(log, mark, messageStart);
+                    // 设置日志内容颜色
                     ConsoleUtil.appendColorSequences(sb, color, true);
                     mark = messageStart;
                 }
                 boolean handleMessageEnd = messageEnd >= mark && messageEnd <= start;
                 if (handleMessageEnd) {
+                    // 添加日志内容
                     sb.append(log, mark, messageEnd);
+                    // 恢复颜色
                     ConsoleUtil.appendColorSequences(sb, Color.Default, true);
                     mark = messageEnd;
                 }
+                // 添加附加信息
                 sb.append(log, mark, start);
             }
             mark = matcher.end();
+            // 设置副色并添加调用栈信息
             ConsoleUtil.appendColorSequences(sb, Color.White, true).append(log, start, mark);
         }
         int length = log.length();
         if (mark < length) {
+            // 处理调用栈信息结束后的内容
             boolean handleMessageStart = messageStart >= mark && messageStart <= length;
             if (handleMessageStart) {
                 sb.append(log, mark, messageStart);

@@ -1,13 +1,10 @@
 package yanry.lib.java.model.log;
 
-import yanry.lib.java.model.cache.TimedObjectPool;
-
 import java.util.concurrent.atomic.AtomicLong;
 
 public class LogRecord {
     static final int TIMEOUT_SECOND = 120;
     private static AtomicLong sequenceNumberCreator = new AtomicLong();
-    private static Pool pool = new Pool();
     private static int INIT_STACK_TRACE;
     private Object tag;
     private LogLevel level;
@@ -19,7 +16,7 @@ public class LogRecord {
     private int currentDepth;
 
     static LogRecord get(Object tag, LogLevel level, String message, int encapsulationLayerCount) {
-        LogRecord record = pool.borrow();
+        LogRecord record = new LogRecord();
         record.tag = tag;
         record.level = level;
         record.message = message;
@@ -70,40 +67,5 @@ public class LogRecord {
             return stackTrace[index];
         }
         return null;
-    }
-
-    void recycle() {
-        pool.giveBack(this);
-    }
-
-    private static class Pool extends TimedObjectPool<LogRecord> {
-        Pool() {
-            super(TIMEOUT_SECOND);
-        }
-
-        @Override
-        protected LogRecord createInstance() {
-            return new LogRecord();
-        }
-
-        @Override
-        protected void onReturn(LogRecord obj) {
-            obj.tag = null;
-            obj.level = null;
-            obj.message = null;
-            obj.timeMillis = 0;
-            obj.stackTrace = null;
-            obj.sequenceNumber = 0;
-            obj.encapsulationLayerCount = 0;
-            obj.currentDepth = 0;
-        }
-
-        @Override
-        protected void onDiscard(LogRecord obj) {
-        }
-
-        @Override
-        protected void onCleared(int poolSize) {
-        }
     }
 }

@@ -4,6 +4,7 @@ import yanry.lib.java.entity.DaemonTimer;
 import yanry.lib.java.model.Singletons;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TimerTask;
 
 /**
@@ -14,29 +15,18 @@ import java.util.TimerTask;
  * <p>
  * 2014年7月7日下午3:33:11
  */
-public abstract class TimedObjectPool<E> {
+public abstract class TimedObjectPool<E> extends TimerTask {
     private LinkedList<E> container;
     private LinkedList<Long> timeRecords;
+    private long timeout;
 
     public TimedObjectPool(int minTimeoutSecond) {
-        super();
         container = new LinkedList<>();
         timeRecords = new LinkedList<>();
-        long timeout = minTimeoutSecond * 1000;
-        Singletons.get(DaemonTimer.class).schedule(new TimerTask() {
-            @Override
-            public void run() {
-                long now = System.currentTimeMillis();
-                Long time;
-                synchronized (this) {
-                    while ((time = timeRecords.peekFirst()) != null && now - time > timeout) {
-                        timeRecords.removeFirst();
-                        onDiscard(container.pollFirst());
-                    }
-                }
-                onCleared(container.size());
-            }
-        }, timeout, timeout);
+        timeout = minTimeoutSecond * 1000;
+        if (timeout > 0) {
+            Singletons.get(DaemonTimer.class).schedule(this, timeout, timeout);
+        }
     }
 
     /**
@@ -73,11 +63,22 @@ public abstract class TimedObjectPool<E> {
         }
     }
 
+    @Override
+    public void run() {
+        long now = System.currentTimeMillis();
+        List<E> discarded = new LinkedList<>();
+        Long time;
+        synchronized (this) {
+            while ((time = timeRecords.pollFirst()) != null && now - time > timeout) {
+                discarded.add(container.pollFirst());
+            }
+        }
+        onClean(discarded);
+    }
+
     protected abstract E createInstance();
 
     protected abstract void onReturn(E obj);
 
-    protected abstract void onDiscard(E obj);
-
-    protected abstract void onCleared(int poolSize);
+    protected abstract void onClean(List<E> discarded);
 }

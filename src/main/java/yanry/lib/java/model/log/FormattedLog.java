@@ -2,11 +2,10 @@ package yanry.lib.java.model.log;
 
 import yanry.lib.java.model.cache.TimedObjectPool;
 
+import java.util.List;
+
 public class FormattedLog {
     private static Pool pool = new Pool();
-    private String log;
-    private int messageStart;
-    private int messageEnd;
 
     static FormattedLog get(String log, int messageStart, int messageEnd) {
         FormattedLog formattedLog = pool.borrow();
@@ -14,6 +13,13 @@ public class FormattedLog {
         formattedLog.messageStart = messageStart;
         formattedLog.messageEnd = messageEnd;
         return formattedLog;
+    }
+
+    private String log;
+    private int messageStart;
+    private int messageEnd;
+
+    private FormattedLog() {
     }
 
     void recycle() {
@@ -51,11 +57,7 @@ public class FormattedLog {
         }
 
         @Override
-        protected void onDiscard(FormattedLog obj) {
-        }
-
-        @Override
-        protected void onCleared(int poolSize) {
+        protected void onClean(List<FormattedLog> discarded) {
         }
     }
 }

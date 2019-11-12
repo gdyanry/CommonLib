@@ -13,25 +13,27 @@ public abstract class TimedMapPool<K, V> {
     private HashMap<K, Long> accessTime;
 
     public TimedMapPool(int minTimeoutSecond) {
-        long timeout = minTimeoutSecond * 1000;
         map = new HashMap<>();
         accessTime = new HashMap<>();
-        Singletons.get(DaemonTimer.class).schedule(new TimerTask() {
-            @Override
-            public void run() {
-                long now = System.currentTimeMillis();
-                Iterator<Map.Entry<K, Long>> iterator = accessTime.entrySet().iterator();
-                synchronized (accessTime) {
-                    while (iterator.hasNext()) {
-                        Map.Entry<K, Long> next = iterator.next();
-                        if (now - next.getValue() >= timeout) {
-                            iterator.remove();
-                            map.remove(next.getKey());
+        if (minTimeoutSecond > 0) {
+            long timeout = minTimeoutSecond * 1000;
+            Singletons.get(DaemonTimer.class).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    long now = System.currentTimeMillis();
+                    Iterator<Map.Entry<K, Long>> iterator = accessTime.entrySet().iterator();
+                    synchronized (accessTime) {
+                        while (iterator.hasNext()) {
+                            Map.Entry<K, Long> next = iterator.next();
+                            if (now - next.getValue() >= timeout) {
+                                iterator.remove();
+                                map.remove(next.getKey());
+                            }
                         }
                     }
                 }
-            }
-        }, timeout, timeout);
+            }, timeout, timeout);
+        }
     }
 
     public V get(K key) {
