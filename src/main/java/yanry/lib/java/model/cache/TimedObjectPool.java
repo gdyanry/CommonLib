@@ -69,7 +69,8 @@ public abstract class TimedObjectPool<E> extends TimerTask {
         List<E> discarded = new LinkedList<>();
         Long time;
         synchronized (this) {
-            while ((time = timeRecords.pollFirst()) != null && now - time > timeout) {
+            while ((time = timeRecords.peekFirst()) != null && now - time > timeout) {
+                timeRecords.removeFirst();
                 discarded.add(container.pollFirst());
             }
         }

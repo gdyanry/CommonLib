@@ -4,7 +4,6 @@ import yanry.lib.java.model.log.ConsoleHandler;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.SimpleFormatter;
-import yanry.lib.java.util.HexUtil;
 import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
 
@@ -27,7 +26,7 @@ public class Test {
     private static final byte[] KEY = new byte[]{-49, 59, -97, -82, 5, -125, -92, -15, -7, -4, 95, -87, 85, -47, -34, -10};
 
     public static void main(String[] args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().date().time().method(10), null));
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread().sequenceNumber().method(), null));
 
         format(IOUtil.getAppRelativeFile("").getAbsolutePath());
 
@@ -69,10 +68,8 @@ public class Test {
         while (matcher.find()) {
             concat(matcher.group());
         }
-        System.out.println(HexUtil.bytesToHex(KEY));
-        System.out.println(HexUtil.bytesToHex(IV));
-        String t = null;
-        System.out.println(new StringBuilder("a").append(t).append("b"));
+
+        System.out.println(String.format("%02x", (int) (0xff * 0.87)));
     }
 
     private static void format(String msg, Object... args) {
