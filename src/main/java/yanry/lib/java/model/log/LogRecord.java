@@ -2,10 +2,10 @@ package yanry.lib.java.model.log;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class LogRecord {
-    static final int TIMEOUT_SECOND = 120;
+abstract class LogRecord {
+    private static final String LOGGER_CLASS_NAME = Logger.class.getName();
     private static AtomicLong sequenceNumberCreator = new AtomicLong();
-    private static int INIT_STACK_TRACE;
+    private int initStartTrace;
     private Object tag;
     private LogLevel level;
     private long sequenceNumber;
@@ -15,14 +15,12 @@ public class LogRecord {
     private int encapsulationLayerCount;
     private int currentDepth;
 
-    static LogRecord get(Object tag, LogLevel level, String message, int encapsulationLayerCount) {
-        LogRecord record = new LogRecord();
-        record.tag = tag;
-        record.level = level;
-        record.message = message;
-        record.encapsulationLayerCount = encapsulationLayerCount;
-        record.sequenceNumber = sequenceNumberCreator.getAndIncrement();
-        return record;
+    LogRecord(Object tag, LogLevel level, int encapsulationLayerCount) {
+        sequenceNumber = sequenceNumberCreator.getAndIncrement();
+        timeMillis = System.currentTimeMillis();
+        this.tag = tag;
+        this.level = level;
+        this.encapsulationLayerCount = encapsulationLayerCount;
     }
 
     public Object getTag() {
@@ -38,13 +36,13 @@ public class LogRecord {
     }
 
     public String getMessage() {
+        if (message == null) {
+            message = buildMessage();
+        }
         return message;
     }
 
     public long getTimeMillis() {
-        if (timeMillis == 0) {
-            timeMillis = System.currentTimeMillis();
-        }
         return timeMillis;
     }
 
@@ -53,19 +51,22 @@ public class LogRecord {
             // stack trace index: 1
             stackTrace = Thread.currentThread().getStackTrace();
         }
-        if (INIT_STACK_TRACE == 0) {
-            // 不同虚拟机栈的层数可能不一样，所以需要计算不能写死
-            for (int i = 0; i < stackTrace.length; i++) {
-                if (Logger.class.getName().equals(stackTrace[i].getClassName())) {
-                    INIT_STACK_TRACE = i + 1;
+        // 不同虚拟机栈的层数可能不一样，相同虚拟机不同的函数调用也可能不一样，所以需要计算不能写死
+        int depth = stackTrace.length;
+        if (initStartTrace == 0) {
+            for (int i = 0; i < depth; i++) {
+                if (LOGGER_CLASS_NAME.equals(stackTrace[i].getClassName())) {
+                    initStartTrace = i + 1;
                     break;
                 }
             }
         }
-        int index = INIT_STACK_TRACE + encapsulationLayerCount + currentDepth++;
-        if (stackTrace.length > index) {
+        int index = initStartTrace + encapsulationLayerCount + currentDepth++;
+        if (depth > index) {
             return stackTrace[index];
         }
         return null;
     }
+
+    protected abstract String buildMessage();
 }

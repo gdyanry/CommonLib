@@ -7,7 +7,7 @@ import java.util.List;
 public class FormattedLog {
     private static Pool pool = new Pool();
 
-    static FormattedLog get(String log, int messageStart, int messageEnd) {
+    public static FormattedLog get(String log, int messageStart, int messageEnd) {
         FormattedLog formattedLog = pool.borrow();
         formattedLog.log = log;
         formattedLog.messageStart = messageStart;
@@ -41,7 +41,7 @@ public class FormattedLog {
     private static class Pool extends TimedObjectPool<FormattedLog> {
 
         private Pool() {
-            super(LogRecord.TIMEOUT_SECOND);
+            super(120);
         }
 
         @Override

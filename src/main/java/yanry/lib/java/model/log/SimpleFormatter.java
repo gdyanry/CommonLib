@@ -86,8 +86,7 @@ public class SimpleFormatter implements LogFormatter {
         if (flags[METHOD] && stackDepth == 0) {
             StackTraceElement e = logRecord.nextStackTraceElement();
             if (e != null) {
-                String name = e.getClassName();
-                sb.append(name.substring(name.lastIndexOf(".") + 1)).append('.').append(e.getMethodName()).append('(').append(')').append(separator);
+                sb.append(e.getMethodName()).append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')').append(separator);
             }
         }
         int start = sb.length();

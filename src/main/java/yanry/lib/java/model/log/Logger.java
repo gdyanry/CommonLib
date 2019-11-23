@@ -9,16 +9,6 @@ public class Logger {
     private final static LogFormatter defaultFormatter = new SimpleFormatter();
     private final static ConsoleHandler defaultHandler = new ConsoleHandler(null, null);
     private static Object defaultTag;
-    private Object tag;
-    private LogLevel level;
-    private List<LogHandler> handlers;
-
-    private Logger(Object tag) {
-        this.tag = tag;
-        handlers = new LinkedList<>();
-        level = LogLevel.Verbose;
-        instances.put(tag, this);
-    }
 
     public static Logger get(Object tag) {
         Logger logger = instances.get(tag);
@@ -38,6 +28,17 @@ public class Logger {
 
     public static Logger getDefault() {
         return get(defaultTag);
+    }
+
+    private Object tag;
+    private LogLevel level;
+    private List<LogHandler> handlers;
+
+    private Logger(Object tag) {
+        this.tag = tag;
+        handlers = new LinkedList<>();
+        level = LogLevel.Verbose;
+        instances.put(tag, this);
     }
 
     /**
@@ -66,7 +67,37 @@ public class Logger {
      * @param args
      */
     public void format(int encapsulationLayerCount, LogLevel level, String format, Object... args) {
-        doLog(encapsulationLayerCount + 1, level, args.length == 0 ? format : String.format(format, args));
+        if (this.level != null && this.level.test(level)) {
+            LogRecord record = null;
+            if (handlers.isEmpty()) {
+                handleFormatLog(encapsulationLayerCount + 1, level, null, defaultHandler, format, args);
+            } else {
+                for (LogHandler handler : handlers) {
+                    record = handleFormatLog(encapsulationLayerCount + 1, level, record, handler, format, args);
+                }
+            }
+        }
+    }
+
+    private LogRecord handleFormatLog(int encapsulationLayerCount, LogLevel level, LogRecord record, LogHandler handler, String format, Object... args) {
+        if (handler.getLevel() == null || handler.getLevel().test(level)) {
+            if (record == null) {
+                // 此处距离formatter.format()还隔着一层调用，所以encapsulationLayerCount需要再加1
+                record = new FormatLogRecord(tag, level, encapsulationLayerCount + 1, format, args);
+            }
+            handleLogRecord(level, record, handler);
+        }
+        return record;
+    }
+
+    private void handleLogRecord(LogLevel level, LogRecord record, LogHandler handler) {
+        LogFormatter formatter = handler.getFormatter();
+        if (formatter == null) {
+            formatter = defaultFormatter;
+        }
+        FormattedLog formattedLog = formatter.format(record);
+        handler.handleLog(level, tag, formattedLog.getLog(), formattedLog.getMessageStart(), formattedLog.getMessageEnd());
+        formattedLog.recycle();
     }
 
     /**
@@ -77,38 +108,25 @@ public class Logger {
      * @param parts
      */
     public void concat(int encapsulationLayerCount, LogLevel level, Object... parts) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Object part : parts) {
-            stringBuilder.append(part);
-        }
-        doLog(encapsulationLayerCount + 1, level, stringBuilder.toString());
-    }
-
-    private void doLog(int encapsulationLayerCount, LogLevel level, String log) {
         if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
             if (handlers.isEmpty()) {
-                handleLog(encapsulationLayerCount, level, log, null, defaultHandler);
+                handleConcatLog(encapsulationLayerCount + 1, level, null, defaultHandler, parts);
             } else {
                 for (LogHandler handler : handlers) {
-                    record = handleLog(encapsulationLayerCount, level, log, record, handler);
+                    record = handleConcatLog(encapsulationLayerCount + 1, level, record, handler, parts);
                 }
             }
         }
     }
 
-    private LogRecord handleLog(int encapsulationLayerCount, LogLevel level, String log, LogRecord record, LogHandler handler) {
+    private LogRecord handleConcatLog(int encapsulationLayerCount, LogLevel level, LogRecord record, LogHandler handler, Object... parts) {
         if (handler.getLevel() == null || handler.getLevel().test(level)) {
             if (record == null) {
-                record = LogRecord.get(tag, level, log, encapsulationLayerCount + 1);
+                // 此处距离formatter.format()还隔着一层调用，所以encapsulationLayerCount需要再加1
+                record = new ConcatLogRecord(tag, level, encapsulationLayerCount + 1, parts);
             }
-            LogFormatter formatter = handler.getFormatter();
-            if (formatter == null) {
-                formatter = defaultFormatter;
-            }
-            FormattedLog formattedLog = formatter.format(record);
-            handler.handleLog(level, tag, formattedLog.getLog(), formattedLog.getMessageStart(), formattedLog.getMessageEnd());
-            formattedLog.recycle();
+            handleLogRecord(level, record, handler);
         }
         return record;
     }

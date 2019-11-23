@@ -26,11 +26,11 @@ public class Test {
     private static final byte[] KEY = new byte[]{-49, 59, -97, -82, 5, -125, -92, -15, -7, -4, 95, -87, 85, -47, -34, -10};
 
     public static void main(String[] args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread().sequenceNumber().method(), null));
-
-        format(IOUtil.getAppRelativeFile("").getAbsolutePath());
+        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().method(), null));
 
         concat(49 >> 2);
+        format(IOUtil.getAppRelativeFile("").getAbsolutePath());
+
         format(StringUtil.generateFixedLengthNumber(new Random(), 10));
 
         System.out.println(~1);

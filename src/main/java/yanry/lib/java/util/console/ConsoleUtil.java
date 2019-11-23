@@ -30,8 +30,8 @@ public class ConsoleUtil {
         }
     }
 
-    public static StringBuilder appendStackTrace(StringBuilder builder, StackTraceElement e) {
-        return builder.append("    at ").append(e.getClassName()).append('.').append(e.getMethodName())
+    public static void appendStackTrace(StringBuilder builder, StackTraceElement e) {
+        builder.append("    at ").append(e.getClassName()).append('.').append(e.getMethodName())
                 .append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')');
     }
 
