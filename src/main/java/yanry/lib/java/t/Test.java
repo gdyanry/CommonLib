@@ -69,7 +69,8 @@ public class Test {
             concat(matcher.group());
         }
 
-        System.out.println(String.format("%02x", (int) (0xff * 0.87)));
+        System.out.println(String.format("%02x", (int) (0xff * 0.9)));
+        System.out.println(1f * 0xdb / 0xff);
     }
 
     private static void format(String msg, Object... args) {

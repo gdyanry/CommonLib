@@ -48,5 +48,12 @@ public abstract class TimedMapPool<K, V> {
         return value;
     }
 
+    public void clear() {
+        synchronized (accessTime) {
+            accessTime.clear();
+        }
+        map.clear();
+    }
+
     protected abstract V offerByKey(K key);
 }
