@@ -21,7 +21,7 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> 
     protected void show(D data) {
         this.data = data;
         if (getView() == null) {
-            show();
+            showView(data);
         } else {
             async.show(data);
         }
@@ -42,5 +42,5 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> 
         async = null;
     }
 
-    protected abstract void show();
+    protected abstract void showView(D data);
 }
