@@ -12,9 +12,9 @@ public abstract class SyncDisplay<D extends ShowData, V> extends Display<D, V> {
     }
 
     /**
-     * @param currentInstance may be null.
+     * @param currentView may be null.
      * @param data
      * @return
      */
-    protected abstract V showData(V currentInstance, D data);
+    protected abstract V showData(V currentView, D data);
 }

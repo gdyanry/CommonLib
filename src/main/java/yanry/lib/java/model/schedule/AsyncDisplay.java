@@ -28,8 +28,8 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> 
     }
 
     @Override
-    public boolean notifyDismiss(V popInstance) {
-        if (super.notifyDismiss(popInstance)) {
+    public boolean notifyDismiss(V view) {
+        if (super.notifyDismiss(view)) {
             async = null;
             return true;
         }

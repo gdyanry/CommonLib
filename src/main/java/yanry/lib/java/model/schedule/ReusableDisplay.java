@@ -3,26 +3,26 @@ package yanry.lib.java.model.schedule;
 public abstract class ReusableDisplay<D extends ShowData, V> extends SyncDisplay<D, V> {
 
     @Override
-    protected final V showData(V currentInstance, D data) {
-        if (currentInstance == null || !enableReuse()) {
-            currentInstance = createInstance(data);
+    protected final V showData(V currentView, D data) {
+        if (currentView == null || !enableReuse()) {
+            currentView = createView(data);
         }
-        if (currentInstance != null) {
-            if (!isShowing(currentInstance)) {
-                showView(currentInstance);
+        if (currentView != null) {
+            if (!isShowing(currentView)) {
+                showView(currentView);
             }
-            setData(currentInstance, data);
+            setData(currentView, data);
         }
-        return currentInstance;
+        return currentView;
     }
 
     protected boolean enableReuse() {
         return true;
     }
 
-    protected abstract V createInstance(D data);
+    protected abstract V createView(D data);
 
-    protected abstract void setData(V instance, D data);
+    protected abstract void setData(V view, D data);
 
-    protected abstract void showView(V instance);
+    protected abstract void showView(V view);
 }

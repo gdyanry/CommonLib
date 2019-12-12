@@ -9,7 +9,7 @@ import java.util.List;
  * 为特定数据显示特定界面。非抽象子孙类必须包含无参构造函数。
  *
  * @param <D> data type.
- * @param <V> data handler type.
+ * @param <V> view type.
  */
 public abstract class Display<D extends ShowData, V> {
     private Scheduler scheduler;
@@ -57,8 +57,8 @@ public abstract class Display<D extends ShowData, V> {
     /**
      * 此数据界面被提前关闭（非超时，比如由用户按返回键触发）时需要调用此方法通知显示队列中等待的数据，否则队列中下一条数据要等到前一条数据超时时间后才会显示。
      */
-    public boolean notifyDismiss(V popInstance) {
-        if (popInstance == this.view && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
+    public boolean notifyDismiss(V view) {
+        if (view == this.view && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
             ShowData currentTask = scheduler.current;
             scheduler.current = null;
             scheduler.manager.runner.run(() -> {
@@ -94,7 +94,7 @@ public abstract class Display<D extends ShowData, V> {
 
     protected abstract void show(D data);
 
-    protected abstract void dismiss(V popInstance);
+    protected abstract void dismiss(V view);
 
-    protected abstract boolean isShowing(V popInstance);
+    protected abstract boolean isShowing(V view);
 }
