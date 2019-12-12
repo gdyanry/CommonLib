@@ -14,10 +14,10 @@ import java.util.List;
 public abstract class Display<D extends ShowData, V> {
     private Scheduler scheduler;
     private V view;
-    private List<OnValueChangeListener<V>> onPopInstanceChangeListeners;
+    private List<OnValueChangeListener<V>> onViewChangeListeners;
 
     protected Display() {
-        onPopInstanceChangeListeners = new LinkedList<>();
+        onViewChangeListeners = new LinkedList<>();
     }
 
     void setScheduler(Scheduler scheduler) {
@@ -30,24 +30,24 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void setView(V view) {
         if (this.view != view) {
-            for (OnValueChangeListener<V> listener : onPopInstanceChangeListeners) {
+            for (OnValueChangeListener<V> listener : onViewChangeListeners) {
                 listener.onValueChange(view, this.view);
             }
             this.view = view;
         }
     }
 
-    public void addOnPopInstanceChangeListener(OnValueChangeListener<V> listener) {
-        if (!onPopInstanceChangeListeners.contains(listener)) {
-            onPopInstanceChangeListeners.add(listener);
+    public void addOnViewChangeListener(OnValueChangeListener<V> listener) {
+        if (!onViewChangeListeners.contains(listener)) {
+            onViewChangeListeners.add(listener);
         }
     }
 
-    public void removeOnPopInstanceChangeListener(OnValueChangeListener<V> listener) {
-        onPopInstanceChangeListeners.remove(listener);
+    public void removeOnViewChangeListener(OnValueChangeListener<V> listener) {
+        onViewChangeListeners.remove(listener);
     }
 
-    public D getProcessingData() {
+    public D getShowingData() {
         if (scheduler != null && scheduler.current != null && scheduler.current.display == this) {
             return (D) scheduler.current;
         }
@@ -59,12 +59,12 @@ public abstract class Display<D extends ShowData, V> {
      */
     public boolean notifyDismiss(V view) {
         if (view == this.view && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
-            ShowData currentTask = scheduler.current;
+            ShowData currentData = scheduler.current;
             scheduler.current = null;
             scheduler.manager.runner.run(() -> {
                 setView(null);
-                scheduler.manager.runner.cancelPendingTimeout(currentTask);
-                currentTask.dispatchDismiss(ShowData.DISMISS_TYPE_NOTIFIED);
+                scheduler.manager.runner.cancelPendingTimeout(currentData);
+                currentData.dispatchDismiss(ShowData.DISMISS_TYPE_NOTIFIED);
                 scheduler.manager.rebalance(null, null);
             });
             return true;

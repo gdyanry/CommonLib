@@ -25,6 +25,8 @@ public class Scheduler {
         for (Scheduler scheduler : schedulers) {
             if (scheduler.manager == manager) {
                 linkedSchedulers.add(scheduler);
+            } else {
+                Logger.getDefault().ww("can't link schedulers from different managers.");
             }
         }
     }
