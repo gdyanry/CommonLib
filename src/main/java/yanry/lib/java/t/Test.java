@@ -28,6 +28,10 @@ public class Test {
     public static void main(String[] args) throws IOException {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().method(), null));
 
+        int a = 1 << 31;
+        int flags = a | 8;
+        concat(flags);
+        concat((flags & 8) == 8);
         concat(49 >> 2);
         format(IOUtil.getAppRelativeFile("").getAbsolutePath());
 

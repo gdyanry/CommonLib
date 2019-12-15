@@ -103,23 +103,23 @@ public class SchedulerManager {
         for (ShowData data : queue) {
             HashSet<ShowData> concernedShowingData = data.scheduler.getConcernedShowingData();
             if (concernedShowingData.size() == 0) {
-                if (data.isValidOnDequeue()) {
+                if (data.hasFlag(ShowData.FLAG_INVALID_ON_DEQUEUE)) {
+                    invalidData.add(data);
+                } else {
                     data.scheduler.current = data;
                     dataToShow.add(data);
-                } else {
-                    invalidData.add(data);
                 }
             } else {
                 for (ShowData showingData : concernedShowingData) {
                     if (dataToShow.contains(showingData) && data.priority > showingData.priority) {
-                        if (data.isValidOnDequeue()) {
+                        if (data.hasFlag(ShowData.FLAG_INVALID_ON_DEQUEUE)) {
+                            invalidData.add(data);
+                        } else {
                             // 替换优先级较低的待显示数据
                             dataToShow.remove(showingData);
                             showingData.scheduler.current = null;
                             data.scheduler.current = data;
                             dataToShow.add(data);
-                        } else {
-                            invalidData.add(data);
                         }
                     }
                 }

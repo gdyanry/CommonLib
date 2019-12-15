@@ -71,7 +71,7 @@ public class Scheduler {
             Iterator<ShowData> it = manager.queue.iterator();
             while (it.hasNext()) {
                 ShowData next = it.next();
-                if (next.scheduler == this && next.priority <= data.priority && data.expelWaitingData(next) && !next.rejectExpelled()) {
+                if (next.scheduler == this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
                     next.dispatchRelease(ShowData.DEQUEUE_EXPELLED);
                     it.remove();
                 }
@@ -82,7 +82,7 @@ public class Scheduler {
             for (ShowData showingData : concernedShowingData) {
                 if (data.strategy != ShowData.STRATEGY_SHOW_IMMEDIATELY ||
                         data.priority < showingData.priority ||
-                        data.priority == showingData.priority && showingData.rejectDismissed()) {
+                        data.priority == showingData.priority && showingData.hasFlag(ShowData.FLAG_REJECT_DISMISSED)) {
                     showNow = false;
                     break;
                 }
