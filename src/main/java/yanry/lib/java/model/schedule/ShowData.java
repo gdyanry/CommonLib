@@ -12,45 +12,14 @@ public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_EXPEL_WAITING_DATA = 4;
     public static final int FLAG_INVALID_ON_DEQUEUE = 8;
 
-    public static final int STRATEGY_APPEND_TAIL = 0;
+    public static final int STRATEGY_APPEND_TAIL = 2;
     public static final int STRATEGY_INSERT_HEAD = 1;
-    public static final int STRATEGY_SHOW_IMMEDIATELY = 2;
+    public static final int STRATEGY_SHOW_IMMEDIATELY = 0;
 
-    /**
-     * dismissed by {@link #dismiss(long)} or {@link Display#dismiss(long)} with delay <= 0.
-     */
-    public static final String DISMISS_MANUAL = "DISMISS_MANUAL";
-    /**
-     * dismissed by {@link #dismiss(long)} or {@link Display#dismiss(long)} with delay > 0,
-     * or {@link #setDuration(long)} with duration > 0 has been set before {@link Scheduler#show(ShowData, Class)}.
-     */
-    public static final String DISMISS_TIMEOUT = "DISMISS_TIMEOUT";
-    /**
-     * dismissed when subsequent data's {@link #strategy} = {@link #STRATEGY_SHOW_IMMEDIATELY} and (has higher priority or (has equal priority and
-     * current data's {@link #FLAG_REJECT_DISMISSED} flag is miss)).
-     */
-    public static final String DISMISS_EXPELLED = "DISMISS_EXPELLED";
-    /**
-     * dismissed by {@link Scheduler#cancel(boolean)} or {@link SchedulerManager#cancelAll(boolean)} or {@link SchedulerManager#cancelByTag(Object)}.
-     */
-    public static final String DISMISS_CANCELLED = "DISMISS_CANCELLED";
-    /**
-     * dismissed by {@link Display#notifyDismiss(Object)}.
-     */
-    public static final String DISMISS_NOTIFIED = "DISMISS_NOTIFIED";
-    /**
-     * dequeue when subsequent data' has equal or higher priority and {@link #FLAG_EXPEL_WAITING_DATA} flag and current data's
-     * {@link #FLAG_REJECT_EXPELLED} flag is miss.
-     */
-    public static final String DEQUEUE_EXPELLED = "DEQUEUE_EXPELLED";
-    /**
-     * dequeue by {@link Scheduler#cancel(boolean)} or {@link SchedulerManager#cancelAll(boolean)} or {@link SchedulerManager#cancelByTag(Object)}.
-     */
-    public static final String DEQUEUE_CANCELLED = "DEQUEUE_CANCELLED";
-    /**
-     * dequeue if current data has {@link #FLAG_INVALID_ON_DEQUEUE} flag when rebalancing the scheduler queue.
-     */
-    public static final String DEQUEUE_INVALID = "DEQUEUE_INVALID";
+    public static final int STATE_ENQUEUE = 1;
+    public static final int STATE_DEQUEUE = 2;
+    public static final int STATE_SHOWING = 3;
+    public static final int STATE_DISMISS = 4;
 
     Object extra;
     long duration;
@@ -59,31 +28,28 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    private LinkedList<Runnable> onShowListeners;
-    private LinkedList<OnReleaseListener> onReleaseListeners;
+    private int state;
+    private LinkedList<OnDataStateChangeListener> stateListeners;
 
     public ShowData() {
         super(false);
-        strategy = STRATEGY_SHOW_IMMEDIATELY;
-        onShowListeners = new LinkedList<>();
-        onReleaseListeners = new LinkedList<>();
+        stateListeners = new LinkedList<>();
     }
 
-    public boolean isScheduled() {
-        return display != null;
-    }
-
-    public boolean isShowing() {
-        return scheduler != null && scheduler.current == this;
+    public int getState() {
+        return state;
     }
 
     public void dismiss(long delay) {
-        if (scheduler != null && scheduler.current == this) {
+        if (scheduler != null && state == STATE_SHOWING) {
             if (delay > 0) {
                 scheduler.manager.runner.scheduleTimeout(this, delay);
             } else {
                 scheduler.manager.runner.cancelPendingTimeout(this);
-                scheduler.manager.runner.run(() -> doDismiss(DISMISS_MANUAL));
+                scheduler.manager.runner.run(() -> {
+                    Logger.getDefault().vv("dismiss by manual: ", this);
+                    doDismiss();
+                });
             }
         }
     }
@@ -119,40 +85,15 @@ public class ShowData extends FlagsHolder implements Runnable {
         return this;
     }
 
-    /**
-     * on show means exactly after shown.
-     *
-     * @param listener
-     * @return
-     */
-    public ShowData addOnShowListener(Runnable listener) {
-        onShowListeners.add(listener);
-        return this;
+    public void addOnStateChangeListener(OnDataStateChangeListener listener) {
+        stateListeners.add(listener);
     }
 
-    /**
-     * on release generally means before dequeue or dismiss, except when release type is {@link #DISMISS_NOTIFIED},
-     * which is determined by the timing of invoking {@link Display#notifyDismiss(Object)}.
-     *
-     * @param listener
-     * @return
-     */
-    public ShowData addOnReleaseListener(OnReleaseListener listener) {
-        onReleaseListeners.add(listener);
-        return this;
-    }
-
-    final void dispatchShow() {
-        for (Runnable listener : onShowListeners) {
-            listener.run();
+    void dispatchState(int state) {
+        for (OnDataStateChangeListener listener : stateListeners) {
+            listener.onDataStateChange(state);
         }
-    }
-
-    final void dispatchRelease(String type) {
-        Logger.getDefault().v("release(%s): %s", type, this);
-        for (OnReleaseListener listener : onReleaseListeners) {
-            listener.onRelease(type);
-        }
+        this.state = state;
     }
 
     protected boolean expelWaitingData(ShowData data) {
@@ -161,13 +102,14 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     @Override
     public final void run() {
-        doDismiss(DISMISS_TIMEOUT);
+        Logger.getDefault().vv("dismiss by timeout: ", this);
+        doDismiss();
     }
 
-    private void doDismiss(String type) {
-        if (scheduler != null && scheduler.current == this) {
+    private void doDismiss() {
+        if (scheduler != null && state == STATE_SHOWING) {
             scheduler.current = null;
-            dispatchRelease(type);
+            dispatchState(STATE_DISMISS);
             HashSet<Display> displaysToDismisses = new HashSet<>();
             displaysToDismisses.add(display);
             scheduler.manager.rebalance(null, displaysToDismisses);

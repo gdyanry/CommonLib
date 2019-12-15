@@ -1,6 +1,7 @@
 package yanry.lib.java.model.schedule;
 
 import yanry.lib.java.interfaces.OnValueChangeListener;
+import yanry.lib.java.model.log.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +65,8 @@ public abstract class Display<D extends ShowData, V> {
             scheduler.manager.runner.run(() -> {
                 setView(null);
                 scheduler.manager.runner.cancelPendingTimeout(currentData);
-                currentData.dispatchRelease(ShowData.DISMISS_NOTIFIED);
+                Logger.getDefault().vv("notify dismiss: ", currentData);
+                currentData.dispatchState(ShowData.STATE_DISMISS);
                 scheduler.manager.rebalance(null, null);
             });
             return true;

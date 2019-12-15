@@ -37,7 +37,8 @@ public class Scheduler {
             while (iterator.hasNext()) {
                 ShowData next = iterator.next();
                 if (next.scheduler == this) {
-                    next.dispatchRelease(ShowData.DEQUEUE_CANCELLED);
+                    Logger.getDefault().vv("dequeue by scheduler cancel: ", next);
+                    next.dispatchState(ShowData.STATE_DEQUEUE);
                     iterator.remove();
                 }
             }
@@ -72,7 +73,8 @@ public class Scheduler {
             while (it.hasNext()) {
                 ShowData next = it.next();
                 if (next.scheduler == this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
-                    next.dispatchRelease(ShowData.DEQUEUE_EXPELLED);
+                    Logger.getDefault().vv("dequeue by expelled: ", next);
+                    next.dispatchState(ShowData.STATE_DEQUEUE);
                     it.remove();
                 }
             }
@@ -93,7 +95,8 @@ public class Scheduler {
                     manager.runner.cancelPendingTimeout(showingData);
                     showingData.scheduler.current = null;
                     // 结束当前正在显示的关联任务
-                    showingData.dispatchRelease(ShowData.DISMISS_EXPELLED);
+                    Logger.getDefault().vv("dismiss by expelled: ", showingData);
+                    showingData.dispatchState(ShowData.STATE_DISMISS);
                     if (data.display != showingData.display) {
                         displaysToDismisses.add(showingData.display);
                     }
@@ -105,12 +108,14 @@ public class Scheduler {
                 switch (data.strategy) {
                     case ShowData.STRATEGY_SHOW_IMMEDIATELY:
                     case ShowData.STRATEGY_INSERT_HEAD:
-                        Logger.getDefault().vv("insert head: ", data);
                         manager.queue.addFirst(data);
+                        Logger.getDefault().vv("insert head: ", data);
+                        data.dispatchState(ShowData.STATE_ENQUEUE);
                         break;
                     case ShowData.STRATEGY_APPEND_TAIL:
-                        Logger.getDefault().vv("append tail: ", data);
                         manager.queue.addLast(data);
+                        Logger.getDefault().vv("append tail: ", data);
+                        data.dispatchState(ShowData.STATE_ENQUEUE);
                         break;
                 }
             }
@@ -130,14 +135,15 @@ public class Scheduler {
 
     void dismissCurrent(HashSet<Display> displaysToDismisses) {
         if (current != null) {
-            ShowData currentTask = this.current;
+            ShowData currentData = this.current;
             current = null;
-            manager.runner.cancelPendingTimeout(currentTask);
-            currentTask.dispatchRelease(ShowData.DISMISS_CANCELLED);
+            manager.runner.cancelPendingTimeout(currentData);
+            Logger.getDefault().vv("dismiss by cancel: ", currentData);
+            currentData.dispatchState(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
-                currentTask.display.internalDismiss();
+                currentData.display.internalDismiss();
             } else {
-                displaysToDismisses.add(currentTask.display);
+                displaysToDismisses.add(currentData.display);
             }
         }
     }

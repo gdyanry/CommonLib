@@ -39,7 +39,7 @@ public class SchedulerManager {
 
     private void doShow(ShowData data) {
         data.display.show(data);
-        data.dispatchShow();
+        data.dispatchState(ShowData.STATE_SHOWING);
         if (data.duration > 0) {
             runner.scheduleTimeout(data, data.duration);
         }
@@ -53,7 +53,8 @@ public class SchedulerManager {
     public void cancelAll(boolean dismissCurrent) {
         runner.run(() -> {
             for (ShowData data : queue) {
-                data.dispatchRelease(ShowData.DEQUEUE_CANCELLED);
+                Logger.getDefault().vv("dequeue by all cancel: ", data);
+                data.dispatchState(ShowData.STATE_DEQUEUE);
             }
             queue.clear();
             if (dismissCurrent) {
@@ -75,7 +76,8 @@ public class SchedulerManager {
             while (it.hasNext()) {
                 ShowData data = it.next();
                 if (data.tag == tag) {
-                    data.dispatchRelease(ShowData.DEQUEUE_CANCELLED);
+                    Logger.getDefault().vv("dequeue by tag cancel: ", data);
+                    data.dispatchState(ShowData.STATE_DEQUEUE);
                     it.remove();
                 }
             }
@@ -130,7 +132,8 @@ public class SchedulerManager {
             ShowData next = iterator.next();
             if (invalidData.contains(next)) {
                 // 从队列中清除无效的数据
-                next.dispatchRelease(ShowData.DEQUEUE_INVALID);
+                Logger.getDefault().vv("dequeue by invalid: ", next);
+                next.dispatchState(ShowData.STATE_DEQUEUE);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
                 // 从队列中清除即将显示的数据
