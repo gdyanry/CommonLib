@@ -37,9 +37,8 @@ public class Scheduler {
             while (iterator.hasNext()) {
                 ShowData next = iterator.next();
                 if (next.scheduler == this) {
+                    next.dispatchRelease(ShowData.DEQUEUE_CANCELLED);
                     iterator.remove();
-                    next.onCleanFromQueue();
-                    Logger.getDefault().vv("clean from queue: ", next);
                 }
             }
             if (dismissCurrent) {
@@ -64,13 +63,7 @@ public class Scheduler {
         return display;
     }
 
-    /**
-     * 此方法需要在主线程中调用。
-     *
-     * @param data
-     * @param displayType
-     */
-    public void show(ShowData data, Class<? extends Display> displayType) {
+    public <D extends ShowData> void show(D data, Class<? extends Display<D, ?>> displayType) {
         manager.runner.run(() -> {
             data.scheduler = this;
             data.display = getDisplay(displayType);
@@ -78,16 +71,18 @@ public class Scheduler {
             Iterator<ShowData> it = manager.queue.iterator();
             while (it.hasNext()) {
                 ShowData next = it.next();
-                if (next.scheduler == this && next.priority <= data.priority && data.expelWaitingTask(next) && !next.rejectExpelled()) {
+                if (next.scheduler == this && next.priority <= data.priority && data.expelWaitingData(next) && !next.rejectExpelled()) {
+                    next.dispatchRelease(ShowData.DEQUEUE_EXPELLED);
                     it.remove();
-                    Logger.getDefault().vv("expelled from queue: ", next);
                 }
             }
             // 处理当前正在显示的关联数据
             HashSet<ShowData> concernedShowingData = getConcernedShowingData();
             boolean showNow = true;
             for (ShowData showingData : concernedShowingData) {
-                if (data.priority < showingData.priority || data.priority == showingData.priority && (data.getStrategy() != ShowData.STRATEGY_SHOW_IMMEDIATELY || showingData.rejectDismissed())) {
+                if (data.strategy != ShowData.STRATEGY_SHOW_IMMEDIATELY ||
+                        data.priority < showingData.priority ||
+                        data.priority == showingData.priority && showingData.rejectDismissed()) {
                     showNow = false;
                     break;
                 }
@@ -98,7 +93,7 @@ public class Scheduler {
                     manager.runner.cancelPendingTimeout(showingData);
                     showingData.scheduler.current = null;
                     // 结束当前正在显示的关联任务
-                    showingData.dispatchDismiss(ShowData.DISMISS_TYPE_EXPELLED);
+                    showingData.dispatchRelease(ShowData.DISMISS_EXPELLED);
                     if (data.display != showingData.display) {
                         displaysToDismisses.add(showingData.display);
                     }
@@ -107,7 +102,7 @@ public class Scheduler {
                 // 显示及取消显示使得调度器处于非稳态，需要重新平衡到次稳态
                 manager.rebalance(data, displaysToDismisses);
             } else {
-                switch (data.getStrategy()) {
+                switch (data.strategy) {
                     case ShowData.STRATEGY_SHOW_IMMEDIATELY:
                     case ShowData.STRATEGY_INSERT_HEAD:
                         Logger.getDefault().vv("insert head: ", data);
@@ -138,7 +133,7 @@ public class Scheduler {
             ShowData currentTask = this.current;
             current = null;
             manager.runner.cancelPendingTimeout(currentTask);
-            currentTask.dispatchDismiss(ShowData.DISMISS_TYPE_CANCELLED);
+            currentTask.dispatchRelease(ShowData.DISMISS_CANCELLED);
             if (displaysToDismisses == null) {
                 currentTask.display.internalDismiss();
             } else {

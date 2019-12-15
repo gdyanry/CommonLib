@@ -24,7 +24,7 @@ public abstract class Display<D extends ShowData, V> {
         this.scheduler = scheduler;
     }
 
-    protected V getView() {
+    public V getView() {
         return view;
     }
 
@@ -64,7 +64,7 @@ public abstract class Display<D extends ShowData, V> {
             scheduler.manager.runner.run(() -> {
                 setView(null);
                 scheduler.manager.runner.cancelPendingTimeout(currentData);
-                currentData.dispatchDismiss(ShowData.DISMISS_TYPE_NOTIFIED);
+                currentData.dispatchRelease(ShowData.DISMISS_NOTIFIED);
                 scheduler.manager.rebalance(null, null);
             });
             return true;

@@ -53,8 +53,7 @@ public class SchedulerManager {
     public void cancelAll(boolean dismissCurrent) {
         runner.run(() -> {
             for (ShowData data : queue) {
-                data.onCleanFromQueue();
-                Logger.getDefault().vv("clean from queue: ", data);
+                data.dispatchRelease(ShowData.DEQUEUE_CANCELLED);
             }
             queue.clear();
             if (dismissCurrent) {
@@ -76,9 +75,8 @@ public class SchedulerManager {
             while (it.hasNext()) {
                 ShowData data = it.next();
                 if (data.tag == tag) {
+                    data.dispatchRelease(ShowData.DEQUEUE_CANCELLED);
                     it.remove();
-                    data.onCleanFromQueue();
-                    Logger.getDefault().vv("cancelled by tag: ", data);
                 }
             }
             // 清理当前显示的窗口
@@ -132,7 +130,7 @@ public class SchedulerManager {
             ShowData next = iterator.next();
             if (invalidData.contains(next)) {
                 // 从队列中清除无效的数据
-                Logger.getDefault().vv("drop on invalid: ", next);
+                next.dispatchRelease(ShowData.DEQUEUE_INVALID);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
                 // 从队列中清除即将显示的数据
