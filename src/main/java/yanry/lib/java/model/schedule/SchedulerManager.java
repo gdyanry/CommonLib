@@ -12,12 +12,14 @@ public class SchedulerManager {
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     HashMap<Object, Scheduler> instances;
+    HashSet<ShowData> dataToShow;
 
     public SchedulerManager(ScheduleRunner runner) {
         this.runner = runner;
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
+        dataToShow = new HashSet<>();
     }
 
     public Scheduler get(Object tag) {
@@ -35,14 +37,6 @@ public class SchedulerManager {
     public void link(Scheduler a, Scheduler b) {
         a.addLink(b);
         b.addLink(a);
-    }
-
-    private void doShow(ShowData data) {
-        data.display.show(data);
-        data.dispatchState(ShowData.STATE_SHOWING);
-        if (data.duration > 0) {
-            runner.scheduleTimeout(data, data.duration);
-        }
     }
 
     /**
@@ -94,7 +88,6 @@ public class SchedulerManager {
 
 
     void rebalance(ShowData showData, HashSet<Display> displaysToDismisses) {
-        HashSet<ShowData> dataToShow = new HashSet<>();
         if (showData != null) {
             // 此处调用是为了后面getConcernedShowingTasks()能得到正确的结果
             showData.scheduler.current = showData;
@@ -105,7 +98,7 @@ public class SchedulerManager {
         for (ShowData data : queue) {
             HashSet<ShowData> concernedShowingData = data.scheduler.getConcernedShowingData();
             if (concernedShowingData.size() == 0) {
-                if (data.hasFlag(ShowData.FLAG_INVALID_ON_DEQUEUE)) {
+                if (data.hasFlag(ShowData.FLAG_INVALID_ON_DELAYED_SHOW)) {
                     invalidData.add(data);
                 } else {
                     data.scheduler.current = data;
@@ -114,7 +107,7 @@ public class SchedulerManager {
             } else {
                 for (ShowData showingData : concernedShowingData) {
                     if (dataToShow.contains(showingData) && data.priority > showingData.priority) {
-                        if (data.hasFlag(ShowData.FLAG_INVALID_ON_DEQUEUE)) {
+                        if (data.hasFlag(ShowData.FLAG_INVALID_ON_DELAYED_SHOW)) {
                             invalidData.add(data);
                         } else {
                             // 替换优先级较低的待显示数据
@@ -150,11 +143,21 @@ public class SchedulerManager {
                 display.internalDismiss();
             }
         }
-        for (ShowData data : dataToShow) {
-            if (data != showData) {
-                Logger.getDefault().vv("loop and show: ", data);
+        // 遍历的过程中可能夹带show和dismiss操作
+        while (dataToShow.size() > 0) {
+            HashSet<ShowData> temp = new HashSet<>(dataToShow);
+            for (ShowData data : temp) {
+                if (dataToShow.remove(data)) {
+                    if (data != showData) {
+                        Logger.getDefault().vv("loop and show: ", data);
+                    }
+                    data.dispatchState(ShowData.STATE_SHOWING);
+                    data.display.show(data);
+                    if (data.duration > 0) {
+                        runner.scheduleTimeout(data, data.duration);
+                    }
+                }
             }
-            doShow(data);
         }
     }
 }

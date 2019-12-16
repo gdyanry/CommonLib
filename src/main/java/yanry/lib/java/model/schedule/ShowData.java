@@ -10,7 +10,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_EXPELLED = 1;
     public static final int FLAG_REJECT_DISMISSED = 2;
     public static final int FLAG_EXPEL_WAITING_DATA = 4;
-    public static final int FLAG_INVALID_ON_DEQUEUE = 8;
+    public static final int FLAG_INVALID_ON_DELAYED_SHOW = 8;
 
     public static final int STRATEGY_APPEND_TAIL = 2;
     public static final int STRATEGY_INSERT_HEAD = 1;
@@ -41,7 +41,8 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     public void dismiss(long delay) {
-        if (scheduler != null && state == STATE_SHOWING) {
+        // 此处scheduler.current==this不能用state==STATE_SHOWING替代，因为state是在“show”完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
+        if (scheduler != null && scheduler.current == this) {
             if (delay > 0) {
                 scheduler.manager.runner.scheduleTimeout(this, delay);
             } else {
@@ -107,12 +108,18 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     private void doDismiss() {
-        if (scheduler != null && state == STATE_SHOWING) {
+        if (scheduler != null && scheduler.current == this) {
             scheduler.current = null;
-            dispatchState(STATE_DISMISS);
-            HashSet<Display> displaysToDismisses = new HashSet<>();
-            displaysToDismisses.add(display);
-            scheduler.manager.rebalance(null, displaysToDismisses);
+            if (scheduler.manager.dataToShow.remove(this)) {
+                // 还未show就dismiss，按dequeue处理
+                Logger.getDefault().vv("dequeue by dismiss on show: ", this);
+                dispatchState(STATE_DEQUEUE);
+            } else {
+                dispatchState(STATE_DISMISS);
+                HashSet<Display> displaysToDismisses = new HashSet<>();
+                displaysToDismisses.add(display);
+                scheduler.manager.rebalance(null, displaysToDismisses);
+            }
         }
     }
 

@@ -108,14 +108,14 @@ public class Scheduler {
                 switch (data.strategy) {
                     case ShowData.STRATEGY_SHOW_IMMEDIATELY:
                     case ShowData.STRATEGY_INSERT_HEAD:
-                        manager.queue.addFirst(data);
                         Logger.getDefault().vv("insert head: ", data);
                         data.dispatchState(ShowData.STATE_ENQUEUE);
+                        manager.queue.addFirst(data);
                         break;
                     case ShowData.STRATEGY_APPEND_TAIL:
-                        manager.queue.addLast(data);
                         Logger.getDefault().vv("append tail: ", data);
                         data.dispatchState(ShowData.STATE_ENQUEUE);
+                        manager.queue.addLast(data);
                         break;
                 }
             }
