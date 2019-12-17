@@ -62,13 +62,16 @@ public abstract class Display<D extends ShowData, V> {
         if (view == this.view && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
             ShowData currentData = scheduler.current;
             scheduler.current = null;
-            scheduler.manager.runner.run(() -> {
-                setView(null);
-                scheduler.manager.runner.cancelPendingTimeout(currentData);
-                Logger.getDefault().vv("notify dismiss: ", currentData);
-                currentData.dispatchState(ShowData.STATE_DISMISS);
-                scheduler.manager.rebalance(null, null);
-            });
+            new ScheduleRunnable(scheduler.manager) {
+                @Override
+                protected void doRun() {
+                    setView(null);
+                    scheduler.manager.runner.cancelPendingTimeout(currentData);
+                    Logger.getDefault().vv("notify dismiss: ", currentData);
+                    currentData.dispatchState(ShowData.STATE_DISMISS);
+                    scheduler.manager.rebalance(null, null);
+                }
+            }.start();
             return true;
         }
         return false;
@@ -82,6 +85,7 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void internalDismiss() {
         if (view != null) {
+            Logger.getDefault().vv("dismiss view: ", view);
             dismiss(view);
             setView(null);
         }

@@ -28,7 +28,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    private int state;
+    int state;
     private LinkedList<OnDataStateChangeListener> stateListeners;
 
     public ShowData() {
@@ -46,11 +46,14 @@ public class ShowData extends FlagsHolder implements Runnable {
             if (delay > 0) {
                 scheduler.manager.runner.scheduleTimeout(this, delay);
             } else {
-                scheduler.manager.runner.cancelPendingTimeout(this);
-                scheduler.manager.runner.run(() -> {
-                    Logger.getDefault().vv("dismiss by manual: ", this);
-                    doDismiss();
-                });
+                new ScheduleRunnable(scheduler.manager) {
+                    @Override
+                    protected void doRun() {
+                        scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
+                        Logger.getDefault().vv("dismiss by manual: ", ShowData.this);
+                        doDismiss();
+                    }
+                }.start();
             }
         }
     }
@@ -91,36 +94,6 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     void dispatchState(int state) {
-        if (this.state == state) {
-            return;
-        }
-        switch (state) {
-            case STATE_SHOWING:
-                if (this.state == 0 || this.state == STATE_ENQUEUE) {
-                    doDispatchState(state);
-                    return;
-                }
-                return;
-            case STATE_DISMISS:
-                if (this.state == STATE_SHOWING) {
-                    doDispatchState(state);
-                    return;
-                }
-                if (this.state == STATE_ENQUEUE) {
-                    Logger.getDefault().vv("dequeue by dismiss on show: ", this);
-                    doDispatchState(STATE_DEQUEUE);
-                }
-                return;
-            case STATE_DEQUEUE:
-                if (this.state == STATE_ENQUEUE) {
-                    doDispatchState(state);
-                    return;
-                }
-                return;
-        }
-    }
-
-    private void doDispatchState(int state) {
         for (OnDataStateChangeListener listener : stateListeners) {
             listener.onDataStateChange(state);
         }
@@ -133,8 +106,12 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     @Override
     public final void run() {
-        Logger.getDefault().vv("dismiss by timeout: ", this);
-        doDismiss();
+        if (scheduler != null) {
+            scheduler.manager.isRunning = true;
+            Logger.getDefault().vv("dismiss by timeout: ", this);
+            doDismiss();
+            scheduler.manager.isRunning = false;
+        }
     }
 
     private void doDismiss() {

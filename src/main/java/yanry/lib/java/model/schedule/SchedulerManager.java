@@ -9,17 +9,16 @@ import java.util.LinkedList;
 
 public class SchedulerManager {
     ScheduleRunner runner;
+    boolean isRunning;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     HashMap<Object, Scheduler> instances;
-    HashSet<ShowData> dataToShow;
 
     public SchedulerManager(ScheduleRunner runner) {
         this.runner = runner;
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
-        dataToShow = new HashSet<>();
     }
 
     public Scheduler get(Object tag) {
@@ -45,18 +44,21 @@ public class SchedulerManager {
      * @param dismissCurrent 是否关闭当前正在显示的界面。
      */
     public void cancelAll(boolean dismissCurrent) {
-        runner.run(() -> {
-            for (ShowData data : queue) {
-                Logger.getDefault().vv("dequeue by all cancel: ", data);
-                data.dispatchState(ShowData.STATE_DEQUEUE);
-            }
-            queue.clear();
-            if (dismissCurrent) {
-                for (Scheduler scheduler : instances.values()) {
-                    scheduler.dismissCurrent(null);
+        new ScheduleRunnable(this) {
+            @Override
+            protected void doRun() {
+                for (ShowData data : queue) {
+                    Logger.getDefault().vv("dequeue by all cancel: ", data);
+                    data.dispatchState(ShowData.STATE_DEQUEUE);
+                }
+                queue.clear();
+                if (dismissCurrent) {
+                    for (Scheduler scheduler : instances.values()) {
+                        scheduler.dismissCurrent(null);
+                    }
                 }
             }
-        });
+        }.start();
     }
 
     public boolean hasScheduler(Object tag) {
@@ -64,30 +66,34 @@ public class SchedulerManager {
     }
 
     public void cancelByTag(Object tag) {
-        runner.run(() -> {
-            // 清理队列
-            Iterator<ShowData> it = queue.iterator();
-            while (it.hasNext()) {
-                ShowData data = it.next();
-                if (data.tag == tag) {
-                    Logger.getDefault().vv("dequeue by tag cancel: ", data);
-                    data.dispatchState(ShowData.STATE_DEQUEUE);
-                    it.remove();
+        new ScheduleRunnable(this) {
+            @Override
+            protected void doRun() {
+                // 清理队列
+                Iterator<ShowData> it = queue.iterator();
+                while (it.hasNext()) {
+                    ShowData data = it.next();
+                    if (data.tag == tag) {
+                        Logger.getDefault().vv("dequeue by tag cancel: ", data);
+                        data.dispatchState(ShowData.STATE_DEQUEUE);
+                        it.remove();
+                    }
                 }
-            }
-            // 清理当前显示的窗口
-            HashSet<Display> displaysToDismisses = new HashSet<>();
-            for (Scheduler scheduler : instances.values()) {
-                if (scheduler.current.tag == tag) {
-                    scheduler.dismissCurrent(displaysToDismisses);
+                // 清理当前显示的窗口
+                HashSet<Display> displaysToDismisses = new HashSet<>();
+                for (Scheduler scheduler : instances.values()) {
+                    if (scheduler.current.tag == tag) {
+                        scheduler.dismissCurrent(displaysToDismisses);
+                    }
                 }
+                rebalance(null, displaysToDismisses);
             }
-            rebalance(null, displaysToDismisses);
-        });
+        }.start();
     }
 
 
     void rebalance(ShowData showData, HashSet<Display> displaysToDismisses) {
+        HashSet<ShowData> dataToShow = new HashSet<>();
         if (showData != null) {
             // 此处调用是为了后面getConcernedShowingTasks()能得到正确的结果
             showData.scheduler.current = showData;
@@ -143,22 +149,15 @@ public class SchedulerManager {
                 display.internalDismiss();
             }
         }
-        while (dataToShow.size() > 0) {
-            HashSet<ShowData> temp = new HashSet<>(dataToShow);
-            for (ShowData data : temp) {
-                if (dataToShow.remove(data)) {
-                    if (data != showData) {
-                        Logger.getDefault().vv("loop and show: ", data);
-                    }
-                    data.display.show(data);
-                    data.dispatchState(ShowData.STATE_SHOWING);
-                    if (data.getState() == ShowData.STATE_SHOWING) {
-                        runner.cancelPendingTimeout(data);
-                        if (data.duration > 0) {
-                            runner.scheduleTimeout(data, data.duration);
-                        }
-                    }
-                }
+        for (ShowData data : dataToShow) {
+            if (data != showData) {
+                Logger.getDefault().vv("loop and show: ", data);
+            }
+            data.display.show(data);
+            data.dispatchState(ShowData.STATE_SHOWING);
+            runner.cancelPendingTimeout(data);
+            if (data.duration > 0) {
+                runner.scheduleTimeout(data, data.duration);
             }
         }
     }

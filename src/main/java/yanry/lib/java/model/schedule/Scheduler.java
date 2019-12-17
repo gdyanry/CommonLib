@@ -32,22 +32,25 @@ public class Scheduler {
     }
 
     public void cancel(boolean dismissCurrent) {
-        manager.runner.run(() -> {
-            Iterator<ShowData> iterator = manager.queue.iterator();
-            while (iterator.hasNext()) {
-                ShowData next = iterator.next();
-                if (next.scheduler == this) {
-                    Logger.getDefault().vv("dequeue by scheduler cancel: ", next);
-                    next.dispatchState(ShowData.STATE_DEQUEUE);
-                    iterator.remove();
+        new ScheduleRunnable(manager) {
+            @Override
+            protected void doRun() {
+                Iterator<ShowData> iterator = manager.queue.iterator();
+                while (iterator.hasNext()) {
+                    ShowData next = iterator.next();
+                    if (next.scheduler == Scheduler.this) {
+                        Logger.getDefault().vv("dequeue by scheduler cancel: ", next);
+                        next.dispatchState(ShowData.STATE_DEQUEUE);
+                        iterator.remove();
+                    }
+                }
+                if (dismissCurrent) {
+                    HashSet<Display> displaysToDismisses = new HashSet<>();
+                    dismissCurrent(displaysToDismisses);
+                    manager.rebalance(null, displaysToDismisses);
                 }
             }
-            if (dismissCurrent) {
-                HashSet<Display> displaysToDismisses = new HashSet<>();
-                dismissCurrent(displaysToDismisses);
-                manager.rebalance(null, displaysToDismisses);
-            }
-        });
+        }.start();
     }
 
     public <T extends Display> T getDisplay(Class<T> displayType) {
@@ -65,61 +68,67 @@ public class Scheduler {
     }
 
     public <D extends ShowData> void show(D data, Class<? extends Display<D, ?>> displayType) {
-        manager.runner.run(() -> {
-            data.scheduler = this;
-            data.display = getDisplay(displayType);
-            // 根据request的需要清理队列
-            Iterator<ShowData> it = manager.queue.iterator();
-            while (it.hasNext()) {
-                ShowData next = it.next();
-                if (next.scheduler == this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
-                    Logger.getDefault().vv("dequeue by expelled: ", next);
-                    next.dispatchState(ShowData.STATE_DEQUEUE);
-                    it.remove();
+        new ScheduleRunnable(manager) {
+            @Override
+            protected void doRun() {
+                if (data.state == ShowData.STATE_SHOWING || data.state == ShowData.STATE_ENQUEUE) {
+                    return;
                 }
-            }
-            // 处理当前正在显示的关联数据
-            HashSet<ShowData> concernedShowingData = getConcernedShowingData();
-            boolean showNow = true;
-            for (ShowData showingData : concernedShowingData) {
-                if (data.strategy != ShowData.STRATEGY_SHOW_IMMEDIATELY ||
-                        data.priority < showingData.priority ||
-                        data.priority == showingData.priority && showingData.hasFlag(ShowData.FLAG_REJECT_DISMISSED)) {
-                    showNow = false;
-                    break;
-                }
-            }
-            if (showNow) {
-                HashSet<Display> displaysToDismisses = new HashSet<>();
-                for (ShowData showingData : concernedShowingData) {
-                    manager.runner.cancelPendingTimeout(showingData);
-                    showingData.scheduler.current = null;
-                    // 结束当前正在显示的关联任务
-                    Logger.getDefault().vv("dismiss by expelled: ", showingData);
-                    showingData.dispatchState(ShowData.STATE_DISMISS);
-                    if (data.display != showingData.display) {
-                        displaysToDismisses.add(showingData.display);
+                data.scheduler = Scheduler.this;
+                data.display = getDisplay(displayType);
+                // 根据request的需要清理队列
+                Iterator<ShowData> it = manager.queue.iterator();
+                while (it.hasNext()) {
+                    ShowData next = it.next();
+                    if (next.scheduler == Scheduler.this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
+                        Logger.getDefault().vv("dequeue by expelled: ", next);
+                        next.dispatchState(ShowData.STATE_DEQUEUE);
+                        it.remove();
                     }
                 }
-                Logger.getDefault().vv("show directly: ", data);
-                // 显示及取消显示使得调度器处于非稳态，需要重新平衡到次稳态
-                manager.rebalance(data, displaysToDismisses);
-            } else {
-                switch (data.strategy) {
-                    case ShowData.STRATEGY_SHOW_IMMEDIATELY:
-                    case ShowData.STRATEGY_INSERT_HEAD:
-                        Logger.getDefault().vv("insert head: ", data);
-                        manager.queue.addFirst(data);
-                        data.dispatchState(ShowData.STATE_ENQUEUE);
+                // 处理当前正在显示的关联数据
+                HashSet<ShowData> concernedShowingData = getConcernedShowingData();
+                boolean showNow = true;
+                for (ShowData showingData : concernedShowingData) {
+                    if (data.strategy != ShowData.STRATEGY_SHOW_IMMEDIATELY ||
+                            data.priority < showingData.priority ||
+                            data.priority == showingData.priority && showingData.hasFlag(ShowData.FLAG_REJECT_DISMISSED)) {
+                        showNow = false;
                         break;
-                    case ShowData.STRATEGY_APPEND_TAIL:
-                        Logger.getDefault().vv("append tail: ", data);
-                        manager.queue.addLast(data);
-                        data.dispatchState(ShowData.STATE_ENQUEUE);
-                        break;
+                    }
+                }
+                if (showNow) {
+                    HashSet<Display> displaysToDismisses = new HashSet<>();
+                    for (ShowData showingData : concernedShowingData) {
+                        manager.runner.cancelPendingTimeout(showingData);
+                        showingData.scheduler.current = null;
+                        // 结束当前正在显示的关联任务
+                        Logger.getDefault().vv("dismiss by expelled: ", showingData);
+                        showingData.dispatchState(ShowData.STATE_DISMISS);
+                        if (data.display != showingData.display) {
+                            displaysToDismisses.add(showingData.display);
+                        }
+                    }
+                    Logger.getDefault().vv("show directly: ", data);
+                    // 显示及取消显示使得调度器处于非稳态，需要重新平衡到次稳态
+                    manager.rebalance(data, displaysToDismisses);
+                } else {
+                    switch (data.strategy) {
+                        case ShowData.STRATEGY_SHOW_IMMEDIATELY:
+                        case ShowData.STRATEGY_INSERT_HEAD:
+                            Logger.getDefault().vv("insert head: ", data);
+                            manager.queue.addFirst(data);
+                            data.dispatchState(ShowData.STATE_ENQUEUE);
+                            break;
+                        case ShowData.STRATEGY_APPEND_TAIL:
+                            Logger.getDefault().vv("append tail: ", data);
+                            manager.queue.addLast(data);
+                            data.dispatchState(ShowData.STATE_ENQUEUE);
+                            break;
+                    }
                 }
             }
-        });
+        }.start();
     }
 
     HashSet<ShowData> getConcernedShowingData() {
