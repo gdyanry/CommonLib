@@ -143,7 +143,6 @@ public class SchedulerManager {
                 display.internalDismiss();
             }
         }
-        // 遍历的过程中可能夹带show和dismiss操作
         while (dataToShow.size() > 0) {
             HashSet<ShowData> temp = new HashSet<>(dataToShow);
             for (ShowData data : temp) {
@@ -151,10 +150,13 @@ public class SchedulerManager {
                     if (data != showData) {
                         Logger.getDefault().vv("loop and show: ", data);
                     }
-                    data.dispatchState(ShowData.STATE_SHOWING);
                     data.display.show(data);
-                    if (data.duration > 0) {
-                        runner.scheduleTimeout(data, data.duration);
+                    data.dispatchState(ShowData.STATE_SHOWING);
+                    if (data.getState() == ShowData.STATE_SHOWING) {
+                        runner.cancelPendingTimeout(data);
+                        if (data.duration > 0) {
+                            runner.scheduleTimeout(data, data.duration);
+                        }
                     }
                 }
             }

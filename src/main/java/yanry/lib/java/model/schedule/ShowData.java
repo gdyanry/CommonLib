@@ -41,7 +41,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     public void dismiss(long delay) {
-        // 此处scheduler.current==this不能用state==STATE_SHOWING替代，因为state是在“show”完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
+        // 此处scheduler.current==this不能用state==STATE_SHOWING替代，因为state是在show完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
         if (scheduler != null && scheduler.current == this) {
             if (delay > 0) {
                 scheduler.manager.runner.scheduleTimeout(this, delay);
@@ -91,6 +91,36 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     void dispatchState(int state) {
+        if (this.state == state) {
+            return;
+        }
+        switch (state) {
+            case STATE_SHOWING:
+                if (this.state == 0 || this.state == STATE_ENQUEUE) {
+                    doDispatchState(state);
+                    return;
+                }
+                return;
+            case STATE_DISMISS:
+                if (this.state == STATE_SHOWING) {
+                    doDispatchState(state);
+                    return;
+                }
+                if (this.state == STATE_ENQUEUE) {
+                    Logger.getDefault().vv("dequeue by dismiss on show: ", this);
+                    doDispatchState(STATE_DEQUEUE);
+                }
+                return;
+            case STATE_DEQUEUE:
+                if (this.state == STATE_ENQUEUE) {
+                    doDispatchState(state);
+                    return;
+                }
+                return;
+        }
+    }
+
+    private void doDispatchState(int state) {
         for (OnDataStateChangeListener listener : stateListeners) {
             listener.onDataStateChange(state);
         }
@@ -110,16 +140,10 @@ public class ShowData extends FlagsHolder implements Runnable {
     private void doDismiss() {
         if (scheduler != null && scheduler.current == this) {
             scheduler.current = null;
-            if (scheduler.manager.dataToShow.remove(this)) {
-                // 还未show就dismiss，按dequeue处理
-                Logger.getDefault().vv("dequeue by dismiss on show: ", this);
-                dispatchState(STATE_DEQUEUE);
-            } else {
-                dispatchState(STATE_DISMISS);
-                HashSet<Display> displaysToDismisses = new HashSet<>();
-                displaysToDismisses.add(display);
-                scheduler.manager.rebalance(null, displaysToDismisses);
-            }
+            dispatchState(STATE_DISMISS);
+            HashSet<Display> displaysToDismisses = new HashSet<>();
+            displaysToDismisses.add(display);
+            scheduler.manager.rebalance(null, displaysToDismisses);
         }
     }
 
