@@ -14,7 +14,7 @@ public class MathUtil {
      * @return
      */
     public static boolean isEven(int value) {
-        return (value & 0x01) != 1;
+        return (value & 1) == 0;
     }
 
     /**

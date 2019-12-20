@@ -29,10 +29,10 @@ public class TimeLocker {
     /**
      * 手动解锁。
      *
-     * @param unlockNow 为true表示马上解锁；为false时，只有未设定自动解锁时间时才执行解锁。
+     * @param force 为true表示马上解锁；为false时，只有未设定自动解锁时间时才执行解锁。
      */
-    public void unlock(boolean unlockNow) {
-        if (unlockNow || lockTime < 0) {
+    public void unlock(boolean force) {
+        if (force || lockTime < 0) {
             setLockTime(0);
         }
     }

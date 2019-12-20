@@ -28,6 +28,10 @@ public class Test {
     public static void main(String[] args) throws IOException {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().method(), null));
 
+        System.out.println(-1 & 1);
+        System.out.println(0 & 1);
+        System.out.println(1 & 1);
+        System.out.println(2 & 1);
         int a = 1 << 31;
         int flags = a | 8;
         concat(flags);
