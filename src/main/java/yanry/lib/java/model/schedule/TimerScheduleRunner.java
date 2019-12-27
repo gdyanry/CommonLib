@@ -33,6 +33,10 @@ public class TimerScheduleRunner extends Timer implements ScheduleRunner {
 
     @Override
     public void scheduleTimeout(Runnable runnable, long delay) {
+        TimerTask old = tasks.get(runnable);
+        if (old != null) {
+            old.cancel();
+        }
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {

@@ -7,18 +7,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class SchedulerManager {
+public class SchedulerManager implements Runnable {
     ScheduleRunner runner;
     boolean isRunning;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     HashMap<Object, Scheduler> instances;
+    private LinkedList<SchedulerWatcher> schedulerWatchers;
 
     public SchedulerManager(ScheduleRunner runner) {
         this.runner = runner;
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
+        schedulerWatchers = new LinkedList<>();
     }
 
     public Scheduler get(Object tag) {
@@ -91,6 +93,13 @@ public class SchedulerManager {
         }.start();
     }
 
+    public void addSchedulerWatcher(SchedulerWatcher listener) {
+        schedulerWatchers.add(listener);
+    }
+
+    public void removeSchedulerWatcher(SchedulerWatcher listener) {
+        schedulerWatchers.remove(listener);
+    }
 
     void rebalance(ShowData showData, HashSet<Display> displaysToDismisses) {
         HashSet<ShowData> dataToShow = new HashSet<>();
@@ -158,6 +167,18 @@ public class SchedulerManager {
             runner.cancelPendingTimeout(data);
             if (data.duration > 0) {
                 runner.scheduleTimeout(data, data.duration);
+            }
+        }
+        runner.scheduleTimeout(this, 0);
+    }
+
+    @Override
+    public final void run() {
+        for (Scheduler scheduler : instances.values()) {
+            if (scheduler.sync()) {
+                for (SchedulerWatcher watcher : schedulerWatchers) {
+                    watcher.onSchedulerStateChange(scheduler, scheduler.current != null);
+                }
             }
         }
     }

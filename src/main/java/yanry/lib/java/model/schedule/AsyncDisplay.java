@@ -7,10 +7,10 @@ package yanry.lib.java.model.schedule;
  **/
 public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> {
     private D data;
-    private AsyncBridge<D, V> async;
+    private AsyncBridge<D, V> bridge;
 
     public void notifyCreate(AsyncBridge<D, V> function) {
-        this.async = function;
+        this.bridge = function;
         if (data != null) {
             setView(function.show(data));
             data = null;
@@ -23,14 +23,14 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> 
         if (getView() == null) {
             showView(data);
         } else {
-            async.show(data);
+            bridge.show(data);
         }
     }
 
     @Override
     public boolean notifyDismiss(V view) {
         if (super.notifyDismiss(view)) {
-            async = null;
+            bridge = null;
             return true;
         }
         return false;
@@ -39,7 +39,7 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> 
     @Override
     protected void internalDismiss() {
         super.internalDismiss();
-        async = null;
+        bridge = null;
     }
 
     protected abstract void showView(D data);

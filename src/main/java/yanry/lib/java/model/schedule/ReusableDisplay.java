@@ -8,7 +8,7 @@ public abstract class ReusableDisplay<D extends ShowData, V> extends SyncDisplay
     protected final V showData(V currentView, D data) {
         if (currentView == null || !enableReuse()) {
             currentView = createView(data);
-            Logger.getDefault().vv("create view: ", currentView);
+            Logger.getDefault().dd("create view: ", currentView);
         }
         if (currentView != null) {
             if (!isShowing(currentView)) {

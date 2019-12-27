@@ -15,6 +15,7 @@ public class SchedulerTest {
     public static void main(String[] args) {
         Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().time().sequenceNumber().thread().method(), LogLevel.Verbose));
         SchedulerManager schedulerManager = new SchedulerManager(new TimerScheduleRunner("test-runner", false));
+        schedulerManager.addSchedulerWatcher((scheduler, isVisible) -> Logger.getDefault().ii(scheduler, " is visible: ", isVisible));
         Scheduler scheduler = schedulerManager.get("test");
         TestData data = new TestData("DURATION", false);
         data.setDuration(3000);

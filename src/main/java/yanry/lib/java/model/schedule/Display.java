@@ -85,7 +85,7 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void internalDismiss() {
         if (view != null) {
-            Logger.getDefault().vv("dismiss view: ", view);
+            Logger.getDefault().dd("dismiss view: ", view);
             dismiss(view);
             setView(null);
         }

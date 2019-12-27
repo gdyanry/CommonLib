@@ -13,6 +13,7 @@ import java.util.Iterator;
 public class Scheduler {
     SchedulerManager manager;
     ShowData current;
+    private boolean visible;
     HashMap<Class<? extends Display>, Display> displays;
 
     Scheduler(SchedulerManager manager) {
@@ -53,11 +54,15 @@ public class Scheduler {
         }.start();
     }
 
+    public ShowData getShowingData() {
+        return current;
+    }
+
     public <T extends Display> T getDisplay(Class<T> displayType) {
         T display = (T) displays.get(displayType);
         if (display == null) {
             try {
-                display = displayType.newInstance();
+                display = displayType.getDeclaredConstructor().newInstance();
                 display.setScheduler(this);
                 displays.put(displayType, display);
             } catch (Exception e) {
@@ -155,5 +160,13 @@ public class Scheduler {
                 displaysToDismisses.add(currentData.display);
             }
         }
+    }
+
+    boolean sync() {
+        if (visible ^ current != null) {
+            visible = current != null;
+            return true;
+        }
+        return false;
     }
 }
