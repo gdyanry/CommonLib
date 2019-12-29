@@ -1,7 +1,5 @@
 package yanry.lib.java.model.schedule;
 
-import yanry.lib.java.model.log.Logger;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,7 +25,7 @@ public class Scheduler {
             if (scheduler.manager == manager) {
                 linkedSchedulers.add(scheduler);
             } else {
-                Logger.getDefault().ww("can't link schedulers from different managers.");
+                manager.logger.ww("can't link schedulers from different managers.");
             }
         }
     }
@@ -40,7 +38,7 @@ public class Scheduler {
                 while (iterator.hasNext()) {
                     ShowData next = iterator.next();
                     if (next.scheduler == Scheduler.this) {
-                        Logger.getDefault().vv("dequeue by scheduler cancel: ", next);
+                        manager.logger.vv("dequeue by scheduler cancel: ", next);
                         next.dispatchState(ShowData.STATE_DEQUEUE);
                         iterator.remove();
                     }
@@ -66,7 +64,7 @@ public class Scheduler {
                 display.setScheduler(this);
                 displays.put(displayType, display);
             } catch (Exception e) {
-                Logger.getDefault().catches(e);
+                manager.logger.catches(e);
             }
         }
         return display;
@@ -86,7 +84,7 @@ public class Scheduler {
                 while (it.hasNext()) {
                     ShowData next = it.next();
                     if (next.scheduler == Scheduler.this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
-                        Logger.getDefault().vv("dequeue by expelled: ", next);
+                        manager.logger.vv("dequeue by expelled: ", next);
                         next.dispatchState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
@@ -108,25 +106,25 @@ public class Scheduler {
                         manager.runner.cancelPendingTimeout(showingData);
                         showingData.scheduler.current = null;
                         // 结束当前正在显示的关联任务
-                        Logger.getDefault().vv("dismiss by expelled: ", showingData);
+                        manager.logger.vv("dismiss by expelled: ", showingData);
                         showingData.dispatchState(ShowData.STATE_DISMISS);
                         if (data.display != showingData.display) {
                             displaysToDismisses.add(showingData.display);
                         }
                     }
-                    Logger.getDefault().vv("show directly: ", data);
+                    manager.logger.vv("show directly: ", data);
                     // 显示及取消显示使得调度器处于非稳态，需要重新平衡到次稳态
                     manager.rebalance(data, displaysToDismisses);
                 } else {
                     switch (data.strategy) {
                         case ShowData.STRATEGY_SHOW_IMMEDIATELY:
                         case ShowData.STRATEGY_INSERT_HEAD:
-                            Logger.getDefault().vv("insert head: ", data);
+                            manager.logger.vv("insert head: ", data);
                             manager.queue.addFirst(data);
                             data.dispatchState(ShowData.STATE_ENQUEUE);
                             break;
                         case ShowData.STRATEGY_APPEND_TAIL:
-                            Logger.getDefault().vv("append tail: ", data);
+                            manager.logger.vv("append tail: ", data);
                             manager.queue.addLast(data);
                             data.dispatchState(ShowData.STATE_ENQUEUE);
                             break;
@@ -152,7 +150,7 @@ public class Scheduler {
             ShowData currentData = this.current;
             current = null;
             manager.runner.cancelPendingTimeout(currentData);
-            Logger.getDefault().vv("dismiss by cancel: ", currentData);
+            manager.logger.vv("dismiss by cancel: ", currentData);
             currentData.dispatchState(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
                 currentData.display.internalDismiss();

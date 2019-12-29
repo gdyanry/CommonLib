@@ -4,20 +4,24 @@ public abstract class LogHandler {
     private LogFormatter formatter;
     private LogLevel level;
 
-    public LogHandler(LogFormatter formatter, LogLevel level) {
-        this.formatter = formatter;
-        this.level = level;
-    }
-
-    LogFormatter getFormatter() {
-        return formatter;
-    }
-
-    LogLevel getLevel() {
+    public LogLevel getLevel() {
         return level;
     }
 
-    protected abstract void handleLog(LogLevel level, Object tag, String log, int messageStart, int messageEnd);
+    public void setLevel(LogLevel level) {
+        this.level = level;
+    }
+
+    public LogHandler setFormatter(LogFormatter formatter) {
+        this.formatter = formatter;
+        return this;
+    }
+
+    final void handleLog(LogRecord logRecord) {
+        handleFormattedLog(logRecord, formatter == null ? logRecord.getMessage() : formatter.format(logRecord));
+    }
+
+    protected abstract void handleFormattedLog(LogRecord logRecord, String formattedLog);
 
     protected abstract void catches(Object tag, Exception e);
 }

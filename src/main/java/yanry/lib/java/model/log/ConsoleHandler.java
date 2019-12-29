@@ -7,17 +7,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ConsoleHandler extends LogHandler {
-    private static final Pattern stackTracePattern = Pattern.compile("^ {4}at \\S+\\(\\S+\\.java:\\d+\\)$", Pattern.MULTILINE);
-
-    public ConsoleHandler(LogFormatter formatter, LogLevel level) {
-        super(formatter, level);
-    }
+    private static final Pattern stackTracePattern = Pattern.compile("^\\tat \\S+\\(\\S+\\.java:\\d+\\)$", Pattern.MULTILINE);
 
     @Override
-    protected void handleLog(LogLevel level, Object tag, String log, int messageStart, int messageEnd) {
+    protected void handleFormattedLog(LogRecord logRecord, String formattedLog) {
         StringBuilder sb = new StringBuilder();
         Color color = null;
-        switch (level) {
+        switch (logRecord.getLevel()) {
             case Verbose:
                 color = Color.Cyan;
                 break;
@@ -35,7 +31,9 @@ public class ConsoleHandler extends LogHandler {
                 break;
         }
         int mark = 0;
-        Matcher matcher = stackTracePattern.matcher(log);
+        Matcher matcher = stackTracePattern.matcher(formattedLog);
+        int messageStart = formattedLog.indexOf(logRecord.getMessage());
+        int messageEnd = messageStart + logRecord.getMessage().length();
         while (matcher.find()) {
             // 含有调用栈信息
             int start = matcher.start();
@@ -43,7 +41,7 @@ public class ConsoleHandler extends LogHandler {
                 boolean handleMessageStart = messageStart >= mark && messageStart <= start;
                 if (handleMessageStart) {
                     // 添加日志内容前面的附加信息
-                    sb.append(log, mark, messageStart);
+                    sb.append(formattedLog, mark, messageStart);
                     // 设置日志内容颜色
                     ConsoleUtil.appendColorSequences(sb, color, true);
                     mark = messageStart;
@@ -51,34 +49,34 @@ public class ConsoleHandler extends LogHandler {
                 boolean handleMessageEnd = messageEnd >= mark && messageEnd <= start;
                 if (handleMessageEnd) {
                     // 添加日志内容
-                    sb.append(log, mark, messageEnd);
+                    sb.append(formattedLog, mark, messageEnd);
                     // 恢复颜色
                     ConsoleUtil.appendColorSequences(sb, Color.Default, true);
                     mark = messageEnd;
                 }
                 // 添加附加信息
-                sb.append(log, mark, start);
+                sb.append(formattedLog, mark, start);
             }
             mark = matcher.end();
             // 设置副色并添加调用栈信息
-            ConsoleUtil.appendColorSequences(sb, Color.White, true).append(log, start, mark);
+            ConsoleUtil.appendColorSequences(sb, Color.White, true).append(formattedLog, start, mark);
         }
-        int length = log.length();
+        int length = formattedLog.length();
         if (mark < length) {
             // 处理调用栈信息结束后的内容
             boolean handleMessageStart = messageStart >= mark && messageStart <= length;
             if (handleMessageStart) {
-                sb.append(log, mark, messageStart);
+                sb.append(formattedLog, mark, messageStart);
                 ConsoleUtil.appendColorSequences(sb, color, true);
                 mark = messageStart;
             }
             boolean handleMessageEnd = messageEnd >= mark && messageEnd <= length;
             if (handleMessageEnd) {
-                sb.append(log, mark, messageEnd);
+                sb.append(formattedLog, mark, messageEnd);
                 ConsoleUtil.appendColorSequences(sb, Color.Default, true);
                 mark = messageEnd;
             }
-            sb.append(log, mark, length);
+            sb.append(formattedLog, mark, length);
         }
         System.out.println(ConsoleUtil.appendColorSequences(sb, Color.Default, true));
     }

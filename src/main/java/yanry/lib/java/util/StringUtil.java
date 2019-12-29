@@ -44,10 +44,15 @@ public class StringUtil {
         return word.replaceFirst(firstLetter, upper ? firstLetter.toUpperCase() : firstLetter.toLowerCase());
     }
 
-    public static String getExceptionStackTrace(Exception e) {
+    public static String getThrowableStackTrace(Throwable e) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         e.printStackTrace(new PrintWriter(out, true));
         return out.toString();
+    }
+
+    public static void appendStackTrace(StringBuilder builder, StackTraceElement e) {
+        builder.append("\tat ").append(e.getClassName()).append('.').append(e.getMethodName())
+                .append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')');
     }
 
     public static <T> String arrayToString(String separator, T[] array) {

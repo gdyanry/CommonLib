@@ -26,7 +26,11 @@ public class Test {
     private static final byte[] KEY = new byte[]{-49, 59, -97, -82, 5, -125, -92, -15, -7, -4, 95, -87, 85, -47, -34, -10};
 
     public static void main(String[] args) throws IOException {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().sequenceNumber().method(), null));
+        SimpleFormatter formatter = new SimpleFormatter();
+        formatter.addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(formatter);
+        Logger.getDefault().addHandler(handler);
 
         format(IOUtil.getAppRelativeFile("").getAbsolutePath());
 

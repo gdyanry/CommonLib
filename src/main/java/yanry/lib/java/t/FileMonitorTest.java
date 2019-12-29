@@ -35,7 +35,11 @@ public class FileMonitorTest {
         // // TODO Auto-generated catch block
         // e.printStackTrace();
         // }
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().thread(), null));
+        SimpleFormatter formatter = new SimpleFormatter();
+        formatter.addFlag(SimpleFormatter.THREAD);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(formatter);
+        Logger.getDefault().addHandler(handler);
         try {
             FileMonitor fcm = new FileMonitor();
             fcm.monitor(new FileMonitor.WatchItem(new File("e:/aa/cc.txt"), StandardWatchEventKinds.ENTRY_MODIFY,

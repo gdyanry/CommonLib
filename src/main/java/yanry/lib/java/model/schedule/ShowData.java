@@ -1,7 +1,6 @@
 package yanry.lib.java.model.schedule;
 
 import yanry.lib.java.model.FlagsHolder;
-import yanry.lib.java.model.log.Logger;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -50,7 +49,7 @@ public class ShowData extends FlagsHolder implements Runnable {
                     @Override
                     protected void doRun() {
                         scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
-                        Logger.getDefault().vv("dismiss by manual: ", ShowData.this);
+                        scheduler.manager.logger.vv("dismiss by manual: ", ShowData.this);
                         doDismiss();
                     }
                 }.start();
@@ -108,7 +107,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     public final void run() {
         if (scheduler != null) {
             scheduler.manager.isRunning = true;
-            Logger.getDefault().vv("dismiss by timeout: ", this);
+            scheduler.manager.logger.vv("dismiss by timeout: ", this);
             doDismiss();
             scheduler.manager.isRunning = false;
         }

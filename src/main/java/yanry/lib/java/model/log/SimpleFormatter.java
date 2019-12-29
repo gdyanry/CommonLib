@@ -1,17 +1,20 @@
 package yanry.lib.java.model.log;
 
-import yanry.lib.java.util.console.ConsoleUtil;
+import yanry.lib.java.model.FlagsHolder;
+import yanry.lib.java.util.StringUtil;
 
-public class SimpleFormatter implements LogFormatter {
-    private static final int SEQUENCE_NUMBER = 0;
-    private static final int LEVEL = 1;
-    private static final int DATE = 2;
-    private static final int THREAD = 3;
-    private static final int TAG = 4;
-    private static final int METHOD = 5;
-    private static final int TIME = 6;
+import java.lang.management.ManagementFactory;
 
-    private boolean[] flags;
+public class SimpleFormatter extends FlagsHolder implements LogFormatter {
+    public static final int SEQUENCE_NUMBER = 0;
+    public static final int LEVEL = 1;
+    public static final int DATE = 2;
+    public static final int THREAD = 3;
+    public static final int TAG = 4;
+    public static final int METHOD = 5;
+    public static final int TIME = 6;
+    public static final int PROCESS = 7;
+
     private Object separator;
     private int stackDepth;
 
@@ -20,78 +23,45 @@ public class SimpleFormatter implements LogFormatter {
     }
 
     public SimpleFormatter(Object separator) {
+        super(true);
         this.separator = separator;
-        flags = new boolean[7];
     }
 
-    private SimpleFormatter setFlag(int index) {
-        flags[index] = true;
-        return this;
-    }
-
-    public SimpleFormatter sequenceNumber() {
-        return setFlag(SEQUENCE_NUMBER);
-    }
-
-    public SimpleFormatter level() {
-        return setFlag(LEVEL);
-    }
-
-    public SimpleFormatter date() {
-        return setFlag(DATE);
-    }
-
-    public SimpleFormatter time() {
-        return setFlag(TIME);
-    }
-
-    public SimpleFormatter thread() {
-        return setFlag(THREAD);
-    }
-
-    public SimpleFormatter tag() {
-        return setFlag(TAG);
-    }
-
-    public SimpleFormatter method() {
-        return setFlag(METHOD);
-    }
-
-    public SimpleFormatter method(int stackDepth) {
+    public void setMethodStack(int stackDepth) {
         this.stackDepth = stackDepth;
-        return this;
     }
 
     @Override
-    public FormattedLog format(LogRecord logRecord) {
+    public String format(LogRecord logRecord) {
         StringBuilder sb = new StringBuilder();
-        if (flags[SEQUENCE_NUMBER]) {
+        if (hasFlag(PROCESS)) {
+            sb.append(ManagementFactory.getRuntimeMXBean().getName()).append(separator);
+        }
+        if (hasFlag(SEQUENCE_NUMBER)) {
             sb.append(logRecord.getSequenceNumber()).append(separator);
         }
-        if (flags[LEVEL]) {
+        if (hasFlag(LEVEL)) {
             sb.append(logRecord.getLevel().getAcronym()).append(separator);
         }
-        if (flags[DATE]) {
+        if (hasFlag(DATE)) {
             sb.append(String.format("%tF%s", logRecord.getTimeMillis(), separator));
         }
-        if (flags[TIME]) {
+        if (hasFlag(TIME)) {
             sb.append(String.format("%tT.%<tL%s", logRecord.getTimeMillis(), separator));
         }
-        if (flags[THREAD]) {
+        if (hasFlag(THREAD)) {
             sb.append(Thread.currentThread().getName()).append(separator);
         }
-        if (flags[TAG]) {
+        if (hasFlag(TAG)) {
             sb.append(logRecord.getTag()).append(separator);
         }
-        if (flags[METHOD] && stackDepth == 0) {
+        if (hasFlag(METHOD) && stackDepth == 0) {
             StackTraceElement e = logRecord.nextStackTraceElement();
             if (e != null) {
                 sb.append(e.getMethodName()).append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')').append(separator);
             }
         }
-        int start = sb.length();
         sb.append(logRecord.getMessage());
-        int end = sb.length();
         if (stackDepth > 0) {
             for (int i = 0; i < stackDepth; i++) {
                 StackTraceElement e = logRecord.nextStackTraceElement();
@@ -99,9 +69,9 @@ public class SimpleFormatter implements LogFormatter {
                     break;
                 }
                 sb.append(System.lineSeparator());
-                ConsoleUtil.appendStackTrace(sb, e);
+                StringUtil.appendStackTrace(sb, e);
             }
         }
-        return FormattedLog.get(sb.toString(), start, end);
+        return sb.toString();
     }
 }

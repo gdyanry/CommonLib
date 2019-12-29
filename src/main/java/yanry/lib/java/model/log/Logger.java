@@ -6,8 +6,7 @@ import java.util.List;
 
 public class Logger {
     private final static HashMap<Object, Logger> instances = new HashMap<>();
-    private final static LogFormatter defaultFormatter = new SimpleFormatter();
-    private final static ConsoleHandler defaultHandler = new ConsoleHandler(null, null);
+    private final static ConsoleHandler defaultHandler = new ConsoleHandler();
     private static Object defaultTag;
 
     public static Logger get(Object tag) {
@@ -82,22 +81,11 @@ public class Logger {
     private LogRecord handleFormatLog(int encapsulationLayerCount, LogLevel level, LogRecord record, LogHandler handler, String format, Object... args) {
         if (handler.getLevel() == null || handler.getLevel().test(level)) {
             if (record == null) {
-                // 此处距离formatter.format()还隔着一层调用，所以encapsulationLayerCount需要再加1
-                record = new FormatLogRecord(tag, level, encapsulationLayerCount + 1, format, args);
+                record = new FormatLogRecord(tag, level, encapsulationLayerCount, format, args);
             }
-            handleLogRecord(level, record, handler);
+            handler.handleLog(record);
         }
         return record;
-    }
-
-    private void handleLogRecord(LogLevel level, LogRecord record, LogHandler handler) {
-        LogFormatter formatter = handler.getFormatter();
-        if (formatter == null) {
-            formatter = defaultFormatter;
-        }
-        FormattedLog formattedLog = formatter.format(record);
-        handler.handleLog(level, tag, formattedLog.getLog(), formattedLog.getMessageStart(), formattedLog.getMessageEnd());
-        formattedLog.recycle();
     }
 
     /**
@@ -123,10 +111,9 @@ public class Logger {
     private LogRecord handleConcatLog(int encapsulationLayerCount, LogLevel level, LogRecord record, LogHandler handler, Object... parts) {
         if (handler.getLevel() == null || handler.getLevel().test(level)) {
             if (record == null) {
-                // 此处距离formatter.format()还隔着一层调用，所以encapsulationLayerCount需要再加1
-                record = new ConcatLogRecord(tag, level, encapsulationLayerCount + 1, parts);
+                record = new ConcatLogRecord(tag, level, encapsulationLayerCount, parts);
             }
-            handleLogRecord(level, record, handler);
+            handler.handleLog(record);
         }
         return record;
     }

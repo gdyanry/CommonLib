@@ -9,14 +9,16 @@ import java.util.LinkedList;
 
 public class SchedulerManager implements Runnable {
     ScheduleRunner runner;
+    Logger logger;
     boolean isRunning;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     HashMap<Object, Scheduler> instances;
     private LinkedList<SchedulerWatcher> schedulerWatchers;
 
-    public SchedulerManager(ScheduleRunner runner) {
+    public SchedulerManager(ScheduleRunner runner, Logger logger) {
         this.runner = runner;
+        this.logger = logger;
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
@@ -50,7 +52,7 @@ public class SchedulerManager implements Runnable {
             @Override
             protected void doRun() {
                 for (ShowData data : queue) {
-                    Logger.getDefault().vv("dequeue by all cancel: ", data);
+                    logger.vv("dequeue by all cancel: ", data);
                     data.dispatchState(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
@@ -76,7 +78,7 @@ public class SchedulerManager implements Runnable {
                 while (it.hasNext()) {
                     ShowData data = it.next();
                     if (data.tag == tag) {
-                        Logger.getDefault().vv("dequeue by tag cancel: ", data);
+                        logger.vv("dequeue by tag cancel: ", data);
                         data.dispatchState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
@@ -140,7 +142,7 @@ public class SchedulerManager implements Runnable {
             ShowData next = iterator.next();
             if (invalidData.contains(next)) {
                 // 从队列中清除无效的数据
-                Logger.getDefault().vv("dequeue by invalid: ", next);
+                logger.vv("dequeue by invalid: ", next);
                 next.dispatchState(ShowData.STATE_DEQUEUE);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
@@ -160,7 +162,7 @@ public class SchedulerManager implements Runnable {
         }
         for (ShowData data : dataToShow) {
             if (data != showData) {
-                Logger.getDefault().vv("loop and show: ", data);
+                logger.vv("loop and show: ", data);
             }
             data.display.show(data);
             data.dispatchState(ShowData.STATE_SHOWING);

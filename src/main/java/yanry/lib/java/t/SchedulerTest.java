@@ -1,7 +1,6 @@
 package yanry.lib.java.t;
 
 import yanry.lib.java.model.log.ConsoleHandler;
-import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.SimpleFormatter;
 import yanry.lib.java.model.schedule.*;
@@ -13,8 +12,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SchedulerTest {
     public static void main(String[] args) {
-        Logger.getDefault().addHandler(new ConsoleHandler(new SimpleFormatter().time().sequenceNumber().thread().method(), LogLevel.Verbose));
-        SchedulerManager schedulerManager = new SchedulerManager(new TimerScheduleRunner("test-runner", false));
+        SimpleFormatter formatter = new SimpleFormatter();
+        formatter.addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD)
+                .addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.PROCESS);
+//        formatter.setMethodStack(5);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(formatter);
+        Logger.getDefault().addHandler(handler);
+        SchedulerManager schedulerManager = new SchedulerManager(new TimerScheduleRunner("schedule-runner", false), Logger.getDefault());
         schedulerManager.addSchedulerWatcher((scheduler, isVisible) -> Logger.getDefault().ii(scheduler, " is visible: ", isVisible));
         Scheduler scheduler = schedulerManager.get("test");
         TestData data = new TestData("DURATION", false);

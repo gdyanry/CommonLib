@@ -16,9 +16,11 @@ public abstract class Display<D extends ShowData, V> {
     private Scheduler scheduler;
     private V view;
     private List<OnValueChangeListener<V>> onViewChangeListeners;
+    private String name;
 
     protected Display() {
         onViewChangeListeners = new LinkedList<>();
+        name = getClass().getSimpleName();
     }
 
     void setScheduler(Scheduler scheduler) {
@@ -31,6 +33,7 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void setView(V view) {
         if (this.view != view) {
+            Logger.getDefault().dd(name, " set view: ", view);
             for (OnValueChangeListener<V> listener : onViewChangeListeners) {
                 listener.onValueChange(view, this.view);
             }
@@ -85,7 +88,6 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void internalDismiss() {
         if (view != null) {
-            Logger.getDefault().dd("dismiss view: ", view);
             dismiss(view);
             setView(null);
         }
