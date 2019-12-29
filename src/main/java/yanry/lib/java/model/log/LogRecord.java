@@ -2,7 +2,7 @@ package yanry.lib.java.model.log;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-abstract class LogRecord {
+public abstract class LogRecord {
     private static final String LOGGER_CLASS_NAME = Logger.class.getName();
     private static AtomicLong sequenceNumberCreator = new AtomicLong();
     private int initStartTrace;
