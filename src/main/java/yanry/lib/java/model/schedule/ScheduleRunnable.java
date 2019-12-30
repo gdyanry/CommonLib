@@ -10,7 +10,8 @@ public abstract class ScheduleRunnable implements Runnable {
         this.manager = manager;
     }
 
-    public void start() {
+    public void start(Object... logParts) {
+        manager.logger.dd(logParts);
         manager.runner.run(this);
     }
 

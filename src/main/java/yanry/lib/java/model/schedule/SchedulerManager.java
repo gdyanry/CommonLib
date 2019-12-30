@@ -1,11 +1,11 @@
 package yanry.lib.java.model.schedule;
 
-import yanry.lib.java.model.log.Logger;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import yanry.lib.java.model.log.Logger;
 
 public class SchedulerManager implements Runnable {
     ScheduleRunner runner;
@@ -28,7 +28,7 @@ public class SchedulerManager implements Runnable {
     public Scheduler get(Object tag) {
         Scheduler scheduler = instances.get(tag);
         if (scheduler == null) {
-            scheduler = new Scheduler(this);
+            scheduler = new Scheduler(this, tag);
             instances.put(tag, scheduler);
             HashSet<Scheduler> set = new HashSet<>();
             set.add(scheduler);
@@ -62,7 +62,7 @@ public class SchedulerManager implements Runnable {
                     }
                 }
             }
-        }.start();
+        }.start(this, " cancel all: ", dismissCurrent);
     }
 
     public boolean hasScheduler(Object tag) {
@@ -92,7 +92,7 @@ public class SchedulerManager implements Runnable {
                 }
                 rebalance(null, displaysToDismisses);
             }
-        }.start();
+        }.start(this, " cancel by tag: ", tag);
     }
 
     public void addSchedulerWatcher(SchedulerWatcher listener) {

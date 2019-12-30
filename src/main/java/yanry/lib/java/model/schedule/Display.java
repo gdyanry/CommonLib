@@ -1,10 +1,10 @@
 package yanry.lib.java.model.schedule;
 
-import yanry.lib.java.interfaces.OnValueChangeListener;
-import yanry.lib.java.model.log.Logger;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import yanry.lib.java.interfaces.OnValueChangeListener;
+import yanry.lib.java.model.log.Logger;
 
 /**
  * 为特定数据显示特定界面。非抽象子孙类必须包含无参构造函数。
@@ -74,7 +74,7 @@ public abstract class Display<D extends ShowData, V> {
                     currentData.dispatchState(ShowData.STATE_DISMISS);
                     scheduler.manager.rebalance(null, null);
                 }
-            }.start();
+            }.start(name, " notify dismiss: ", view);
             return true;
         }
         return false;

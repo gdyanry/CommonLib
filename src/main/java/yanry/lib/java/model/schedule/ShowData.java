@@ -1,9 +1,9 @@
 package yanry.lib.java.model.schedule;
 
-import yanry.lib.java.model.FlagsHolder;
-
 import java.util.HashSet;
 import java.util.LinkedList;
+
+import yanry.lib.java.model.FlagsHolder;
 
 public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_EXPELLED = 1;
@@ -52,7 +52,7 @@ public class ShowData extends FlagsHolder implements Runnable {
                         scheduler.manager.logger.vv("dismiss by manual: ", ShowData.this);
                         doDismiss();
                     }
-                }.start();
+                }.start(this, " dismiss: ", delay);
             }
         }
     }

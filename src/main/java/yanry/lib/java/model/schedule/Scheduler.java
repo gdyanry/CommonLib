@@ -10,12 +10,14 @@ import java.util.Iterator;
  */
 public class Scheduler {
     SchedulerManager manager;
+    private Object tag;
     ShowData current;
     private boolean visible;
     HashMap<Class<? extends Display>, Display> displays;
 
-    Scheduler(SchedulerManager manager) {
+    Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
+        this.tag = tag;
         displays = new HashMap<>();
     }
 
@@ -25,7 +27,7 @@ public class Scheduler {
             if (scheduler.manager == manager) {
                 linkedSchedulers.add(scheduler);
             } else {
-                manager.logger.ww("can't link schedulers from different managers.");
+                manager.logger.ee("can't link scheduler ", scheduler.tag, " to ", tag);
             }
         }
     }
@@ -49,7 +51,7 @@ public class Scheduler {
                     manager.rebalance(null, displaysToDismisses);
                 }
             }
-        }.start();
+        }.start(tag, " cancel: ", dismissCurrent);
     }
 
     public ShowData getShowingData() {
@@ -131,7 +133,7 @@ public class Scheduler {
                     }
                 }
             }
-        }.start();
+        }.start(tag, " show: ", data);
     }
 
     HashSet<ShowData> getConcernedShowingData() {
