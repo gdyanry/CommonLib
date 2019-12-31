@@ -1,18 +1,18 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.model.log.ConsoleHandler;
-import yanry.lib.java.model.log.LogLevel;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
-import yanry.lib.java.util.IOUtil;
-import yanry.lib.java.util.StringUtil;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import yanry.lib.java.model.log.ConsoleHandler;
+import yanry.lib.java.model.log.LogLevel;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.log.SimpleFormatter;
+import yanry.lib.java.util.IOUtil;
+import yanry.lib.java.util.StringUtil;
 
 
 /**
@@ -77,10 +77,10 @@ public class Test {
     }
 
     private static void format(String msg, Object... args) {
-        Logger.getDefault().format(1, LogLevel.Verbose, msg, args);
+        Logger.getDefault().format(1, LogLevel.Verbose, false, msg, args);
     }
 
     private static void concat(Object... parts) {
-        Logger.getDefault().concat(1, LogLevel.Debug, parts);
+        Logger.getDefault().concat(1, LogLevel.Debug, false, parts);
     }
 }

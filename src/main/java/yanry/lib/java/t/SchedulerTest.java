@@ -1,11 +1,16 @@
 package yanry.lib.java.t;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import yanry.lib.java.model.log.ConsoleHandler;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.SimpleFormatter;
-import yanry.lib.java.model.schedule.*;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import yanry.lib.java.model.schedule.OnDataStateChangeListener;
+import yanry.lib.java.model.schedule.ReusableDisplay;
+import yanry.lib.java.model.schedule.Scheduler;
+import yanry.lib.java.model.schedule.SchedulerManager;
+import yanry.lib.java.model.schedule.ShowData;
+import yanry.lib.java.model.schedule.TimerScheduleRunner;
 
 /**
  * Created by yanry on 2019/12/17.
@@ -14,14 +19,14 @@ public class SchedulerTest {
     public static void main(String[] args) {
         SimpleFormatter formatter = new SimpleFormatter();
         formatter.addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD)
-                .addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.PROCESS);
+                .addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.PROCESS).addFlag(SimpleFormatter.LEVEL);
 //        formatter.setMethodStack(5);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
         Logger.getDefault().addHandler(handler);
         SchedulerManager schedulerManager = new SchedulerManager(new TimerScheduleRunner("schedule-runner", false), Logger.getDefault());
         schedulerManager.addSchedulerWatcher((scheduler, isVisible) -> Logger.getDefault().ii(scheduler, " is visible: ", isVisible));
-        Scheduler scheduler = schedulerManager.get("test");
+        Scheduler scheduler = schedulerManager.get("testScheduler");
         TestData data = new TestData("DURATION", false);
         data.setDuration(3000);
         scheduler.show(data, TestDisplay.class);
@@ -42,7 +47,7 @@ public class SchedulerTest {
 
         @Override
         public void onDataStateChange(int toState) {
-            Logger.getDefault().d("%s change state from %s to %s", this, getState(), toState);
+            Logger.getDefault().w("%s change state from %s to %s", this, getState(), toState);
         }
     }
 

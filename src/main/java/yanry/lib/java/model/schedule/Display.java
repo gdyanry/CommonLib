@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import yanry.lib.java.interfaces.OnValueChangeListener;
-import yanry.lib.java.model.log.Logger;
 
 /**
  * 为特定数据显示特定界面。非抽象子孙类必须包含无参构造函数。
@@ -33,7 +32,7 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void setView(V view) {
         if (this.view != view) {
-            Logger.getDefault().dd(name, " set view: ", view);
+            scheduler.manager.logger.vv(name, " set view: ", view);
             for (OnValueChangeListener<V> listener : onViewChangeListeners) {
                 listener.onValueChange(view, this.view);
             }
@@ -70,7 +69,7 @@ public abstract class Display<D extends ShowData, V> {
                 protected void doRun() {
                     setView(null);
                     scheduler.manager.runner.cancelPendingTimeout(currentData);
-                    Logger.getDefault().vv("notify dismiss: ", currentData);
+                    scheduler.manager.logger.vv("notify dismiss: ", currentData);
                     currentData.dispatchState(ShowData.STATE_DISMISS);
                     scheduler.manager.rebalance(null, null);
                 }
