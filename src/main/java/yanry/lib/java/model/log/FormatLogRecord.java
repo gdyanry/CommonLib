@@ -4,8 +4,8 @@ class FormatLogRecord extends LogRecord {
     private String format;
     private Object[] args;
 
-    public FormatLogRecord(Object tag, LogLevel level, int encapsulationLayerCount, boolean anonymous, String format, Object[] args) {
-        super(tag, level, encapsulationLayerCount, anonymous);
+    public FormatLogRecord(Object tag, LogLevel level, int encapsulationLayerCount, String format, Object[] args) {
+        super(tag, level, encapsulationLayerCount);
         this.format = format;
         this.args = args;
     }

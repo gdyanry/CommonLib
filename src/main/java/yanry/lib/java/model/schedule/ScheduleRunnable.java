@@ -13,7 +13,7 @@ public abstract class ScheduleRunnable implements Runnable {
     }
 
     public void start(Object... logParts) {
-        manager.logger.concat(2, LogLevel.Debug, false, logParts);
+        manager.logger.concat(2, LogLevel.Debug, logParts);
         manager.runner.run(this);
     }
 

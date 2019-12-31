@@ -77,10 +77,10 @@ public class Test {
     }
 
     private static void format(String msg, Object... args) {
-        Logger.getDefault().format(1, LogLevel.Verbose, false, msg, args);
+        Logger.getDefault().format(1, LogLevel.Verbose, msg, args);
     }
 
     private static void concat(Object... parts) {
-        Logger.getDefault().concat(1, LogLevel.Debug, false, parts);
+        Logger.getDefault().concat(1, LogLevel.Debug, parts);
     }
 }

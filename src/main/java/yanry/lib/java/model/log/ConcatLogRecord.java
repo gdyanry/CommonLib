@@ -3,8 +3,8 @@ package yanry.lib.java.model.log;
 public class ConcatLogRecord extends LogRecord {
     private Object[] msgParts;
 
-    public ConcatLogRecord(Object tag, LogLevel level, int encapsulationLayerCount, boolean anonymous, Object[] msgParts) {
-        super(tag, level, encapsulationLayerCount, anonymous);
+    public ConcatLogRecord(Object tag, LogLevel level, int encapsulationLayerCount, Object[] msgParts) {
+        super(tag, level, encapsulationLayerCount);
         this.msgParts = msgParts;
     }
 

@@ -14,10 +14,8 @@ public abstract class LogRecord {
     private StackTraceElement[] stackTrace;
     private int encapsulationLayerCount;
     private int currentDepth;
-    private boolean anonymous;
 
-    LogRecord(Object tag, LogLevel level, int encapsulationLayerCount, boolean anonymous) {
-        this.anonymous = anonymous;
+    LogRecord(Object tag, LogLevel level, int encapsulationLayerCount) {
         sequenceNumber = sequenceNumberCreator.getAndIncrement();
         timeMillis = System.currentTimeMillis();
         this.tag = tag;
@@ -49,7 +47,7 @@ public abstract class LogRecord {
     }
 
     public StackTraceElement nextStackTraceElement() {
-        if (anonymous) {
+        if (encapsulationLayerCount < 0) {
             return null;
         }
         if (stackTrace == null) {
