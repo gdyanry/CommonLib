@@ -1,14 +1,14 @@
-package yanry.lib.java.model;
+package yanry.lib.java.model.schedule.extend;
 
 import java.nio.CharBuffer;
 
+import yanry.lib.java.model.schedule.Display;
 import yanry.lib.java.model.schedule.ShowData;
-import yanry.lib.java.model.schedule.SyncDisplay;
 
 /**
  * Created by yanry on 2020/1/1.
  */
-public abstract class BufferedStringDisplay extends SyncDisplay<ShowData, CharBuffer> {
+public abstract class BufferedStringDisplay extends Display<ShowData> {
     private CharBuffer buffer;
     private String segmentPrefix;
     private String contentSeparator;
@@ -25,10 +25,16 @@ public abstract class BufferedStringDisplay extends SyncDisplay<ShowData, CharBu
     protected abstract void onFlush(String segment);
 
     @Override
-    protected CharBuffer showData(CharBuffer currentView, ShowData data) {
+    protected void internalDismiss() {
+        onFlush(buffer.flip().toString());
+        buffer.clear();
+    }
+
+    @Override
+    protected void show(ShowData data) {
         String content = data.getExtra().toString();
         if (content == null || content.length() == 0) {
-            return buffer;
+            return;
         }
         if (buffer.position() == 0 && segmentPrefix != null) {
             buffer.put(segmentPrefix);
@@ -61,17 +67,5 @@ public abstract class BufferedStringDisplay extends SyncDisplay<ShowData, CharBu
             onFlush(buffer.flip().toString());
             buffer.clear();
         }
-        return buffer;
-    }
-
-    @Override
-    protected void dismiss(CharBuffer view) {
-        onFlush(buffer.flip().toString());
-        buffer.clear();
-    }
-
-    @Override
-    protected boolean isShowing(CharBuffer view) {
-        return true;
     }
 }

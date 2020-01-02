@@ -83,7 +83,7 @@ public class Scheduler {
         displays.put(displayType, display);
     }
 
-    public <D extends ShowData> void show(D data, Class<? extends Display<D, ?>> displayType) {
+    public <D extends ShowData> void show(D data, Class<? extends Display<D>> displayType) {
         new ScheduleRunnable(manager) {
             @Override
             protected void doRun() {

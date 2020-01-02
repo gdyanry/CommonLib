@@ -77,8 +77,9 @@ public class ShowData extends FlagsHolder implements Runnable {
     /**
      * @param strategy must be one of {@link #STRATEGY_SHOW_IMMEDIATELY}, {@link #STRATEGY_INSERT_HEAD}, {@link #STRATEGY_APPEND_TAIL}.
      */
-    public void setStrategy(int strategy) {
+    public ShowData setStrategy(int strategy) {
         this.strategy = strategy;
+        return this;
     }
 
     public Object getExtra() {

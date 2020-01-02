@@ -1,11 +1,15 @@
-package yanry.lib.java.model.schedule;
+package yanry.lib.java.model.schedule.imple;
+
+import yanry.lib.java.model.schedule.AsyncBridge;
+import yanry.lib.java.model.schedule.ShowData;
+import yanry.lib.java.model.schedule.ViewDisplay;
 
 /**
  * 对应的View需要在创建时调用{@link #notifyCreate(AsyncBridge)}，并在销毁时调用{@link #notifyDismiss(V)}。
  * rongyu.yan
  * 2018/11/13
  **/
-public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> {
+public abstract class AsyncDisplay<D extends ShowData, V> extends ViewDisplay<D, V> {
     private D data;
     private AsyncBridge<D, V> bridge;
 
