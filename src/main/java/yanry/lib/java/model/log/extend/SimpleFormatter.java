@@ -1,9 +1,11 @@
-package yanry.lib.java.model.log;
-
-import yanry.lib.java.model.FlagsHolder;
-import yanry.lib.java.util.StringUtil;
+package yanry.lib.java.model.log.extend;
 
 import java.lang.management.ManagementFactory;
+
+import yanry.lib.java.model.FlagsHolder;
+import yanry.lib.java.model.log.LogFormatter;
+import yanry.lib.java.model.log.LogRecord;
+import yanry.lib.java.util.StringUtil;
 
 public class SimpleFormatter extends FlagsHolder implements LogFormatter {
     public static final int SEQUENCE_NUMBER = 0;
@@ -13,6 +15,9 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
     public static final int TAG = 4;
     public static final int METHOD = 5;
     public static final int TIME = 6;
+    /**
+     * Android平台上不支持输出进程名！
+     */
     public static final int PROCESS = 7;
 
     private Object separator;
@@ -60,6 +65,9 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
             if (e != null) {
                 sb.append(e.getMethodName()).append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')').append(separator);
             }
+        }
+        if (sb.length() > 0) {
+            sb.append('|').append(separator);
         }
         sb.append(logRecord.getMessage());
         if (stackDepth > 0) {

@@ -26,7 +26,7 @@ public class Scheduler {
         for (Scheduler scheduler : schedulers) {
             if (scheduler.manager == manager) {
                 linkedSchedulers.add(scheduler);
-            } else {
+            } else if (manager.logger != null) {
                 manager.logger.ee("can't link scheduler ", scheduler.tag, " to ", tag);
             }
         }
@@ -40,7 +40,9 @@ public class Scheduler {
                 while (iterator.hasNext()) {
                     ShowData next = iterator.next();
                     if (next.scheduler == Scheduler.this) {
-                        manager.logger.vv("dequeue by scheduler cancel: ", next);
+                        if (manager.logger != null) {
+                            manager.logger.vv("dequeue by scheduler cancel: ", next);
+                        }
                         next.dispatchState(ShowData.STATE_DEQUEUE);
                         iterator.remove();
                     }
@@ -66,10 +68,19 @@ public class Scheduler {
                 display.setScheduler(this);
                 displays.put(displayType, display);
             } catch (Exception e) {
-                manager.logger.catches(e);
+                if (manager.logger != null) {
+                    manager.logger.catches(e);
+                } else {
+                    e.printStackTrace();
+                }
             }
         }
         return display;
+    }
+
+    public <T extends Display> void setDisplay(Class<T> displayType, T display) {
+        display.setScheduler(this);
+        displays.put(displayType, display);
     }
 
     public <D extends ShowData> void show(D data, Class<? extends Display<D, ?>> displayType) {
@@ -77,6 +88,9 @@ public class Scheduler {
             @Override
             protected void doRun() {
                 if (data.state == ShowData.STATE_SHOWING || data.state == ShowData.STATE_ENQUEUE) {
+                    if (manager.logger != null) {
+                        manager.logger.ww("deny showing for invalid state: ", data);
+                    }
                     return;
                 }
                 data.scheduler = Scheduler.this;
@@ -86,7 +100,9 @@ public class Scheduler {
                 while (it.hasNext()) {
                     ShowData next = it.next();
                     if (next.scheduler == Scheduler.this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
-                        manager.logger.vv("dequeue by expelled: ", next);
+                        if (manager.logger != null) {
+                            manager.logger.vv("dequeue by expelled: ", next);
+                        }
                         next.dispatchState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
@@ -108,25 +124,33 @@ public class Scheduler {
                         manager.runner.cancelPendingTimeout(showingData);
                         showingData.scheduler.current = null;
                         // 结束当前正在显示的关联任务
-                        manager.logger.vv("dismiss by expelled: ", showingData);
+                        if (manager.logger != null) {
+                            manager.logger.vv("dismiss by expelled: ", showingData);
+                        }
                         showingData.dispatchState(ShowData.STATE_DISMISS);
                         if (data.display != showingData.display) {
                             displaysToDismisses.add(showingData.display);
                         }
                     }
-                    manager.logger.vv("show directly: ", data);
+                    if (manager.logger != null) {
+                        manager.logger.vv("show directly: ", data);
+                    }
                     // 显示及取消显示使得调度器处于非稳态，需要重新平衡到次稳态
                     manager.rebalance(data, displaysToDismisses);
                 } else {
                     switch (data.strategy) {
                         case ShowData.STRATEGY_SHOW_IMMEDIATELY:
                         case ShowData.STRATEGY_INSERT_HEAD:
-                            manager.logger.vv("insert head: ", data);
+                            if (manager.logger != null) {
+                                manager.logger.vv("insert head: ", data);
+                            }
                             manager.queue.addFirst(data);
                             data.dispatchState(ShowData.STATE_ENQUEUE);
                             break;
                         case ShowData.STRATEGY_APPEND_TAIL:
-                            manager.logger.vv("append tail: ", data);
+                            if (manager.logger != null) {
+                                manager.logger.vv("append tail: ", data);
+                            }
                             manager.queue.addLast(data);
                             data.dispatchState(ShowData.STATE_ENQUEUE);
                             break;
@@ -152,7 +176,9 @@ public class Scheduler {
             ShowData currentData = this.current;
             current = null;
             manager.runner.cancelPendingTimeout(currentData);
-            manager.logger.vv("dismiss by cancel: ", currentData);
+            if (manager.logger != null) {
+                manager.logger.vv("dismiss by cancel: ", currentData);
+            }
             currentData.dispatchState(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
                 currentData.display.internalDismiss();

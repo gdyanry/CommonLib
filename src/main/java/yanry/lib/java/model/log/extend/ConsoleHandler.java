@@ -1,10 +1,12 @@
-package yanry.lib.java.model.log;
-
-import yanry.lib.java.util.console.Color;
-import yanry.lib.java.util.console.ConsoleUtil;
+package yanry.lib.java.model.log.extend;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import yanry.lib.java.model.log.LogHandler;
+import yanry.lib.java.model.log.LogRecord;
+import yanry.lib.java.util.console.Color;
+import yanry.lib.java.util.console.ConsoleUtil;
 
 public class ConsoleHandler extends LogHandler {
     private static final Pattern stackTracePattern = Pattern.compile("^\\tat \\S+\\(\\S+\\.java:\\d+\\)$", Pattern.MULTILINE);

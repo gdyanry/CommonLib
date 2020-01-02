@@ -32,7 +32,9 @@ public abstract class Display<D extends ShowData, V> {
 
     protected void setView(V view) {
         if (this.view != view) {
-            scheduler.manager.logger.vv(name, " set view: ", view);
+            if (scheduler.manager.logger != null) {
+                scheduler.manager.logger.vv(name, " set view: ", view);
+            }
             for (OnValueChangeListener<V> listener : onViewChangeListeners) {
                 listener.onValueChange(view, this.view);
             }
@@ -69,7 +71,9 @@ public abstract class Display<D extends ShowData, V> {
                 protected void doRun() {
                     setView(null);
                     scheduler.manager.runner.cancelPendingTimeout(currentData);
-                    scheduler.manager.logger.vv("notify dismiss: ", currentData);
+                    if (scheduler.manager.logger != null) {
+                        scheduler.manager.logger.vv("notify dismiss: ", currentData);
+                    }
                     currentData.dispatchState(ShowData.STATE_DISMISS);
                     scheduler.manager.rebalance(null, null);
                 }

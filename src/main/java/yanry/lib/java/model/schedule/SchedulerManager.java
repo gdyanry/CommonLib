@@ -52,7 +52,9 @@ public class SchedulerManager implements Runnable {
             @Override
             protected void doRun() {
                 for (ShowData data : queue) {
-                    logger.vv("dequeue by all cancel: ", data);
+                    if (logger != null) {
+                        logger.vv("dequeue by all cancel: ", data);
+                    }
                     data.dispatchState(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
@@ -78,7 +80,9 @@ public class SchedulerManager implements Runnable {
                 while (it.hasNext()) {
                     ShowData data = it.next();
                     if (data.tag == tag) {
-                        logger.vv("dequeue by tag cancel: ", data);
+                        if (logger != null) {
+                            logger.vv("dequeue by tag cancel: ", data);
+                        }
                         data.dispatchState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
@@ -142,7 +146,9 @@ public class SchedulerManager implements Runnable {
             ShowData next = iterator.next();
             if (invalidData.contains(next)) {
                 // 从队列中清除无效的数据
-                logger.vv("dequeue by invalid: ", next);
+                if (logger != null) {
+                    logger.vv("dequeue by invalid: ", next);
+                }
                 next.dispatchState(ShowData.STATE_DEQUEUE);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
@@ -161,7 +167,7 @@ public class SchedulerManager implements Runnable {
             }
         }
         for (ShowData data : dataToShow) {
-            if (data != showData) {
+            if (data != showData && logger != null) {
                 logger.vv("loop and show: ", data);
             }
             data.display.show(data);

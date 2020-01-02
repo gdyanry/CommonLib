@@ -2,9 +2,9 @@ package yanry.lib.java.t;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import yanry.lib.java.model.log.ConsoleHandler;
 import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
 import yanry.lib.java.model.schedule.OnDataStateChangeListener;
 import yanry.lib.java.model.schedule.ReusableDisplay;
 import yanry.lib.java.model.schedule.Scheduler;
@@ -33,6 +33,11 @@ public class SchedulerTest {
 
         TestData selfDismissData = new TestData("DISMISS", true);
         scheduler.show(selfDismissData, TestDisplay.class);
+        selfDismissData.addOnStateChangeListener(toState -> {
+            if (toState == ShowData.STATE_DISMISS) {
+                scheduler.show(data, TestDisplay.class);
+            }
+        });
     }
 
     public static class TestData extends ShowData implements OnDataStateChangeListener {

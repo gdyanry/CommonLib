@@ -7,10 +7,10 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import yanry.lib.java.model.log.ConsoleHandler;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
 import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
 

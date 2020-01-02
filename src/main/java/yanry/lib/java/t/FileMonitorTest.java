@@ -1,14 +1,14 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.model.FileMonitor;
-import yanry.lib.java.model.log.ConsoleHandler;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
+
+import yanry.lib.java.model.FileMonitor;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
 
 public class FileMonitorTest {
     public static void main(String[] args) {

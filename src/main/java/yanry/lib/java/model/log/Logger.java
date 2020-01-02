@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+
 public class Logger {
     private final static HashMap<Object, Logger> instances = new HashMap<>();
     private final static ConsoleHandler defaultHandler = new ConsoleHandler();
