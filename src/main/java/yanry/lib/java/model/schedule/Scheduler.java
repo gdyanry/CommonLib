@@ -13,7 +13,7 @@ public class Scheduler {
     private Object tag;
     ShowData current;
     private boolean visible;
-    HashMap<Class<? extends Display>, Display> displays;
+    private HashMap<Class<? extends Display>, Display> displays;
 
     Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;

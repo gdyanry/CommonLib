@@ -1,5 +1,6 @@
 package yanry.lib.java.model.schedule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,7 +14,7 @@ public class SchedulerManager implements Runnable {
     boolean isRunning;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
-    HashMap<Object, Scheduler> instances;
+    private HashMap<Object, Scheduler> instances;
     private LinkedList<SchedulerWatcher> schedulerWatchers;
 
     public SchedulerManager(ScheduleRunner runner, Logger logger) {
@@ -58,8 +59,9 @@ public class SchedulerManager implements Runnable {
                     data.dispatchState(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
-                if (dismissCurrent) {
-                    for (Scheduler scheduler : instances.values()) {
+                if (dismissCurrent && instances.size() > 0) {
+                    ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+                    for (Scheduler scheduler : schedulers) {
                         scheduler.dismissCurrent(null);
                     }
                 }
@@ -89,12 +91,15 @@ public class SchedulerManager implements Runnable {
                 }
                 // 清理当前显示的窗口
                 HashSet<Display> displaysToDismisses = new HashSet<>();
-                for (Scheduler scheduler : instances.values()) {
-                    if (scheduler.current.tag == tag) {
-                        scheduler.dismissCurrent(displaysToDismisses);
+                if (instances.size() > 0) {
+                    ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+                    for (Scheduler scheduler : schedulers) {
+                        if (scheduler.current.tag == tag) {
+                            scheduler.dismissCurrent(displaysToDismisses);
+                        }
                     }
+                    rebalance(null, displaysToDismisses);
                 }
-                rebalance(null, displaysToDismisses);
             }
         }.start(this, " cancel by tag: ", tag);
     }
@@ -172,19 +177,27 @@ public class SchedulerManager implements Runnable {
             }
             data.display.show(data);
             data.dispatchState(ShowData.STATE_SHOWING);
-            runner.cancelPendingTimeout(data);
-            if (data.duration > 0) {
+            if (data.hasFlag(ShowData.FLAG_DISMISS_ON_SHOW)) {
+                data.dismiss(0);
+            } else if (data.duration > 0) {
                 runner.scheduleTimeout(data, data.duration);
+            } else {
+                runner.cancelPendingTimeout(data);
             }
         }
-        runner.scheduleTimeout(this, 0);
+        if (instances.size() > 0 && schedulerWatchers.size() > 0) {
+            // 分发watcher事件
+            runner.scheduleTimeout(this, 0);
+        }
     }
 
     @Override
     public final void run() {
-        for (Scheduler scheduler : instances.values()) {
+        ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+        ArrayList<SchedulerWatcher> watchers = new ArrayList<>(schedulerWatchers);
+        for (Scheduler scheduler : schedulers) {
             if (scheduler.sync()) {
-                for (SchedulerWatcher watcher : schedulerWatchers) {
+                for (SchedulerWatcher watcher : watchers) {
                     watcher.onSchedulerStateChange(scheduler, scheduler.current != null);
                 }
             }

@@ -27,11 +27,12 @@ public class SchedulerTest {
         SchedulerManager schedulerManager = new SchedulerManager(new TimerScheduleRunner("schedule-runner", false), Logger.getDefault());
         schedulerManager.addSchedulerWatcher((scheduler, isVisible) -> Logger.getDefault().ii(scheduler, " is visible: ", isVisible));
         Scheduler scheduler = schedulerManager.get("testScheduler");
-        TestData data = new TestData("DURATION", false);
+        TestData data = new TestData("DURATION");
         data.setDuration(3000);
         scheduler.show(data, TestDisplay.class);
 
-        TestData selfDismissData = new TestData("DISMISS", true);
+        TestData selfDismissData = new TestData("DISMISS");
+        selfDismissData.addFlag(ShowData.FLAG_DISMISS_ON_SHOW);
         scheduler.show(selfDismissData, TestDisplay.class);
         selfDismissData.addOnStateChangeListener(toState -> {
             if (toState == ShowData.STATE_DISMISS) {
@@ -41,10 +42,8 @@ public class SchedulerTest {
     }
 
     public static class TestData extends ShowData implements OnDataStateChangeListener {
-        private boolean dismissSelf;
 
-        public TestData(String name, boolean dismissSelf) {
-            this.dismissSelf = dismissSelf;
+        public TestData(String name) {
             setExtra(name);
             addOnStateChangeListener(this);
             setStrategy(STRATEGY_APPEND_TAIL);
@@ -66,9 +65,6 @@ public class SchedulerTest {
 
         @Override
         protected void setData(Integer view, TestData data) {
-            if (data.dismissSelf) {
-                data.dismiss(0);
-            }
         }
 
         @Override

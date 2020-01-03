@@ -96,17 +96,17 @@ public class Logger {
      *
      * @param encapsulationLayerCount 日志打点处距离此方法中间封装的方法层数，若为负数则不会输出调用栈信息。
      * @param level
-     * @param parts
+     * @param logContents
      */
-    public void concat(int encapsulationLayerCount, LogLevel level, Object... parts) {
+    public void concat(int encapsulationLayerCount, LogLevel level, Object... logContents) {
         if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
             encapsulationLayerCount = encapsulationLayerCount < 0 ? -1 : encapsulationLayerCount + 1;
             if (handlers.isEmpty()) {
-                handleConcatLog(encapsulationLayerCount, level, null, defaultHandler, parts);
+                handleConcatLog(encapsulationLayerCount, level, null, defaultHandler, logContents);
             } else {
                 for (LogHandler handler : handlers) {
-                    record = handleConcatLog(encapsulationLayerCount, level, record, handler, parts);
+                    record = handleConcatLog(encapsulationLayerCount, level, record, handler, logContents);
                 }
             }
         }

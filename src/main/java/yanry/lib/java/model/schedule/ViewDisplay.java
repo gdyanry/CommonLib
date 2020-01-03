@@ -1,5 +1,6 @@
 package yanry.lib.java.model.schedule;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,8 +31,11 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
             if (scheduler.manager.logger != null) {
                 scheduler.manager.logger.vv(name, " set view: ", view);
             }
-            for (OnValueChangeListener<V> listener : onViewChangeListeners) {
-                listener.onValueChange(view, this.view);
+            if (onViewChangeListeners.size() > 0) {
+                ArrayList<OnValueChangeListener<V>> listeners = new ArrayList<>(onViewChangeListeners);
+                for (OnValueChangeListener<V> listener : listeners) {
+                    listener.onValueChange(view, this.view);
+                }
             }
             this.view = view;
         }

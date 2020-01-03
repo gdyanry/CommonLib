@@ -1,5 +1,6 @@
 package yanry.lib.java.model.schedule;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -10,6 +11,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_DISMISSED = 2;
     public static final int FLAG_EXPEL_WAITING_DATA = 4;
     public static final int FLAG_INVALID_ON_DELAYED_SHOW = 8;
+    public static final int FLAG_DISMISS_ON_SHOW = 16;
 
     public static final int STRATEGY_APPEND_TAIL = 2;
     public static final int STRATEGY_INSERT_HEAD = 1;
@@ -96,8 +98,11 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     void dispatchState(int state) {
-        for (OnDataStateChangeListener listener : stateListeners) {
-            listener.onDataStateChange(state);
+        if (stateListeners.size() > 0) {
+            ArrayList<OnDataStateChangeListener> listeners = new ArrayList<>(stateListeners);
+            for (OnDataStateChangeListener listener : listeners) {
+                listener.onDataStateChange(state);
+            }
         }
         this.state = state;
     }
