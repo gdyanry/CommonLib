@@ -8,8 +8,8 @@ import yanry.lib.java.model.log.extend.ConsoleHandler;
 
 public class Logger {
     private final static HashMap<Object, Logger> instances = new HashMap<>();
-    private final static ConsoleHandler defaultHandler = new ConsoleHandler();
     private static Object defaultTag;
+    private static LogHandler defaultHandler = new ConsoleHandler();
 
     public static Logger get(Object tag) {
         Logger logger = instances.get(tag);
@@ -25,6 +25,10 @@ public class Logger {
 
     public static void setDefaultTag(Object defaultTag) {
         Logger.defaultTag = defaultTag;
+    }
+
+    public static void setDefaultHandler(LogHandler defaultHandler) {
+        Logger.defaultHandler = defaultHandler;
     }
 
     public static Logger getDefault() {
