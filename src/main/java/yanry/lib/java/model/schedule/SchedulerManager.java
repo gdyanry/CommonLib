@@ -38,6 +38,10 @@ public class SchedulerManager implements Runnable {
         return scheduler;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
     public void link(Scheduler a, Scheduler b) {
         a.addLink(b);
         b.addLink(a);
