@@ -1,8 +1,6 @@
 package yanry.lib.java.model.log;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 
@@ -37,11 +35,11 @@ public class Logger {
 
     private Object tag;
     private LogLevel level;
-    private List<LogHandler> handlers;
+    private HashMap<Object, LogHandler> handlers;
 
     private Logger(Object tag) {
         this.tag = tag;
-        handlers = new LinkedList<>();
+        handlers = new HashMap<>();
         level = LogLevel.Verbose;
         instances.put(tag, this);
     }
@@ -54,13 +52,11 @@ public class Logger {
     }
 
     public void addHandler(LogHandler handler) {
-        if (!handlers.contains(handler)) {
-            handlers.add(handler);
-        }
+        handlers.put(handler.getClass(), handler);
     }
 
-    public boolean isReady() {
-        return !handlers.isEmpty();
+    public void addHandler(Object handlerTag, LogHandler handler) {
+        handlers.put(handlerTag, handler);
     }
 
     /**
@@ -78,7 +74,7 @@ public class Logger {
             if (handlers.isEmpty()) {
                 handleFormatLog(encapsulationLayerCount, level, null, defaultHandler, format, args);
             } else {
-                for (LogHandler handler : handlers) {
+                for (LogHandler handler : handlers.values()) {
                     record = handleFormatLog(encapsulationLayerCount, level, record, handler, format, args);
                 }
             }
@@ -109,7 +105,7 @@ public class Logger {
             if (handlers.isEmpty()) {
                 handleConcatLog(encapsulationLayerCount, level, null, defaultHandler, logContents);
             } else {
-                for (LogHandler handler : handlers) {
+                for (LogHandler handler : handlers.values()) {
                     record = handleConcatLog(encapsulationLayerCount, level, record, handler, logContents);
                 }
             }
@@ -175,7 +171,7 @@ public class Logger {
     }
 
     public void catches(Exception e) {
-        for (LogHandler handler : handlers) {
+        for (LogHandler handler : handlers.values()) {
             handler.catches(tag, e);
         }
     }
