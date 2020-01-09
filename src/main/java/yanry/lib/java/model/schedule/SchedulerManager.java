@@ -181,8 +181,6 @@ public class SchedulerManager implements Runnable {
                 data.dismiss(0);
             } else if (data.duration > 0) {
                 runner.scheduleTimeout(data, data.duration);
-            } else {
-                runner.cancelPendingTimeout(data);
             }
         }
         if (instances.size() > 0 && schedulerWatchers.size() > 0) {
