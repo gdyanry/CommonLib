@@ -1,19 +1,17 @@
-package yanry.lib.java.model.schedule.imple;
+package yanry.lib.java.model.runner;
 
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import yanry.lib.java.model.schedule.ScheduleRunner;
-
 /**
  * Created by yanry on 2019/12/17.
  */
-public class TimerScheduleRunner extends Timer implements ScheduleRunner {
+public class TimerRunner extends Timer implements Runner {
     private HashMap<Runnable, TimerTask> tasks;
     private Thread timerThread;
 
-    public TimerScheduleRunner(String name, boolean isDaemon) {
+    public TimerRunner(String name, boolean isDaemon) {
         super(name, isDaemon);
         tasks = new HashMap<>();
         schedule(new TimerTask() {

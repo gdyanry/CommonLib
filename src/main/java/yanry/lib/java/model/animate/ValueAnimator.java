@@ -120,12 +120,14 @@ public class ValueAnimator extends FlagsHolder {
      * 获取当前时间的动画值。
      *
      * @param controlValues 用于控制（计算）动画值的关键值。
-     * @param interpolator
+     * @param interpolator  插值器。
      * @return
      */
     public float getAnimatedValue(float[] controlValues, TimeInterpolator interpolator) {
         if (controlValues == null || controlValues.length == 0) {
             throw new IllegalArgumentException("invalid key values: " + controlValues);
+        } else if (controlValues.length == 1) {
+            return controlValues[0];
         }
         int maxIndex = controlValues.length - 1;
         float endValue = controlValues[maxIndex];
@@ -164,6 +166,13 @@ public class ValueAnimator extends FlagsHolder {
             fromIndex = controlValues.length - 2 - fromIndex;
             extra = sectionLen - extra;
         }
+        if (fromIndex > maxIndex - 1) {
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            fromIndex = maxIndex - 1;
+        } else if (fromIndex < 0) {
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            fromIndex = 0;
+        }
         startValue = controlValues[fromIndex];
         endValue = controlValues[fromIndex + 1];
         return startValue + (endValue - startValue) * (extra * maxIndex) / period;
@@ -173,12 +182,14 @@ public class ValueAnimator extends FlagsHolder {
      * 获取当前时间的动画值。
      *
      * @param controlValues 用于控制（计算）动画值的关键值。
-     * @param interpolator
+     * @param interpolator  插值器。
      * @return
      */
     public int getAnimatedValue(int[] controlValues, TimeInterpolator interpolator) {
         if (controlValues == null || controlValues.length == 0) {
             throw new IllegalArgumentException("invalid key values: " + controlValues);
+        } else if (controlValues.length == 1) {
+            return controlValues[0];
         }
         int maxIndex = controlValues.length - 1;
         int endValue = controlValues[maxIndex];
@@ -217,8 +228,23 @@ public class ValueAnimator extends FlagsHolder {
             fromIndex = controlValues.length - 2 - fromIndex;
             extra = sectionLen - extra;
         }
+        if (fromIndex > maxIndex - 1) {
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            fromIndex = maxIndex - 1;
+        } else if (fromIndex < 0) {
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            fromIndex = 0;
+        }
         startValue = controlValues[fromIndex];
         endValue = controlValues[fromIndex + 1];
         return (int) (startValue + (endValue - startValue) * extra * maxIndex / period);
+    }
+
+    @Override
+    public String toString() {
+        return "ValueAnimator{" +
+                "period=" + period +
+                ", repeatCount=" + repeatCount +
+                '}';
     }
 }

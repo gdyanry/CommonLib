@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.runner.Runner;
 
 public class SchedulerManager implements Runnable {
-    ScheduleRunner runner;
+    Runner runner;
     Logger logger;
     boolean isRunning;
     LinkedList<ShowData> queue;
@@ -17,7 +18,7 @@ public class SchedulerManager implements Runnable {
     private HashMap<Object, Scheduler> instances;
     private LinkedList<SchedulerWatcher> schedulerWatchers;
 
-    public SchedulerManager(ScheduleRunner runner, Logger logger) {
+    public SchedulerManager(Runner runner, Logger logger) {
         this.runner = runner;
         this.logger = logger;
         queue = new LinkedList<>();

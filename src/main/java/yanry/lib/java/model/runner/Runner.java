@@ -1,6 +1,6 @@
-package yanry.lib.java.model.schedule;
+package yanry.lib.java.model.runner;
 
-public interface ScheduleRunner {
+public interface Runner {
     void run(Runnable runnable);
 
     void scheduleTimeout(Runnable runnable, long delay);

@@ -5,12 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.model.runner.TimerRunner;
 import yanry.lib.java.model.schedule.OnDataStateChangeListener;
 import yanry.lib.java.model.schedule.Scheduler;
 import yanry.lib.java.model.schedule.SchedulerManager;
 import yanry.lib.java.model.schedule.ShowData;
 import yanry.lib.java.model.schedule.imple.ReusableDisplay;
-import yanry.lib.java.model.schedule.imple.TimerScheduleRunner;
 
 /**
  * Created by yanry on 2019/12/17.
@@ -24,7 +24,7 @@ public class SchedulerTest {
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
         Logger.getDefault().addHandler(handler);
-        SchedulerManager schedulerManager = new SchedulerManager(new TimerScheduleRunner("schedule-runner", false), Logger.getDefault());
+        SchedulerManager schedulerManager = new SchedulerManager(new TimerRunner("schedule-runner", false), Logger.getDefault());
         schedulerManager.addSchedulerWatcher((scheduler, isVisible) -> Logger.getDefault().ii(scheduler, " is visible: ", isVisible));
         Scheduler scheduler = schedulerManager.get("testScheduler");
         TestData data = new TestData("DURATION");

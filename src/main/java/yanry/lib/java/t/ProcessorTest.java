@@ -1,0 +1,138 @@
+package yanry.lib.java.t;
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import yanry.lib.java.model.Singletons;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.model.process.ProcessCallback;
+import yanry.lib.java.model.process.ProcessRequest;
+import yanry.lib.java.model.process.Processor;
+import yanry.lib.java.model.process.RequestHook;
+import yanry.lib.java.model.process.SyncProcessor;
+
+/**
+ * Created by yanry on 2020/1/11.
+ */
+public class ProcessorTest {
+    private static final int MAX_TIMEOUT = 10000;
+    private static final int FACTOR = 3;
+    private static Executor executor = Executors.newCachedThreadPool();
+
+    public static void main(String[] args) {
+        ConsoleHandler defaultHandler = new ConsoleHandler();
+        SimpleFormatter formatter = new SimpleFormatter();
+        formatter.addFlag(SimpleFormatter.LEVEL).addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.METHOD);
+        defaultHandler.setFormatter(formatter);
+        Logger.setDefaultHandler(defaultHandler);
+
+        ProcessCallback<String> completeCallback = new ProcessCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                System.out.println("success");
+            }
+
+            @Override
+            public void onFail(boolean isTimeout) {
+                System.out.println("fail");
+            }
+        };
+        new Dispatcher(FACTOR).request(Logger.getDefault(), 2, completeCallback);
+        ProcessRequest<Integer, String> request = new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, completeCallback);
+    }
+
+    private static class NodeProcessor extends SyncProcessor<Integer, String> {
+        private static AtomicInteger counter = new AtomicInteger();
+        private int index;
+        private boolean hit;
+
+        NodeProcessor(boolean hit) {
+            this.hit = hit;
+            index = counter.getAndIncrement();
+        }
+
+        @Override
+        public long getTimeout() {
+            return Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
+//            return 0;
+        }
+
+        @Override
+        protected String process(Integer requestData) {
+            try {
+                Thread.sleep(Singletons.get(Random.class).nextInt(MAX_TIMEOUT));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return hit ? "hit" : null;
+        }
+
+        @Override
+        protected Executor getExecutor() {
+            return executor;
+        }
+
+        @Override
+        public String getShortName() {
+            return (hit ? "Hit" : "Pass") + "Processor_" + index;
+        }
+    }
+
+    private static class Dispatcher implements Processor<Integer, String> {
+        private static AtomicInteger counter = new AtomicInteger();
+        private ArrayList<Processor<Integer, String>> childProcessors;
+        private boolean keepOrder;
+
+        public Dispatcher(int childCount) {
+            childProcessors = new ArrayList<>(childCount);
+            this.keepOrder = Singletons.get(Random.class).nextBoolean();
+            int hitIndex = Singletons.get(Random.class).nextInt(childCount);
+            for (int i = 0; i < childCount; i++) {
+                childProcessors.add(new NodeProcessor(i == hitIndex));
+            }
+        }
+
+        @Override
+        public void process(RequestHook<Integer, String> request) {
+            request.dispatch(childProcessors, keepOrder);
+        }
+
+        @Override
+        public long getTimeout() {
+            return Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
+        }
+
+        @Override
+        public String getShortName() {
+            return "Dispatcher_" + counter.getAndIncrement() + "_" + keepOrder;
+        }
+    }
+
+    private static class RootProcessor implements Processor<Integer, String> {
+        private ArrayList<Processor<Integer, String>> childProcessors;
+        private boolean keepOrder;
+
+        public RootProcessor(int childCount, boolean keepOrder) {
+            this.keepOrder = keepOrder;
+            childProcessors = new ArrayList<>(childCount);
+            for (int i = 0; i < childCount; i++) {
+                childProcessors.add(new Dispatcher(FACTOR));
+            }
+        }
+
+        @Override
+        public void process(RequestHook<Integer, String> request) {
+            request.dispatch(childProcessors, keepOrder);
+        }
+
+        @Override
+        public long getTimeout() {
+            return Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
+        }
+    }
+}
