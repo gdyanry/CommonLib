@@ -10,11 +10,11 @@ import yanry.lib.java.model.Singletons;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.model.process.PlainProcessor;
 import yanry.lib.java.model.process.ProcessCallback;
 import yanry.lib.java.model.process.ProcessRequest;
 import yanry.lib.java.model.process.Processor;
 import yanry.lib.java.model.process.RequestHook;
-import yanry.lib.java.model.process.SyncProcessor;
 
 /**
  * Created by yanry on 2020/1/11.
@@ -46,7 +46,7 @@ public class ProcessorTest {
         ProcessRequest<Integer, String> request = new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, completeCallback);
     }
 
-    private static class NodeProcessor extends SyncProcessor<Integer, String> {
+    private static class NodeProcessor extends PlainProcessor<Integer, String> {
         private static AtomicInteger counter = new AtomicInteger();
         private int index;
         private boolean hit;
