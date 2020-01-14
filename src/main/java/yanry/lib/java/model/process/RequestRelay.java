@@ -22,7 +22,12 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
         if (isOpen()) {
             isFail = true;
             if (requestRoot.logger != null) {
-                requestRoot.logger.vv(fullName, isTimeout ? " timeout: " : " pass: ", System.currentTimeMillis() - startTime);
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                if (isTimeout) {
+                    requestRoot.logger.dd(fullName, " timeout: ", elapsedTime);
+                } else {
+                    requestRoot.logger.vv(fullName, " pass: ", elapsedTime);
+                }
             }
             requestRoot.cancelTimeout(this);
             onPass();

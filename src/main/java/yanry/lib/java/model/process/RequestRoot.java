@@ -11,7 +11,7 @@ import yanry.lib.java.model.log.Logger;
 /**
  * Created by yanry on 2020/1/11.
  */
-public class RequestRoot<D, R> extends RequestHook<D, R> {
+final class RequestRoot<D, R> extends RequestHook<D, R> {
     final Logger logger;
     final D requestData;
     private ProcessCallback<R> completeCallback;
