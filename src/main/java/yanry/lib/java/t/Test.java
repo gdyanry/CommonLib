@@ -27,6 +27,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         SimpleFormatter formatter = new SimpleFormatter();
+        System.out.println(formatter instanceof Object);
         formatter.addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);

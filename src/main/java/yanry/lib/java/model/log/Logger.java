@@ -71,7 +71,7 @@ public class Logger {
         if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
             encapsulationLayerCount = encapsulationLayerCount < 0 ? -1 : encapsulationLayerCount + 1;
-            if (handlers.isEmpty()) {
+            if (handlers.size() == 0) {
                 handleFormatLog(encapsulationLayerCount, level, null, defaultHandler, format, args);
             } else {
                 for (LogHandler handler : handlers.values()) {
@@ -102,7 +102,7 @@ public class Logger {
         if (this.level != null && this.level.test(level)) {
             LogRecord record = null;
             encapsulationLayerCount = encapsulationLayerCount < 0 ? -1 : encapsulationLayerCount + 1;
-            if (handlers.isEmpty()) {
+            if (handlers.size() == 0) {
                 handleConcatLog(encapsulationLayerCount, level, null, defaultHandler, logContents);
             } else {
                 for (LogHandler handler : handlers.values()) {
@@ -171,8 +171,12 @@ public class Logger {
     }
 
     public void catches(Exception e) {
-        for (LogHandler handler : handlers.values()) {
-            handler.catches(tag, e);
+        if (handlers.size() == 0) {
+            defaultHandler.catches(tag, e);
+        } else {
+            for (LogHandler handler : handlers.values()) {
+                handler.catches(tag, e);
+            }
         }
     }
 }
