@@ -4,10 +4,10 @@ package yanry.lib.java.model.process;
  * Created by yanry on 2020/1/11.
  */
 abstract class RequestRelay<D, R> extends RequestHook<D, R> {
-    private RequestRoot<D, R> requestRoot;
+    private RequestRoot<?, R> requestRoot;
     private boolean isFail;
 
-    RequestRelay(String fullName, RequestRoot<D, R> requestRoot) {
+    RequestRelay(String fullName, RequestRoot<?, R> requestRoot) {
         super(fullName);
         this.requestRoot = requestRoot;
     }
@@ -42,7 +42,7 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
     }
 
     @Override
-    protected RequestRoot<D, R> getRequestRoot() {
+    protected RequestRoot<?, R> getRequestRoot() {
         return requestRoot;
     }
 

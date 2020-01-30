@@ -16,7 +16,7 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
     final D requestData;
     private ProcessCallback<R> completeCallback;
     private AtomicBoolean open;
-    private HashMap<RequestHook<D, R>, TimerTask> pendingTimeout;
+    private HashMap<RequestHook<?, R>, TimerTask> pendingTimeout;
 
     RequestRoot(String fullName, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         super(fullName);
@@ -27,7 +27,7 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
         pendingTimeout = new HashMap<>();
     }
 
-    void setTimeout(RequestHook<D, R> requestHook, long timeout) {
+    void setTimeout(RequestHook<?, R> requestHook, long timeout) {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -39,14 +39,14 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
         Singletons.get(Timer.class).schedule(timerTask, timeout);
     }
 
-    void cancelTimeout(RequestHook<D, R> requestHook) {
+    void cancelTimeout(RequestHook<?, R> requestHook) {
         TimerTask timerTask = pendingTimeout.remove(requestHook);
         if (timerTask != null) {
             timerTask.cancel();
         }
     }
 
-    boolean hit(RequestHook<D, R> requestHook, R result) {
+    boolean hit(RequestHook<?, R> requestHook, R result) {
         if (open.compareAndSet(true, false)) {
             if (logger != null) {
                 long now = System.currentTimeMillis();
@@ -66,6 +66,11 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
             timerTask.cancel();
         }
         pendingTimeout.clear();
+    }
+
+    @Override
+    public D getRequestData() {
+        return requestData;
     }
 
     @Override

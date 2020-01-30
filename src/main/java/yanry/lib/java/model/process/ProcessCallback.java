@@ -4,6 +4,8 @@ package yanry.lib.java.model.process;
  * 请求结果回调。
  * <p>
  * Created by yanry on 2020/1/11.
+ *
+ * @param <R> type of process result.
  */
 public interface ProcessCallback<R> {
     /**

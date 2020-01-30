@@ -12,7 +12,6 @@ import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
 import yanry.lib.java.model.process.PlainProcessor;
 import yanry.lib.java.model.process.ProcessCallback;
-import yanry.lib.java.model.process.ProcessRequest;
 import yanry.lib.java.model.process.Processor;
 import yanry.lib.java.model.process.RequestHook;
 
@@ -40,13 +39,13 @@ public class ProcessorTest {
             @Override
             public void onFail(boolean isTimeout) {
                 System.out.println("fail");
+                new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, this);
             }
         };
         new Dispatcher(FACTOR).request(Logger.getDefault(), 2, completeCallback);
-        ProcessRequest<Integer, String> request = new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, completeCallback);
     }
 
-    private static class NodeProcessor extends PlainProcessor<Integer, String> {
+    private static class NodeProcessor extends PlainProcessor<String, String> {
         private static AtomicInteger counter = new AtomicInteger();
         private int index;
         private boolean hit;
@@ -63,9 +62,11 @@ public class ProcessorTest {
         }
 
         @Override
-        protected String process(Integer requestData) {
+        protected String process(String requestData) {
             try {
-                Thread.sleep(Singletons.get(Random.class).nextInt(MAX_TIMEOUT));
+                int sleep = Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
+                Logger.getDefault().ii(getShortName(), " sleep: ", sleep);
+                Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -85,12 +86,14 @@ public class ProcessorTest {
 
     private static class Dispatcher implements Processor<Integer, String> {
         private static AtomicInteger counter = new AtomicInteger();
-        private ArrayList<Processor<Integer, String>> childProcessors;
+        private ArrayList<Processor<String, String>> childProcessors;
         private boolean keepOrder;
+        private int index;
 
         public Dispatcher(int childCount) {
             childProcessors = new ArrayList<>(childCount);
             this.keepOrder = Singletons.get(Random.class).nextBoolean();
+            index = counter.getAndIncrement();
             int hitIndex = Singletons.get(Random.class).nextInt(childCount);
             for (int i = 0; i < childCount; i++) {
                 childProcessors.add(new NodeProcessor(i == hitIndex));
@@ -99,7 +102,7 @@ public class ProcessorTest {
 
         @Override
         public void process(RequestHook<Integer, String> request) {
-            request.dispatch(childProcessors, keepOrder);
+            request.dispatch(getShortName() + ":" + request.getRequestData(), childProcessors, keepOrder);
         }
 
         @Override
@@ -109,7 +112,7 @@ public class ProcessorTest {
 
         @Override
         public String getShortName() {
-            return "Dispatcher_" + counter.getAndIncrement() + "_" + keepOrder;
+            return "Dispatcher_" + index + "_" + keepOrder;
         }
     }
 
@@ -127,7 +130,7 @@ public class ProcessorTest {
 
         @Override
         public void process(RequestHook<Integer, String> request) {
-            request.dispatch(childProcessors, keepOrder);
+            request.dispatch(request.getRequestData(), childProcessors, keepOrder);
         }
 
         @Override

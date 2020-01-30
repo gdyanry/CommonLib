@@ -27,7 +27,6 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         SimpleFormatter formatter = new SimpleFormatter();
-        System.out.println(formatter instanceof Object);
         formatter.addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
@@ -40,6 +39,12 @@ public class Test {
         System.out.println(~1);
         System.out.println(~0);
         Calendar calendar = GregorianCalendar.getInstance();
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, -2);
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
         format("%tF %<tT", calendar.getTimeInMillis());
         calendar.add(Calendar.WEEK_OF_MONTH, -1);
         format("%tF %<tT", calendar.getTimeInMillis());

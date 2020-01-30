@@ -7,6 +7,9 @@ import yanry.lib.java.model.log.Logger;
  * 请求处理器接口。
  * <p>
  * Created by yanry on 2020/1/10.
+ *
+ * @param <D> type of request data.
+ * @param <R> type of process result.
  */
 public interface Processor<D, R> {
     /**
@@ -28,7 +31,7 @@ public interface Processor<D, R> {
     }
 
     /**
-     * @return 请求超时时间，默认为0，即不设置超时。
+     * @return 处理超时时间，默认为0，即不设置超时。
      */
     default long getTimeout() {
         return 0;
