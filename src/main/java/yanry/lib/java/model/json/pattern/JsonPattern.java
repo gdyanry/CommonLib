@@ -1,37 +1,29 @@
 package yanry.lib.java.model.json.pattern;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 import yanry.lib.java.model.json.JSONArray;
 import yanry.lib.java.model.json.JSONObject;
 import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.util.object.EqualsPart;
-import yanry.lib.java.util.object.HandyObject;
-import yanry.lib.java.util.object.Visible;
 
-import java.util.HashMap;
-
-public class JsonPattern extends HandyObject implements JsonType {
-    private HashMap<String, Object> map;
-
-    private JsonPattern() {
-        map = new HashMap<>();
-    }
-
+public class JsonPattern extends HashMap<String, JsonType> implements JsonType {
     public static JsonPattern get(JSONObject jsonObject) {
         JsonPattern pattern = new JsonPattern();
         for (String key : jsonObject.keySet()) {
             Object value = jsonObject.get(key);
             if (JSONObject.NULL.equals(value)) {
-                pattern.map.put(key, NullType.get());
+                pattern.put(key, BaseType.Null);
             } else if (value instanceof Number) {
-                pattern.map.put(key, BaseType.Number);
-            } else if (value instanceof String) {
-                pattern.map.put(key, BaseType.String);
+                pattern.put(key, BaseType.Number);
+            } else if (value instanceof String || value instanceof Character) {
+                pattern.put(key, BaseType.String);
             } else if (value instanceof Boolean) {
-                pattern.map.put(key, BaseType.Boolean);
+                pattern.put(key, BaseType.Boolean);
             } else if (value instanceof JSONArray) {
-                pattern.map.put(key, BaseType.Array);
+                pattern.put(key, BaseType.Array);
             } else if (value instanceof JSONObject) {
-                pattern.map.put(key, get((JSONObject) value));
+                pattern.put(key, get((JSONObject) value));
             } else {
                 Logger.getDefault().ee("no relative json type found for: ", value.getClass());
             }
@@ -40,40 +32,51 @@ public class JsonPattern extends HandyObject implements JsonType {
     }
 
     public boolean matches(JSONObject jsonObject) {
-        return equals(get(jsonObject));
+        return isSubsetOf(get(jsonObject));
+    }
+
+    public boolean isSubsetOf(JsonPattern pattern) {
+        for (Entry<String, JsonType> entry : entrySet()) {
+            JsonType thatType = pattern.get(entry.getKey());
+            if (thatType == null) {
+                return false;
+            }
+            JsonType thisType = entry.getValue();
+            if (Objects.equals(thisType, thatType) || thisType == BaseType.Null || thatType == BaseType.Null ||
+                    thisType instanceof JsonPattern && thatType instanceof JsonPattern && ((JsonPattern) thisType).isSubsetOf((JsonPattern) thatType)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     public JsonPattern and(JsonPattern pattern) {
         JsonPattern result = new JsonPattern();
-        for (String key : map.keySet()) {
-            Object val2 = pattern.map.get(key);
-            if (val2 != null) {
-                Object val1 = map.get(key);
-                if (val1.equals(val2)) {
-                    result.map.put(key, val1);
-                } else if (val1 instanceof JsonPattern && val2 instanceof JsonPattern) {
-                    JsonPattern pattern1 = (JsonPattern) val1;
-                    JsonPattern pattern2 = (JsonPattern) val2;
-                    result.map.put(key, pattern1.and(pattern2));
+        for (Entry<String, JsonType> entry : entrySet()) {
+            String key = entry.getKey();
+            JsonType thatType = pattern.get(key);
+            if (thatType != null) {
+                JsonType thisType = entry.getValue();
+                if (thisType.equals(thatType) || thatType == BaseType.Null) {
+                    result.put(key, thisType);
+                } else if (thisType == BaseType.Null) {
+                    result.put(key, thatType);
+                } else if (thisType instanceof JsonPattern && thatType instanceof JsonPattern) {
+                    result.put(key, ((JsonPattern) thisType).and((JsonPattern) thatType));
                 }
             }
         }
         return result;
     }
 
-    @Visible
-    @EqualsPart
-    public HashMap<String, Object> getMap() {
-        return map;
-    }
-
     @Override
-    public String toString() {
-        return new JSONObject(map).toString();
+    public final String toString() {
+        return new JSONObject(this).toString();
     }
 
     @Override
     public String toJSONString() {
-        return new JSONObject(map).toString();
+        return new JSONObject(this).toString();
     }
 }

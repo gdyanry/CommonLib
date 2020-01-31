@@ -22,13 +22,13 @@ import yanry.lib.java.util.object.ObjectUtil;
 
 public class BaiduQuery {
     public static void main(String... args) throws IOException {
-//        parseBaikeNluPatterns();
+        parseBaikeNluPatterns();
 //        parseBaikePatterns();
-        userInteract();
+//        userInteract();
     }
 
     private static void parseBaikeNluPatterns() throws IOException {
-        HashMap<String, Object> patterns = new HashMap<>();
+        HashMap<String, JsonPattern> patterns = new HashMap<>();
         parseBaike("nlu", jsonObject -> {
             JSONObject result = jsonObject.getJSONObject("result");
             JSONObject nlu = result.getJSONObject("nlu");
@@ -37,7 +37,7 @@ public class BaiduQuery {
                     .append(nlu.getString("domain")).append('|')
                     .append(nlu.getString("intent")).append('|')
                     .append(nlu.optString("sub_intent")).toString();
-            JsonPattern pattern = (JsonPattern) patterns.get(key);
+            JsonPattern pattern = patterns.get(key);
             if (pattern == null) {
                 patterns.put(key, JsonPattern.get(jsonObject));
             } else {
@@ -79,7 +79,7 @@ public class BaiduQuery {
             }
             return pattern;
         });
-        String raw = common[0].toJSONString();
+        String raw = common[0].toString();
         Logger.getDefault().ii(raw);
         IOUtil.stringToFile(StringUtil.formatJson(raw), "e:/baike/common_pattern.txt", "utf-8", false);
     }
