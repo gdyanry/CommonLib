@@ -86,7 +86,7 @@ public class ProcessorTest {
 
     private static class Dispatcher implements Processor<Integer, String> {
         private static AtomicInteger counter = new AtomicInteger();
-        private ArrayList<Processor<String, String>> childProcessors;
+        private ArrayList<Processor<Integer, String>> childProcessors;
         private boolean keepOrder;
         private int index;
 
@@ -96,13 +96,13 @@ public class ProcessorTest {
             index = counter.getAndIncrement();
             int hitIndex = Singletons.get(Random.class).nextInt(childCount);
             for (int i = 0; i < childCount; i++) {
-                childProcessors.add(new NodeProcessor(i == hitIndex));
+                childProcessors.add(new NodeProcessor(i == hitIndex).wrap(input -> "str:" + input));
             }
         }
 
         @Override
         public void process(RequestHook<Integer, String> request) {
-            request.dispatch(getShortName() + ":" + request.getRequestData(), childProcessors, keepOrder);
+            request.dispatch(request.getRequestData(), childProcessors, keepOrder);
         }
 
         @Override

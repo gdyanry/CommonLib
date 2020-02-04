@@ -1,5 +1,6 @@
 package yanry.lib.java.model.process;
 
+import yanry.lib.java.interfaces.DataTransformer;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 
@@ -28,6 +29,36 @@ public interface Processor<D, R> {
         RequestRoot<D, R> requestRoot = new RequestRoot<>(shortName, logger, requestData, completeCallback);
         requestRoot.process(this);
         return requestRoot;
+    }
+
+    /**
+     * 将自身包装成别的请求数据类型的处理器。
+     *
+     * @param dataTransformer 请求数据转换接口。
+     * @param <T>             目标请求数据类型。
+     * @return 目标处理器。
+     */
+    default <T> Processor<T, R> wrap(DataTransformer<T, D> dataTransformer) {
+        return new Processor<T, R>() {
+            @Override
+            public void process(RequestHook<T, R> request) {
+                request.redirect(dataTransformer.transform(request.getRequestData()), Processor.this);
+            }
+
+            @Override
+            public boolean isAnonymous() {
+                return true;
+            }
+        };
+    }
+
+    /**
+     * 是否匿名。
+     *
+     * @return 若返回true则不会打印该处理器相关的日志。
+     */
+    default boolean isAnonymous() {
+        return false;
     }
 
     /**

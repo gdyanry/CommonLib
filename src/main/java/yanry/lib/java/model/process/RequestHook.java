@@ -22,14 +22,14 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
     /**
      * 将当前请求“重定向”给指定处理器处理。该方法和直接调用{@link Processor#process(RequestHook)}的区别在于，使用后者时，被“重定向”的处理器
      * {@link Processor#isEnable()}、{@link Processor#getTimeout()}将不会生效，{@link Processor#getShortName()}也不会显示在日志中，就好像透明一样。
-     * 因此不建议直接调用{@link Processor#process(RequestHook)}。
+     * 因此不应当直接调用{@link Processor#process(RequestHook)}。
      *
      * @param requestData 请求数据。
      * @param processor   被“重定向”的处理器。
      */
     public <T> void redirect(T requestData, Processor<T, R> processor) {
         logTransformRequestData(requestData);
-        new RequestRelay<T, R>(fullName + '-' + processor.getShortName(), getRequestRoot()) {
+        new RequestRelay<T, R>(getRelayName(processor), getRequestRoot()) {
             @Override
             public T getRequestData() {
                 return requestData;
@@ -62,7 +62,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
             dispatchInOrder(requestData, remainingProcessors);
         } else {
             for (Processor<T, R> processor : childProcessors) {
-                new RequestRelay<T, R>(fullName + '-' + processor.getShortName(), getRequestRoot()) {
+                new RequestRelay<T, R>(getRelayName(processor), getRequestRoot()) {
                     @Override
                     public T getRequestData() {
                         return requestData;
@@ -79,6 +79,10 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
         }
     }
 
+    private <T> String getRelayName(Processor<T, R> processor) {
+        return processor.isAnonymous() ? fullName : fullName + '-' + processor.getShortName();
+    }
+
     private <T> void logTransformRequestData(T transformedData) {
         if (getRequestRoot().logger != null && !Objects.equals(transformedData, getRequestData())) {
             getRequestRoot().logger.concat(2, LogLevel.Verbose, "transform request data: ", getRequestData(), " -> ", transformedData);
@@ -88,7 +92,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
     void process(Processor<D, R> processor) {
         if (isOpen()) {
             if (processor.isEnable()) {
-                if (getRequestRoot().logger != null) {
+                if (!processor.isAnonymous() && getRequestRoot().logger != null) {
                     getRequestRoot().logger.vv(fullName, " enter.");
                     startTime = System.currentTimeMillis();
                 }
@@ -98,7 +102,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
                 }
                 processor.process(this);
             } else {
-                if (getRequestRoot().logger != null) {
+                if (!processor.isAnonymous() && getRequestRoot().logger != null) {
                     getRequestRoot().logger.vv(fullName, " is disable.");
                 }
                 fail(false);
@@ -108,7 +112,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
 
     private <T> void dispatchInOrder(T requestData, LinkedList<? extends Processor<T, R>> remainingProcessors) {
         Processor<T, R> processor = remainingProcessors.peekFirst();
-        new RequestRelay<T, R>(fullName + '-' + processor.getShortName(), getRequestRoot()) {
+        new RequestRelay<T, R>(getRelayName(processor), getRequestRoot()) {
             @Override
             public T getRequestData() {
                 return requestData;

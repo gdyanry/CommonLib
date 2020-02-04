@@ -21,7 +21,7 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
     protected boolean fail(boolean isTimeout) {
         if (isOpen()) {
             isFail = true;
-            if (requestRoot.logger != null) {
+            if (startTime > 0 && requestRoot.logger != null) {
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 if (isTimeout) {
                     requestRoot.logger.dd(fullName, " timeout: ", elapsedTime);
