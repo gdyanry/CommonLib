@@ -18,6 +18,20 @@ import yanry.lib.java.model.process.RequestHook;
  * @param <T> type of tag.
  */
 public abstract class TagProcessorDispatcher<D, R, T> extends HashMap<T, LinkedList<Processor<D, R>>> implements Processor<D, R> {
+    /**
+     * 添加子处理器。
+     *
+     * @param tag       子处理器对应的标签值，若为null则表示通用处理器。
+     * @param processor
+     */
+    public void addChildProcessor(T tag, Processor<D, R> processor) {
+        LinkedList<Processor<D, R>> processors = get(tag);
+        if (processors == null) {
+            processors = new LinkedList<>();
+            put(tag, processors);
+        }
+        processors.add(processor);
+    }
 
     /**
      * 添加子处理器并映射到多个标签。
@@ -33,15 +47,6 @@ public abstract class TagProcessorDispatcher<D, R, T> extends HashMap<T, LinkedL
                 addChildProcessor(tag, processor);
             }
         }
-    }
-
-    private void addChildProcessor(T tag, Processor<D, R> processor) {
-        LinkedList<Processor<D, R>> processors = get(tag);
-        if (processors == null) {
-            processors = new LinkedList<>();
-            put(tag, processors);
-        }
-        processors.add(processor);
     }
 
     protected abstract T getTag(D requestData);
