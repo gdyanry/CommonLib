@@ -10,10 +10,10 @@ import yanry.lib.java.model.Singletons;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
-import yanry.lib.java.model.process.PlainProcessor;
 import yanry.lib.java.model.process.ProcessCallback;
 import yanry.lib.java.model.process.Processor;
 import yanry.lib.java.model.process.RequestHook;
+import yanry.lib.java.model.process.extend.PlainProcessor;
 
 /**
  * Created by yanry on 2020/1/11.
