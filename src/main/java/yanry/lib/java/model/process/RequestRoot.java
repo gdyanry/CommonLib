@@ -18,8 +18,8 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
     private AtomicBoolean open;
     private HashMap<RequestHook<?, R>, TimerTask> pendingTimeout;
 
-    RequestRoot(String fullName, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
-        super(fullName);
+    public RequestRoot(Processor<D, R> processor, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
+        super(null, processor);
         this.logger = logger;
         this.requestData = requestData;
         this.completeCallback = completeCallback;
@@ -50,9 +50,14 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
         if (open.compareAndSet(true, false)) {
             if (logger != null) {
                 long now = System.currentTimeMillis();
-                logger.d("%s hit %s/%s: %s", requestHook.fullName, now - requestHook.startTime, now - startTime, result);
+                logger.d("%s hit %s/%s: %s", requestHook, now - requestHook.startTime, now - startTime, result);
             }
             clearTimeout();
+            RequestHook<?, R> hook = requestHook;
+            while (hook != null) {
+                hook.dispatchHit(result);
+                hook = hook.parent;
+            }
             if (completeCallback != null) {
                 completeCallback.onSuccess(result);
             }
@@ -82,7 +87,7 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
     protected boolean fail(boolean isTimeout) {
         if (open.compareAndSet(true, false)) {
             if (logger != null) {
-                logger.dd(fullName, isTimeout ? " timeout: " : " fail: ", System.currentTimeMillis() - startTime);
+                logger.dd(this, isTimeout ? " timeout: " : " fail: ", System.currentTimeMillis() - startTime);
             }
             clearTimeout();
             if (completeCallback != null) {

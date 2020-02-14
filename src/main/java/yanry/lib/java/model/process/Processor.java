@@ -26,8 +26,8 @@ public interface Processor<D, R> {
         if (logger != null) {
             logger.concat(1, LogLevel.Debug, shortName, " start request: ", requestData);
         }
-        RequestRoot<D, R> requestRoot = new RequestRoot<>(shortName, logger, requestData, completeCallback);
-        requestRoot.process(this);
+        RequestRoot<D, R> requestRoot = new RequestRoot<>(this, logger, requestData, completeCallback);
+        requestRoot.process();
         return requestRoot;
     }
 
@@ -80,6 +80,15 @@ public interface Processor<D, R> {
      */
     default String getShortName() {
         return getClass().getSimpleName();
+    }
+
+    /**
+     * 当前处理器或子处理器成功处理请求的回调。
+     *
+     * @param requestData
+     * @param result
+     */
+    default void onHit(D requestData, R result) {
     }
 
     /**

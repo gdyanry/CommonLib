@@ -34,6 +34,7 @@ public class ProcessorTest {
             @Override
             public void onSuccess(String result) {
                 System.out.println("success");
+                Runtime.getRuntime().exit(0);
             }
 
             @Override

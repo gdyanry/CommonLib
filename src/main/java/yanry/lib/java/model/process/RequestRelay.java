@@ -7,8 +7,8 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
     private RequestRoot<?, R> requestRoot;
     private boolean isFail;
 
-    RequestRelay(String fullName, RequestRoot<?, R> requestRoot) {
-        super(fullName);
+    RequestRelay(RequestHook<?, R> parent, Processor<D, R> processor, RequestRoot<?, R> requestRoot) {
+        super(parent, processor);
         this.requestRoot = requestRoot;
     }
 
@@ -24,9 +24,9 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
             if (startTime > 0 && requestRoot.logger != null) {
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 if (isTimeout) {
-                    requestRoot.logger.dd(fullName, " timeout: ", elapsedTime);
+                    requestRoot.logger.dd(this, " timeout: ", elapsedTime);
                 } else {
-                    requestRoot.logger.vv(fullName, " pass: ", elapsedTime);
+                    requestRoot.logger.vv(this, " pass: ", elapsedTime);
                 }
             }
             requestRoot.cancelTimeout(this);

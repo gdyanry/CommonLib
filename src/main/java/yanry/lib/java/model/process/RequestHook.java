@@ -12,11 +12,17 @@ import yanry.lib.java.model.log.LogLevel;
  * Created by yanry on 2020/1/11.
  */
 public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
-    final String fullName;
+    RequestHook<?, R> parent;
+    private Processor<D, R> processor;
+    private String fullName;
     long startTime;
 
-    RequestHook(String fullName) {
-        this.fullName = fullName;
+    RequestHook(RequestHook<?, R> parent, Processor<D, R> processor) {
+        while (parent != null && parent.processor.isAnonymous()) {
+            parent = parent.parent;
+        }
+        this.parent = parent;
+        this.processor = processor;
     }
 
     /**
@@ -29,7 +35,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
      */
     public <T> void redirect(T requestData, Processor<T, R> processor) {
         logTransformRequestData(requestData);
-        new RequestRelay<T, R>(getRelayName(processor), getRequestRoot()) {
+        new RequestRelay<T, R>(this, processor, getRequestRoot()) {
             @Override
             public T getRequestData() {
                 return requestData;
@@ -41,7 +47,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
                     RequestHook.this.fail();
                 }
             }
-        }.process(processor);
+        }.process();
     }
 
     /**
@@ -62,7 +68,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
             dispatchInOrder(requestData, remainingProcessors);
         } else {
             for (Processor<T, R> processor : childProcessors) {
-                new RequestRelay<T, R>(getRelayName(processor), getRequestRoot()) {
+                new RequestRelay<T, R>(this, processor, getRequestRoot()) {
                     @Override
                     public T getRequestData() {
                         return requestData;
@@ -74,13 +80,9 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
                             RequestHook.this.fail();
                         }
                     }
-                }.process(processor);
+                }.process();
             }
         }
-    }
-
-    private <T> String getRelayName(Processor<T, R> processor) {
-        return processor.isAnonymous() ? fullName : fullName + '-' + processor.getShortName();
     }
 
     private <T> void logTransformRequestData(T transformedData) {
@@ -89,11 +91,11 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
         }
     }
 
-    void process(Processor<D, R> processor) {
+    void process() {
         if (isOpen()) {
             if (processor.isEnable()) {
                 if (!processor.isAnonymous() && getRequestRoot().logger != null) {
-                    getRequestRoot().logger.vv(fullName, " enter.");
+                    getRequestRoot().logger.vv(this, " enter.");
                     startTime = System.currentTimeMillis();
                 }
                 long timeout = processor.getTimeout();
@@ -103,7 +105,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
                 processor.process(this);
             } else {
                 if (!processor.isAnonymous() && getRequestRoot().logger != null) {
-                    getRequestRoot().logger.vv(fullName, " is disable.");
+                    getRequestRoot().logger.vv(this, " is disable.");
                 }
                 fail(false);
             }
@@ -112,7 +114,7 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
 
     private <T> void dispatchInOrder(T requestData, LinkedList<? extends Processor<T, R>> remainingProcessors) {
         Processor<T, R> processor = remainingProcessors.peekFirst();
-        new RequestRelay<T, R>(getRelayName(processor), getRequestRoot()) {
+        new RequestRelay<T, R>(this, processor, getRequestRoot()) {
             @Override
             public T getRequestData() {
                 return requestData;
@@ -128,7 +130,11 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
                     }
                 }
             }
-        }.process(processor);
+        }.process();
+    }
+
+    void dispatchHit(R result) {
+        processor.onHit(getRequestData(), result);
     }
 
     protected abstract RequestRoot<?, R> getRequestRoot();
@@ -142,6 +148,9 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
 
     @Override
     public String toString() {
+        if (fullName == null) {
+            fullName = parent == null ? processor.getShortName() : processor.isAnonymous() ? parent.toString() : parent.toString() + '-' + processor.getShortName();
+        }
         return fullName;
     }
 }
