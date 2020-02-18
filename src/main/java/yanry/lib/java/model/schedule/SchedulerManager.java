@@ -178,7 +178,7 @@ public class SchedulerManager implements Runnable {
             }
             data.display.show(data);
             data.dispatchState(ShowData.STATE_SHOWING);
-            if (data.hasFlag(ShowData.FLAG_DISMISS_ON_SHOW)) {
+            if (data != showData && data.hasFlag(ShowData.FLAG_DISMISS_ON_SHOW)) {
                 data.dismiss(0);
             } else if (data.duration > 0) {
                 runner.scheduleTimeout(data, data.duration);
