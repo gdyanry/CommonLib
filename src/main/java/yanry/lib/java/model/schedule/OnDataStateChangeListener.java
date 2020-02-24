@@ -11,7 +11,7 @@ public interface OnDataStateChangeListener {
      * @param toState {@link ShowData#STATE_ENQUEUE} means exactly before enqueue;
      *                {@link ShowData#STATE_DEQUEUE} means exactly after dequeue;
      *                {@link ShowData#STATE_SHOWING} means exactly after show;
-     *                {@link ShowData#STATE_DISMISS} generally means before dismiss, except when dismiss is from {@link Display#notifyDismiss(Object)}.
+     *                {@link ShowData#STATE_DISMISS} generally means before dismiss, except when dismiss is from {@link ViewDisplay#notifyDismiss(Object)}.
      */
     void onDataStateChange(int toState);
 }
