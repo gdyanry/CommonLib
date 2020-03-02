@@ -89,7 +89,7 @@ public class Scheduler {
             protected void doRun() {
                 if (data.state == ShowData.STATE_SHOWING || data.state == ShowData.STATE_ENQUEUE) {
                     if (manager.logger != null) {
-                        manager.logger.ww("deny showing for invalid state: ", data);
+                        manager.logger.ww("deny showing for invalid state: ", data, ' ', data.state);
                     }
                     return;
                 }

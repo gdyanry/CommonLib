@@ -94,7 +94,15 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     public void addOnStateChangeListener(OnDataStateChangeListener listener) {
-        stateListeners.add(listener);
+        if (!stateListeners.contains(listener)) {
+            stateListeners.add(listener);
+        }
+    }
+
+    public void cancelDismiss() {
+        if (scheduler != null && scheduler.current == this) {
+            scheduler.manager.runner.cancelPendingTimeout(this);
+        }
     }
 
     void dispatchState(int state) {
