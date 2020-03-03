@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import yanry.lib.java.model.watch.BooleanHolder;
+
 /**
  * 本类适用的场景为：需要为不同的数据弹出不同的界面，同一时刻最多只显示一个界面，比如显示推送通知。
  * 当前有数据正在显示的情况下，新来的数据可以采取替换当前数据界面或进入等待队列等策略，而被替换的数据也可以相应采取接受或拒绝等策略。
@@ -12,13 +14,18 @@ public class Scheduler {
     SchedulerManager manager;
     private Object tag;
     ShowData current;
-    private boolean visible;
+    BooleanHolder visibility;
     private HashMap<Class<? extends Display>, Display> displays;
 
     Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
         this.tag = tag;
+        visibility = new BooleanHolder();
         displays = new HashMap<>();
+    }
+
+    public BooleanHolder getVisibility() {
+        return visibility;
     }
 
     public void addLink(Scheduler... schedulers) {
@@ -43,7 +50,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dequeue by scheduler cancel: ", next);
                         }
-                        next.dispatchState(ShowData.STATE_DEQUEUE);
+                        next.state.setValue(ShowData.STATE_DEQUEUE);
                         iterator.remove();
                     }
                 }
@@ -87,7 +94,7 @@ public class Scheduler {
         new ScheduleRunnable(manager) {
             @Override
             protected void doRun() {
-                if (data.state == ShowData.STATE_SHOWING || data.state == ShowData.STATE_ENQUEUE) {
+                if (data.state.getValue() == ShowData.STATE_SHOWING || data.state.getValue() == ShowData.STATE_ENQUEUE) {
                     if (manager.logger != null) {
                         manager.logger.ww("deny showing for invalid state: ", data, ' ', data.state);
                     }
@@ -103,7 +110,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dequeue by expelled: ", next);
                         }
-                        next.dispatchState(ShowData.STATE_DEQUEUE);
+                        next.state.setValue(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
@@ -127,7 +134,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dismiss by expelled: ", showingData);
                         }
-                        showingData.dispatchState(ShowData.STATE_DISMISS);
+                        showingData.state.setValue(ShowData.STATE_DISMISS);
                         if (data.display != showingData.display) {
                             displaysToDismisses.add(showingData.display);
                         }
@@ -145,14 +152,14 @@ public class Scheduler {
                                 manager.logger.vv("insert head: ", data);
                             }
                             manager.queue.addFirst(data);
-                            data.dispatchState(ShowData.STATE_ENQUEUE);
+                            data.state.setValue(ShowData.STATE_ENQUEUE);
                             break;
                         case ShowData.STRATEGY_APPEND_TAIL:
                             if (manager.logger != null) {
                                 manager.logger.vv("append tail: ", data);
                             }
                             manager.queue.addLast(data);
-                            data.dispatchState(ShowData.STATE_ENQUEUE);
+                            data.state.setValue(ShowData.STATE_ENQUEUE);
                             break;
                     }
                 }
@@ -179,21 +186,13 @@ public class Scheduler {
             if (manager.logger != null) {
                 manager.logger.vv("dismiss by cancel: ", currentData);
             }
-            currentData.dispatchState(ShowData.STATE_DISMISS);
+            currentData.state.setValue(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
                 currentData.display.internalDismiss();
             } else {
                 displaysToDismisses.add(currentData.display);
             }
         }
-    }
-
-    boolean sync() {
-        if (visible ^ current != null) {
-            visible = current != null;
-            return true;
-        }
-        return false;
     }
 
     @Override

@@ -1,10 +1,7 @@
 package yanry.lib.java.model.schedule;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import yanry.lib.java.interfaces.OnValueChangeListener;
+import yanry.lib.java.model.watch.ValueHolder;
+import yanry.lib.java.model.watch.ValueWatcher;
 
 /**
  * Created by yanry on 2020/1/2.
@@ -13,49 +10,33 @@ import yanry.lib.java.interfaces.OnValueChangeListener;
  * @param <V> view type.
  */
 public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
-    private V view;
-    private List<OnValueChangeListener<V>> onViewChangeListeners;
-    private String name;
+    private ValueHolder<V> viewHolder;
 
     public ViewDisplay() {
-        onViewChangeListeners = new LinkedList<>();
-        name = getClass().getSimpleName();
+        viewHolder = new ValueHolder<>();
     }
 
     public V getView() {
-        return view;
+        return viewHolder.getValue();
     }
 
     protected void setView(V view) {
-        if (this.view != view) {
-            if (scheduler.manager.logger != null) {
-                scheduler.manager.logger.vv(name, " set view: ", view);
-            }
-            if (onViewChangeListeners.size() > 0) {
-                ArrayList<OnValueChangeListener<V>> listeners = new ArrayList<>(onViewChangeListeners);
-                for (OnValueChangeListener<V> listener : listeners) {
-                    listener.onValueChange(view, this.view);
-                }
-            }
-            this.view = view;
-        }
+        viewHolder.setValue(view);
     }
 
-    public void addOnViewChangeListener(OnValueChangeListener<V> listener) {
-        if (!onViewChangeListeners.contains(listener)) {
-            onViewChangeListeners.add(listener);
-        }
+    public void addViewWatcher(ValueWatcher<V> watcher) {
+        viewHolder.addWatcher(watcher);
     }
 
-    public void removeOnViewChangeListener(OnValueChangeListener<V> listener) {
-        onViewChangeListeners.remove(listener);
+    public void removeViewWatcher(ValueWatcher<V> listener) {
+        viewHolder.remove(listener);
     }
 
     /**
      * 此数据界面被提前关闭（非超时，比如由用户按返回键触发）时需要调用此方法通知显示队列中等待的数据，否则队列中下一条数据要等到前一条数据超时时间后才会显示。
      */
     public boolean notifyDismiss(V view) {
-        if (view == this.view && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
+        if (view == viewHolder.getValue() && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
             ShowData currentData = scheduler.current;
             scheduler.current = null;
             new ScheduleRunnable(scheduler.manager) {
@@ -66,16 +47,17 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
                     if (scheduler.manager.logger != null) {
                         scheduler.manager.logger.vv("notify dismiss: ", currentData);
                     }
-                    currentData.dispatchState(ShowData.STATE_DISMISS);
+                    currentData.state.setValue(ShowData.STATE_DISMISS);
                     scheduler.manager.rebalance(null, null);
                 }
-            }.start(name, " notify dismiss: ", view);
+            }.start(getClass().getSimpleName(), '@', Integer.toHexString(hashCode()), " notify dismiss: ", view);
             return true;
         }
         return false;
     }
 
     public final boolean isShowing() {
+        V view = viewHolder.getValue();
         if (view != null) {
             return isShowing(view);
         }
@@ -88,6 +70,7 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
 
     @Override
     protected void internalDismiss() {
+        V view = viewHolder.getValue();
         if (view != null) {
             dismiss(view);
             setView(null);

@@ -1,10 +1,9 @@
 package yanry.lib.java.model.schedule;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import yanry.lib.java.model.FlagsHolder;
+import yanry.lib.java.model.watch.ValueHolder;
 
 public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_EXPELLED = 1;
@@ -29,15 +28,14 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    int state;
-    private LinkedList<OnDataStateChangeListener> stateListeners;
+    ValueHolder<Integer> state;
 
     public ShowData() {
         super(false);
-        stateListeners = new LinkedList<>();
+        state = new ValueHolder<>(0);
     }
 
-    public int getState() {
+    public ValueHolder<Integer> getState() {
         return state;
     }
 
@@ -93,26 +91,10 @@ public class ShowData extends FlagsHolder implements Runnable {
         return this;
     }
 
-    public void addOnStateChangeListener(OnDataStateChangeListener listener) {
-        if (!stateListeners.contains(listener)) {
-            stateListeners.add(listener);
-        }
-    }
-
     public void cancelDismiss() {
         if (scheduler != null && scheduler.current == this) {
             scheduler.manager.runner.cancelPendingTimeout(this);
         }
-    }
-
-    void dispatchState(int state) {
-        if (stateListeners.size() > 0) {
-            ArrayList<OnDataStateChangeListener> listeners = new ArrayList<>(stateListeners);
-            for (OnDataStateChangeListener listener : listeners) {
-                listener.onDataStateChange(state);
-            }
-        }
-        this.state = state;
     }
 
     protected boolean expelWaitingData(ShowData data) {
@@ -134,7 +116,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     private void doDismiss() {
         if (scheduler != null && scheduler.current == this) {
             scheduler.current = null;
-            dispatchState(STATE_DISMISS);
+            this.state.setValue(STATE_DISMISS);
             HashSet<Display> displaysToDismisses = new HashSet<>();
             displaysToDismisses.add(display);
             scheduler.manager.rebalance(null, displaysToDismisses);

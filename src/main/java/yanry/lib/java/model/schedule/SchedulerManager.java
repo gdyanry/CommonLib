@@ -16,7 +16,6 @@ public class SchedulerManager implements Runnable {
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     private HashMap<Object, Scheduler> instances;
-    private LinkedList<SchedulerWatcher> schedulerWatchers;
 
     public SchedulerManager(Runner runner, Logger logger) {
         this.runner = runner;
@@ -24,7 +23,6 @@ public class SchedulerManager implements Runnable {
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
-        schedulerWatchers = new LinkedList<>();
     }
 
     public Scheduler get(Object tag) {
@@ -57,7 +55,7 @@ public class SchedulerManager implements Runnable {
                     if (logger != null) {
                         logger.vv("dequeue by all cancel: ", data);
                     }
-                    data.dispatchState(ShowData.STATE_DEQUEUE);
+                    data.state.setValue(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
                 if (dismissCurrent && instances.size() > 0) {
@@ -86,7 +84,7 @@ public class SchedulerManager implements Runnable {
                         if (logger != null) {
                             logger.vv("dequeue by tag cancel: ", data);
                         }
-                        data.dispatchState(ShowData.STATE_DEQUEUE);
+                        data.state.setValue(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
@@ -103,14 +101,6 @@ public class SchedulerManager implements Runnable {
                 }
             }
         }.start(this, " cancel by tag: ", tag);
-    }
-
-    public void addSchedulerWatcher(SchedulerWatcher listener) {
-        schedulerWatchers.add(listener);
-    }
-
-    public void removeSchedulerWatcher(SchedulerWatcher listener) {
-        schedulerWatchers.remove(listener);
     }
 
     void rebalance(ShowData showData, HashSet<Display> displaysToDismisses) {
@@ -155,7 +145,7 @@ public class SchedulerManager implements Runnable {
                 if (logger != null) {
                     logger.vv("dequeue by invalid: ", next);
                 }
-                next.dispatchState(ShowData.STATE_DEQUEUE);
+                next.state.setValue(ShowData.STATE_DEQUEUE);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
                 // 从队列中清除即将显示的数据
@@ -177,28 +167,25 @@ public class SchedulerManager implements Runnable {
                 logger.vv("loop and show: ", data);
             }
             data.display.show(data);
-            data.dispatchState(ShowData.STATE_SHOWING);
+            data.state.setValue(ShowData.STATE_SHOWING);
             if (data != showData && data.hasFlag(ShowData.FLAG_DISMISS_ON_SHOW)) {
                 data.dismiss(0);
             } else if (data.duration > 0) {
                 runner.scheduleTimeout(data, data.duration);
             }
         }
-        if (instances.size() > 0 && schedulerWatchers.size() > 0) {
-            // 分发watcher事件
-            runner.scheduleTimeout(this, 0);
-        }
+        // 分发watcher事件
+        runner.scheduleTimeout(this, 1);
     }
 
     @Override
     public final void run() {
-        ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
-        ArrayList<SchedulerWatcher> watchers = new ArrayList<>(schedulerWatchers);
-        for (Scheduler scheduler : schedulers) {
-            if (scheduler.sync()) {
-                for (SchedulerWatcher watcher : watchers) {
-                    watcher.onSchedulerStateChange(scheduler, scheduler.current != null);
-                }
+        if (isRunning) {
+            runner.scheduleTimeout(this, 0);
+        } else {
+            ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+            for (Scheduler scheduler : schedulers) {
+                scheduler.visibility.setValue(scheduler.current != null);
             }
         }
     }
