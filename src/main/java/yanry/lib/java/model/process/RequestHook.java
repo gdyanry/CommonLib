@@ -2,9 +2,6 @@ package yanry.lib.java.model.process;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Objects;
-
-import yanry.lib.java.model.log.LogLevel;
 
 /**
  * 用对象用于处理器在处理某个请求的过程中查询请求数据和请求状态，以及提交处理结果。
@@ -34,7 +31,6 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
      * @param processor   被“重定向”的处理器。
      */
     public <T> void redirect(T requestData, Processor<T, R> processor) {
-        logTransformRequestData(requestData);
         new RequestRelay<T, R>(this, processor, getRequestRoot()) {
             @Override
             public T getRequestData() {
@@ -62,7 +58,6 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
             fail();
             return;
         }
-        logTransformRequestData(requestData);
         LinkedList<? extends Processor<T, R>> remainingProcessors = new LinkedList<>(childProcessors);
         if (keepOrder) {
             dispatchInOrder(requestData, remainingProcessors);
@@ -82,12 +77,6 @@ public abstract class RequestHook<D, R> implements ProcessRequest<D, R> {
                     }
                 }.process();
             }
-        }
-    }
-
-    private <T> void logTransformRequestData(T transformedData) {
-        if (getRequestRoot().logger != null && !Objects.equals(transformedData, getRequestData())) {
-            getRequestRoot().logger.concat(2, LogLevel.Verbose, "transform request data: ", getRequestData(), " -> ", transformedData);
         }
     }
 

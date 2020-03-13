@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import yanry.lib.java.model.Singletons;
+import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
@@ -27,7 +28,9 @@ public class ProcessorTest {
         ConsoleHandler defaultHandler = new ConsoleHandler();
         SimpleFormatter formatter = new SimpleFormatter();
         formatter.addFlag(SimpleFormatter.LEVEL).addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.METHOD);
+        formatter.setMethodStack(0);
         defaultHandler.setFormatter(formatter);
+        defaultHandler.setLevel(LogLevel.Verbose);
         Logger.setDefaultHandler(defaultHandler);
 
         ProcessCallback<String> completeCallback = new ProcessCallback<String>() {
@@ -39,11 +42,11 @@ public class ProcessorTest {
 
             @Override
             public void onFail(boolean isTimeout) {
-                System.out.println("fail");
-                new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, this);
+                System.out.println("timeout: " + isTimeout);
+//                new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, this);
             }
         };
-        new Dispatcher(FACTOR).request(Logger.getDefault(), 2, completeCallback);
+        new RootProcessor(FACTOR, false).request(Logger.getDefault(), 2, completeCallback);
     }
 
     private static class NodeProcessor extends PlainProcessor<String, String> {
@@ -66,7 +69,7 @@ public class ProcessorTest {
         protected String process(String requestData) {
             try {
                 int sleep = Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
-                Logger.getDefault().ii(getShortName(), " sleep: ", sleep);
+                System.out.println(String.format("%s sleep: %s", getShortName(), sleep));
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -81,7 +84,7 @@ public class ProcessorTest {
 
         @Override
         public String getShortName() {
-            return (hit ? "Hit" : "Pass") + "Processor_" + index;
+            return (hit ? "Hit" : "Fail") + "Processor" + index;
         }
     }
 
@@ -113,7 +116,7 @@ public class ProcessorTest {
 
         @Override
         public String getShortName() {
-            return "Dispatcher_" + index + "_" + keepOrder;
+            return "Dispatcher" + index + keepOrder;
         }
     }
 

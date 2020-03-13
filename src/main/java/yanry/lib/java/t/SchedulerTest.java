@@ -18,8 +18,8 @@ import yanry.lib.java.model.watch.ValueWatcher;
 public class SchedulerTest {
     public static void main(String[] args) {
         SimpleFormatter formatter = new SimpleFormatter();
-        formatter.addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD)
-                .addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.PROCESS).addFlag(SimpleFormatter.LEVEL);
+        formatter.addFlag(SimpleFormatter.TIMESTAMP).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD)
+                .addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.LEVEL);
 //        formatter.setMethodStack(10);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);

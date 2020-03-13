@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Created by yanry on 2020/3/2.
  */
-public class ValueHolder<V> extends LinkedList<ValueWatcher<V>> {
+public class ValueHolder<V> extends LinkedList<ValueWatcher<V>> implements ValueVisitor<V> {
     private V value;
 
     public ValueHolder() {
@@ -15,14 +15,6 @@ public class ValueHolder<V> extends LinkedList<ValueWatcher<V>> {
 
     public ValueHolder(V value) {
         this.value = value;
-    }
-
-    public boolean addWatcher(ValueWatcher<V> watcher) {
-        if (!contains(watcher)) {
-            add(watcher);
-            return true;
-        }
-        return false;
     }
 
     public boolean setValue(V value) {
@@ -40,6 +32,21 @@ public class ValueHolder<V> extends LinkedList<ValueWatcher<V>> {
         return false;
     }
 
+    @Override
+    public boolean addWatcher(ValueWatcher<V> watcher) {
+        if (!contains(watcher)) {
+            add(watcher);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeWatcher(ValueWatcher<V> watcher) {
+        return remove(watcher);
+    }
+
+    @Override
     public V getValue() {
         return value;
     }

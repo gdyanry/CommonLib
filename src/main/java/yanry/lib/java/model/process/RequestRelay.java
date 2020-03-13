@@ -14,14 +14,14 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
 
     @Override
     public boolean isOpen() {
-        return requestRoot.isOpen() && !isFail;
+        return !isFail && parent.isOpen();
     }
 
     @Override
     protected boolean fail(boolean isTimeout) {
-        if (isOpen()) {
+        if (!isFail) {
             isFail = true;
-            if (startTime > 0 && requestRoot.logger != null) {
+            if (startTime > 0 && requestRoot.logger != null && parent.isOpen()) {
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 if (isTimeout) {
                     requestRoot.logger.dd(this, " timeout: ", elapsedTime);

@@ -62,8 +62,10 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
                 completeCallback.onSuccess(result);
             }
             return true;
+        } else {
+            cancelTimeout(requestHook);
+            return false;
         }
-        return false;
     }
 
     private void clearTimeout() {

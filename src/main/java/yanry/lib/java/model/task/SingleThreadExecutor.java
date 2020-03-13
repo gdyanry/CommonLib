@@ -46,6 +46,7 @@ public class SingleThreadExecutor extends Thread implements Executor {
 
     @Override
     public void run() {
+        Logger.getDefault().dd(getName(), '@', getId(), " started.");
         while (!terminated) {
             try {
                 deque.takeFirst().run();
@@ -53,6 +54,7 @@ public class SingleThreadExecutor extends Thread implements Executor {
                 Logger.getDefault().catches(e);
             }
         }
+        Logger.getDefault().dd(getName(), '@', getId(), " terminated.");
     }
 
     @Override
