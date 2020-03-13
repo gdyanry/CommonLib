@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Created by yanry on 2020/3/2.
  */
-public class ValueHolder<V> extends LinkedList<ValueWatcher<V>> implements ValueVisitor<V> {
+public class ValueHolder<V> extends LinkedList<ValueWatcher<V>> implements ValueReader<V> {
     private V value;
 
     public ValueHolder() {

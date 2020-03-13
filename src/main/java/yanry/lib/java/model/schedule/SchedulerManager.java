@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import yanry.lib.java.interfaces.Filter;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
 
@@ -37,6 +38,10 @@ public class SchedulerManager implements Runnable {
         return scheduler;
     }
 
+    public Scheduler peek(Object tag) {
+        return instances.get(tag);
+    }
+
     public void link(Scheduler a, Scheduler b) {
         a.addLink(b);
         b.addLink(a);
@@ -66,6 +71,15 @@ public class SchedulerManager implements Runnable {
                 }
             }
         }.start(this, " cancel all: ", dismissCurrent);
+    }
+
+    public void cancelScheduler(boolean dismissCurrent, Filter<Scheduler> schedulerFilter) {
+        ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+        for (Scheduler scheduler : schedulers) {
+            if (schedulerFilter.accept(scheduler)) {
+                scheduler.cancel(dismissCurrent);
+            }
+        }
     }
 
     public boolean hasScheduler(Object tag) {

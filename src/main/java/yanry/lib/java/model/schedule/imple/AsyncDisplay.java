@@ -24,7 +24,7 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends ViewDisplay<D,
     @Override
     protected void show(D data) {
         this.data = data;
-        if (getView() == null) {
+        if (getViewHolder().getValue() == null) {
             showView(data);
         } else {
             bridge.show(data);

@@ -6,7 +6,7 @@ import java.util.LinkedList;
 /**
  * Created by yanry on 2020/3/3.
  */
-public class BooleanHolder extends LinkedList<BooleanWatcher> implements BooleanVisitor {
+public class BooleanHolder extends LinkedList<BooleanWatcher> implements BooleanReader {
     private boolean value;
 
     public BooleanHolder() {

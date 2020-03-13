@@ -11,7 +11,7 @@ public abstract class SyncDisplay<D extends ShowData, V> extends ViewDisplay<D, 
 
     @Override
     protected void show(D data) {
-        setView(showData(getView(), data));
+        setView(showData(getViewHolder().getValue(), data));
     }
 
     /**

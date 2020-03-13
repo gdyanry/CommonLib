@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import yanry.lib.java.model.FlagsHolder;
 import yanry.lib.java.model.watch.ValueHolder;
+import yanry.lib.java.model.watch.ValueReader;
 
 public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_EXPELLED = 1;
@@ -35,7 +36,7 @@ public class ShowData extends FlagsHolder implements Runnable {
         state = new ValueHolder<>(0);
     }
 
-    public ValueHolder<Integer> getState() {
+    public ValueReader<Integer> getState() {
         return state;
     }
 
