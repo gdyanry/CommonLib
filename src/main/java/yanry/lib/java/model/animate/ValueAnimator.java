@@ -21,10 +21,10 @@ public class ValueAnimator extends FlagsHolder {
      * 动画结束时维持结束时的状态。默认会恢复起始状态。
      */
     public static final int FLAG_FILL_END = 2;
-    private long startTime;
-    private long pauseTime;
     private long period;
     private int repeatCount;
+    private long startTime;
+    private long pauseTime;
 
     /**
      * @param period 动画周期。
@@ -136,7 +136,9 @@ public class ValueAnimator extends FlagsHolder {
         }
         long elapsedTime = getElapsedTime();
         float startValue = controlValues[0];
-        if (repeatCount > 0 && elapsedTime >= period * repeatCount) {
+        if (elapsedTime <= 0) {
+            return startValue;
+        } else if (repeatCount > 0 && elapsedTime >= period * repeatCount) {
             return !hasFlag(FLAG_FILL_END) || hasFlag(FLAG_REVERSE) && MathUtil.isEven(repeatCount) ? startValue : endValue;
         }
         boolean isForward = !hasFlag(FLAG_REVERSE) || (elapsedTime / period & 1) == 0;
@@ -167,10 +169,10 @@ public class ValueAnimator extends FlagsHolder {
             extra = sectionLen - extra;
         }
         if (fromIndex > maxIndex - 1) {
-            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s,validElapsedTime=%s)", this, fromIndex, maxIndex, elapsedTime, validElapsedTime);
             fromIndex = maxIndex - 1;
         } else if (fromIndex < 0) {
-            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s,validElapsedTime=%s)", this, fromIndex, maxIndex, elapsedTime, validElapsedTime);
             fromIndex = 0;
         }
         startValue = controlValues[fromIndex];
@@ -198,7 +200,9 @@ public class ValueAnimator extends FlagsHolder {
         }
         long elapsedTime = getElapsedTime();
         int startValue = controlValues[0];
-        if (repeatCount > 0 && elapsedTime >= period * repeatCount) {
+        if (elapsedTime <= 0) {
+            return startValue;
+        } else if (repeatCount > 0 && elapsedTime >= period * repeatCount) {
             return !hasFlag(FLAG_FILL_END) || hasFlag(FLAG_REVERSE) && MathUtil.isEven(repeatCount) ? startValue : endValue;
         }
         long validElapsedTime = elapsedTime % period;
@@ -229,10 +233,10 @@ public class ValueAnimator extends FlagsHolder {
             extra = sectionLen - extra;
         }
         if (fromIndex > maxIndex - 1) {
-            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s,validElapsedTime=%s)", this, fromIndex, maxIndex, elapsedTime, validElapsedTime);
             fromIndex = maxIndex - 1;
         } else if (fromIndex < 0) {
-            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s)", this, fromIndex, maxIndex, validElapsedTime);
+            Logger.getDefault().e("%s getAnimatedValue: fromIndex=%s(maxIndex=%s,elapsedTime=%s,validElapsedTime=%s)", this, fromIndex, maxIndex, elapsedTime, validElapsedTime);
             fromIndex = 0;
         }
         startValue = controlValues[fromIndex];
@@ -245,6 +249,8 @@ public class ValueAnimator extends FlagsHolder {
         return "ValueAnimator{" +
                 "period=" + period +
                 ", repeatCount=" + repeatCount +
+                ", startTime=" + startTime +
+                ", pauseTime=" + pauseTime +
                 '}';
     }
 }
