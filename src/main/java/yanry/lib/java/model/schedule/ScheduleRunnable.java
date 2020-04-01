@@ -21,12 +21,19 @@ public abstract class ScheduleRunnable implements Runnable {
 
     @Override
     public void run() {
-        if (manager.isRunning) {
-            manager.runner.scheduleTimeout(this, 0);
-        } else {
-            manager.isRunning = true;
+        if (manager.isRunning.setValue(true)) {
             doRun();
-            manager.isRunning = false;
+            while (true) {
+                ScheduleRunnable poll = manager.pendingRunnable.poll();
+                if (poll != null) {
+                    poll.doRun();
+                } else {
+                    break;
+                }
+            }
+            manager.isRunning.setValue(false);
+        } else {
+            manager.pendingRunnable.offer(this);
         }
     }
 

@@ -5,15 +5,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import yanry.lib.java.interfaces.Filter;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
+import yanry.lib.java.model.watch.BooleanHolder;
+import yanry.lib.java.model.watch.BooleanWatcher;
 
-public class SchedulerManager implements Runnable {
+public class SchedulerManager implements BooleanWatcher {
     Runner runner;
     Logger logger;
-    boolean isRunning;
+    BooleanHolder isRunning;
+    ConcurrentLinkedQueue<ScheduleRunnable> pendingRunnable;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     private HashMap<Object, Scheduler> instances;
@@ -21,9 +25,12 @@ public class SchedulerManager implements Runnable {
     public SchedulerManager(Runner runner, Logger logger) {
         this.runner = runner;
         this.logger = logger;
+        isRunning = new BooleanHolder();
+        pendingRunnable = new ConcurrentLinkedQueue<>();
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
+        isRunning.addWatcher(this);
     }
 
     public Scheduler get(Object tag) {
@@ -188,19 +195,13 @@ public class SchedulerManager implements Runnable {
                 runner.scheduleTimeout(data, data.duration);
             }
         }
-        // 分发watcher事件
-        runner.scheduleTimeout(this, 1);
     }
 
     @Override
-    public final void run() {
-        if (isRunning) {
-            runner.scheduleTimeout(this, 0);
-        } else {
-            ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
-            for (Scheduler scheduler : schedulers) {
-                scheduler.visibility.setValue(scheduler.current != null);
-            }
+    public void onValueChange(boolean to) {
+        ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+        for (Scheduler scheduler : schedulers) {
+            scheduler.visibility.setValue(scheduler.current != null);
         }
     }
 }

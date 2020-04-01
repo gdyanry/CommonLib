@@ -50,12 +50,9 @@ public class ShowData extends FlagsHolder implements Runnable {
                     @Override
                     protected void doRun() {
                         scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
-                        if (scheduler.manager.logger != null) {
-                            scheduler.manager.logger.vv("dismiss by manual: ", ShowData.this);
-                        }
                         doDismiss();
                     }
-                }.start(this, " dismiss: ", delay);
+                }.start(this, " dismiss by manual: ", ShowData.this);
             }
         }
     }
@@ -104,14 +101,13 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     @Override
     public final void run() {
-        if (scheduler != null) {
-            scheduler.manager.isRunning = true;
-            if (scheduler.manager.logger != null) {
-                scheduler.manager.logger.vv("dismiss by timeout: ", this);
+        new ScheduleRunnable(scheduler.manager) {
+            @Override
+            protected void doRun() {
+                scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
+                doDismiss();
             }
-            doDismiss();
-            scheduler.manager.isRunning = false;
-        }
+        }.start(this, " dismiss by timeout: ", ShowData.this);
     }
 
     private void doDismiss() {
