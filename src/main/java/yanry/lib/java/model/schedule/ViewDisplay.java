@@ -42,7 +42,7 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
                     currentData.state.setValue(ShowData.STATE_DISMISS);
                     scheduler.manager.rebalance(null, null);
                 }
-            }.start(getClass().getSimpleName(), '@', Integer.toHexString(hashCode()), " notify dismiss: ", view);
+            }.start(getClass().getSimpleName(), '@', hashCode(), " notify dismiss: ", view);
             return true;
         }
         return false;

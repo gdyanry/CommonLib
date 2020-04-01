@@ -52,7 +52,7 @@ public class ShowData extends FlagsHolder implements Runnable {
                         scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
                         doDismiss();
                     }
-                }.start(this, " dismiss by manual: ", ShowData.this);
+                }.start("dismiss by manual: ", ShowData.this);
             }
         }
     }
@@ -107,7 +107,7 @@ public class ShowData extends FlagsHolder implements Runnable {
                 scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
                 doDismiss();
             }
-        }.start(this, " dismiss by timeout: ", ShowData.this);
+        }.start("dismiss by timeout: ", ShowData.this);
     }
 
     private void doDismiss() {

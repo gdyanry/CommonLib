@@ -16,8 +16,12 @@ public abstract class AsyncDisplay<D extends ShowData, V> extends ViewDisplay<D,
     public void notifyCreate(AsyncBridge<D, V> function) {
         this.bridge = function;
         if (data != null) {
-            setView(function.show(data));
-            data = null;
+            if (data.getState().getValue() == ShowData.STATE_SHOWING) {
+                setView(function.show(data));
+                data = null;
+            } else if (data.getState().getValue() == ShowData.STATE_DISMISS) {
+                dismiss(function.show(data));
+            }
         }
     }
 
