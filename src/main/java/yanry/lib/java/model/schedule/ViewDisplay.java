@@ -1,7 +1,7 @@
 package yanry.lib.java.model.schedule;
 
 import yanry.lib.java.model.watch.ValueHolder;
-import yanry.lib.java.model.watch.ValueReader;
+import yanry.lib.java.model.watch.ValueHolderImpl;
 
 /**
  * Created by yanry on 2020/1/2.
@@ -10,17 +10,17 @@ import yanry.lib.java.model.watch.ValueReader;
  * @param <V> view type.
  */
 public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
-    private ValueHolder<V> viewHolder;
+    private ValueHolderImpl<V> viewHolder;
 
     public ViewDisplay() {
-        viewHolder = new ValueHolder<>();
+        viewHolder = new ValueHolderImpl<>();
     }
 
     protected void setView(V view) {
         viewHolder.setValue(view);
     }
 
-    public ValueReader<V> getViewHolder() {
+    public ValueHolder<V> getViewHolder() {
         return viewHolder;
     }
 

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import yanry.lib.java.model.watch.BooleanHolder;
-import yanry.lib.java.model.watch.BooleanReader;
+import yanry.lib.java.model.watch.BooleanHolderImpl;
 
 /**
  * 本类适用的场景为：需要为不同的数据弹出不同的界面，同一时刻最多只显示一个界面，比如显示推送通知。
@@ -15,17 +15,17 @@ public class Scheduler {
     SchedulerManager manager;
     private Object tag;
     ShowData current;
-    BooleanHolder visibility;
+    BooleanHolderImpl visibility;
     private HashMap<Class<? extends Display>, Display> displays;
 
     Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
         this.tag = tag;
-        visibility = new BooleanHolder();
+        visibility = new BooleanHolderImpl();
         displays = new HashMap<>();
     }
 
-    public BooleanReader getVisibility() {
+    public BooleanHolder getVisibility() {
         return visibility;
     }
 
