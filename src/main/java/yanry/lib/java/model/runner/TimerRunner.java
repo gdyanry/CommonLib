@@ -27,12 +27,12 @@ public class TimerRunner extends Timer implements Runner {
         if (Thread.currentThread() == timerThread) {
             runnable.run();
         } else {
-            scheduleTimeout(runnable, 0);
+            schedule(runnable, 0);
         }
     }
 
     @Override
-    public void scheduleTimeout(Runnable runnable, long delay) {
+    public void schedule(Runnable runnable, long delay) {
         TimerTask old = tasks.get(runnable);
         if (old != null) {
             old.cancel();
@@ -49,7 +49,7 @@ public class TimerRunner extends Timer implements Runner {
     }
 
     @Override
-    public void cancelPendingTimeout(Runnable runnable) {
+    public void cancel(Runnable runnable) {
         TimerTask timerTask = tasks.remove(runnable);
         if (timerTask != null) {
             timerTask.cancel();

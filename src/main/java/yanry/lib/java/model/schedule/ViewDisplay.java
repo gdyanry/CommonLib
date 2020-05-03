@@ -35,7 +35,7 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
                 @Override
                 protected void doRun() {
                     setView(null);
-                    scheduler.manager.runner.cancelPendingTimeout(currentData);
+                    scheduler.manager.runner.cancel(currentData);
                     if (scheduler.manager.logger != null) {
                         scheduler.manager.logger.vv("notify dismiss: ", currentData);
                     }

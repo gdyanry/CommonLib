@@ -190,7 +190,7 @@ public class SchedulerManager {
             if (data != showData && data.hasFlag(ShowData.FLAG_DISMISS_ON_SHOW)) {
                 data.dismiss(0);
             } else if (data.duration > 0) {
-                runner.scheduleTimeout(data, data.duration);
+                runner.schedule(data, data.duration);
             }
         }
     }

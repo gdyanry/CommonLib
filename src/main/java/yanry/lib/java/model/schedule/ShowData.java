@@ -44,12 +44,12 @@ public class ShowData extends FlagsHolder implements Runnable {
         // 此处scheduler.current==this不能用state==STATE_SHOWING替代，因为state是在show完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
         if (scheduler != null && scheduler.current == this) {
             if (delay > 0) {
-                scheduler.manager.runner.scheduleTimeout(this, delay);
+                scheduler.manager.runner.schedule(this, delay);
             } else {
                 new ScheduleRunnable(scheduler.manager) {
                     @Override
                     protected void doRun() {
-                        scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
+                        scheduler.manager.runner.cancel(ShowData.this);
                         doDismiss();
                     }
                 }.start("dismiss by manual: ", ShowData.this);
@@ -91,7 +91,7 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     public void cancelDismiss() {
         if (scheduler != null && scheduler.current == this) {
-            scheduler.manager.runner.cancelPendingTimeout(this);
+            scheduler.manager.runner.cancel(this);
         }
     }
 
@@ -104,7 +104,7 @@ public class ShowData extends FlagsHolder implements Runnable {
         new ScheduleRunnable(scheduler.manager) {
             @Override
             protected void doRun() {
-                scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
+                scheduler.manager.runner.cancel(ShowData.this);
                 doDismiss();
             }
         }.start("dismiss by timeout: ", ShowData.this);

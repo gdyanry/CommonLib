@@ -1,5 +1,6 @@
 package yanry.lib.java.model.schedule;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,6 +69,11 @@ public class Scheduler {
         return current;
     }
 
+    public void addDisplay(Display<?> display) {
+        display.setScheduler(this);
+        displays.put(display.getClass(), display);
+    }
+
     public <T extends Display> T getDisplay(Class<T> displayType) {
         T display = (T) displays.get(displayType);
         if (display == null) {
@@ -86,9 +92,12 @@ public class Scheduler {
         return display;
     }
 
-    public <T extends Display> void setDisplay(Class<T> displayType, T display) {
-        display.setScheduler(this);
-        displays.put(displayType, display);
+    public <T extends Display> T removeDisplay(Class<T> displayType) {
+        return (T) displays.remove(displayType);
+    }
+
+    public Collection<Display> getDisplays() {
+        return displays.values();
     }
 
     public <D extends ShowData> void show(D data, Class<? extends Display<D>> displayType) {
@@ -129,7 +138,7 @@ public class Scheduler {
                 if (showNow) {
                     HashSet<Display> displaysToDismisses = new HashSet<>();
                     for (ShowData showingData : concernedShowingData) {
-                        manager.runner.cancelPendingTimeout(showingData);
+                        manager.runner.cancel(showingData);
                         showingData.scheduler.current = null;
                         // 结束当前正在显示的关联任务
                         if (manager.logger != null) {
@@ -183,7 +192,7 @@ public class Scheduler {
         if (current != null) {
             ShowData currentData = this.current;
             current = null;
-            manager.runner.cancelPendingTimeout(currentData);
+            manager.runner.cancel(currentData);
             if (manager.logger != null) {
                 manager.logger.vv("dismiss by cancel: ", currentData);
             }
