@@ -1,9 +1,11 @@
 package yanry.lib.java.model.process;
 
+import yanry.lib.java.model.log.LogLevel;
+
 /**
  * Created by yanry on 2020/1/11.
  */
-abstract class RequestRelay<D, R> extends RequestHook<D, R> {
+abstract class RequestRelay<D, R extends ProcessResult> extends RequestHook<D, R> {
     private RequestRoot<?, R> requestRoot;
     private boolean isFail;
 
@@ -21,12 +23,12 @@ abstract class RequestRelay<D, R> extends RequestHook<D, R> {
     protected boolean fail(boolean isTimeout) {
         if (!isFail) {
             isFail = true;
-            if (startTime > 0 && requestRoot.logger != null && parent.isOpen()) {
-                long elapsedTime = System.currentTimeMillis() - startTime;
+            if (requestRoot.logger != null && parent.isOpen()) {
+                long elapsedTime = System.currentTimeMillis() - getStartTime();
                 if (isTimeout) {
-                    requestRoot.logger.dd(this, " timeout: ", elapsedTime);
+                    requestRoot.logger.dd(this, " timeout: ", elapsedTime, "ms");
                 } else {
-                    requestRoot.logger.vv(this, " pass: ", elapsedTime);
+                    requestRoot.logger.concat(LogLevel.Verbose, this, " pass: ", elapsedTime, "ms");
                 }
             }
             requestRoot.cancelTimeout(this);

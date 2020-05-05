@@ -6,12 +6,13 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import yanry.lib.java.model.Singletons;
+import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 
 /**
  * Created by yanry on 2020/1/11.
  */
-final class RequestRoot<D, R> extends RequestHook<D, R> {
+final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
     final Logger logger;
     final D requestData;
     private ProcessCallback<R> completeCallback;
@@ -48,9 +49,9 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
 
     boolean hit(RequestHook<?, R> requestHook, R result) {
         if (open.compareAndSet(true, false)) {
+            result.end(requestHook);
             if (logger != null) {
-                long now = System.currentTimeMillis();
-                logger.d("%s hit %s/%s: %s", requestHook, now - requestHook.startTime, now - startTime, result);
+                logger.format(LogLevel.Debug, "%s hit %sms/%sms: %s", requestHook, result.getEndTime() - requestHook.getStartTime(), result.getElapsedTime(), result);
             }
             clearTimeout();
             RequestHook<?, R> hook = requestHook;
@@ -89,7 +90,7 @@ final class RequestRoot<D, R> extends RequestHook<D, R> {
     protected boolean fail(boolean isTimeout) {
         if (open.compareAndSet(true, false)) {
             if (logger != null) {
-                logger.dd(this, isTimeout ? " timeout: " : " fail: ", System.currentTimeMillis() - startTime);
+                logger.concat(LogLevel.Debug, this, isTimeout ? " timeout: " : " fail: ", System.currentTimeMillis() - getStartTime(), "ms");
             }
             clearTimeout();
             if (completeCallback != null) {

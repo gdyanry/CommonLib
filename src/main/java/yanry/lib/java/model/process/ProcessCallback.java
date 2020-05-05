@@ -7,7 +7,7 @@ package yanry.lib.java.model.process;
  *
  * @param <R> type of process result.
  */
-public interface ProcessCallback<R> {
+public interface ProcessCallback<R extends ProcessResult> {
     /**
      * 成功回调。
      *

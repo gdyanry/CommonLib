@@ -7,7 +7,7 @@ import yanry.lib.java.model.log.Logger;
  * <p>
  * Created by yanry on 2020/1/12.
  */
-public interface ProcessRequest<D, R> {
+public interface ProcessRequest<D, R extends ProcessResult> {
     D getRequestData();
 
     /**
@@ -21,12 +21,4 @@ public interface ProcessRequest<D, R> {
      * @return 操作是否成功。
      */
     boolean fail();
-
-    /**
-     * 成功结束当前请求。
-     *
-     * @param result 请求结果。
-     * @return 操作是否成功。
-     */
-    boolean hit(R result);
 }

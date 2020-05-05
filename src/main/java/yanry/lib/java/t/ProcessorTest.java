@@ -12,8 +12,9 @@ import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
 import yanry.lib.java.model.process.ProcessCallback;
+import yanry.lib.java.model.process.ProcessResult;
 import yanry.lib.java.model.process.Processor;
-import yanry.lib.java.model.process.RequestHook;
+import yanry.lib.java.model.process.RequestHandler;
 import yanry.lib.java.model.process.extend.PlainProcessor;
 
 /**
@@ -28,14 +29,14 @@ public class ProcessorTest {
         ConsoleHandler defaultHandler = new ConsoleHandler();
         SimpleFormatter formatter = new SimpleFormatter();
         formatter.addFlag(SimpleFormatter.LEVEL).addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.METHOD);
-        formatter.setMethodStack(0);
+//        formatter.setMethodStack(5);
         defaultHandler.setFormatter(formatter);
         defaultHandler.setLevel(LogLevel.Verbose);
         Logger.setDefaultHandler(defaultHandler);
 
-        ProcessCallback<String> completeCallback = new ProcessCallback<String>() {
+        ProcessCallback<ProcessResult> completeCallback = new ProcessCallback<ProcessResult>() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(ProcessResult result) {
                 System.out.println("success");
                 Runtime.getRuntime().exit(0);
             }
@@ -49,7 +50,7 @@ public class ProcessorTest {
         new RootProcessor(FACTOR, false).request(Logger.getDefault(), 2, completeCallback);
     }
 
-    private static class NodeProcessor extends PlainProcessor<String, String> {
+    private static class NodeProcessor extends PlainProcessor<String, ProcessResult> {
         private static AtomicInteger counter = new AtomicInteger();
         private int index;
         private boolean hit;
@@ -66,7 +67,7 @@ public class ProcessorTest {
         }
 
         @Override
-        protected String process(String requestData) {
+        protected ProcessResult process(String requestData) {
             try {
                 int sleep = Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
                 System.out.println(String.format("%s sleep: %s", getShortName(), sleep));
@@ -74,7 +75,7 @@ public class ProcessorTest {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return hit ? "hit" : null;
+            return hit ? new ProcessResult() : null;
         }
 
         @Override
@@ -88,9 +89,9 @@ public class ProcessorTest {
         }
     }
 
-    private static class Dispatcher implements Processor<Integer, String> {
+    private static class Dispatcher implements Processor<Integer, ProcessResult> {
         private static AtomicInteger counter = new AtomicInteger();
-        private ArrayList<Processor<Integer, String>> childProcessors;
+        private ArrayList<Processor<Integer, ProcessResult>> childProcessors;
         private boolean keepOrder;
         private int index;
 
@@ -105,7 +106,7 @@ public class ProcessorTest {
         }
 
         @Override
-        public void process(RequestHook<Integer, String> request) {
+        public void process(RequestHandler<Integer, ProcessResult> request) {
             request.dispatch(request.getRequestData(), childProcessors, keepOrder);
         }
 
@@ -120,8 +121,8 @@ public class ProcessorTest {
         }
     }
 
-    private static class RootProcessor implements Processor<Integer, String> {
-        private ArrayList<Processor<Integer, String>> childProcessors;
+    private static class RootProcessor implements Processor<Integer, ProcessResult> {
+        private ArrayList<Processor<Integer, ProcessResult>> childProcessors;
         private boolean keepOrder;
 
         public RootProcessor(int childCount, boolean keepOrder) {
@@ -133,13 +134,13 @@ public class ProcessorTest {
         }
 
         @Override
-        public void process(RequestHook<Integer, String> request) {
+        public void process(RequestHandler<Integer, ProcessResult> request) {
             request.dispatch(request.getRequestData(), childProcessors, keepOrder);
         }
 
-        @Override
-        public long getTimeout() {
-            return Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
-        }
+//        @Override
+//        public long getTimeout() {
+//            return Singletons.get(Random.class).nextInt(MAX_TIMEOUT);
+//        }
     }
 }

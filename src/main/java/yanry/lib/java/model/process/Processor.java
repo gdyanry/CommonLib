@@ -12,7 +12,7 @@ import yanry.lib.java.model.log.Logger;
  * @param <D> type of request data.
  * @param <R> type of process result.
  */
-public interface Processor<D, R> {
+public interface Processor<D, R extends ProcessResult> {
     /**
      * 通过当前处理器发起请求。
      *
@@ -41,7 +41,7 @@ public interface Processor<D, R> {
     default <T> Processor<T, R> wrap(DataTransformer<T, D> dataTransformer) {
         return new Processor<T, R>() {
             @Override
-            public void process(RequestHook<T, R> request) {
+            public void process(RequestHandler<T, R> request) {
                 request.redirect(dataTransformer.transform(request.getRequestData()), Processor.this);
             }
 
@@ -96,5 +96,5 @@ public interface Processor<D, R> {
      *
      * @param request 请求对象，处理请求时可用于查询请求数据和请求状态，分发处理，或者提交处理结果。
      */
-    void process(RequestHook<D, R> request);
+    void process(RequestHandler<D, R> request);
 }
