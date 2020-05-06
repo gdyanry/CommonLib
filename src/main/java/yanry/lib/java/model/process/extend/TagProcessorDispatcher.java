@@ -50,6 +50,12 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
         }
     }
 
+    public void removeChildProcessor(Processor<D, R> processor) {
+        for (LinkedList<Processor<D, R>> processors : values()) {
+            processors.remove(processor);
+        }
+    }
+
     protected abstract T getTag(D requestData);
 
     @Override

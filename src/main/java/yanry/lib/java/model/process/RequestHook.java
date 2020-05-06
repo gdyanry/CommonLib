@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * <p>
  * Created by yanry on 2020/1/11.
  */
-public abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler<D, R>, ProcessNode<D, R> {
+abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler<D, R>, ProcessNode<D, R> {
     RequestHook<?, R> parent;
     private Processor<D, R> processor;
     private String fullName;
@@ -79,6 +79,10 @@ public abstract class RequestHook<D, R extends ProcessResult> implements Request
 
     @Override
     public <T> void redirect(T requestData, Processor<T, R> processor) {
+        if (requestData == null) {
+            fail();
+            return;
+        }
         new RequestRelay<T, R>(this, processor, getRequestRoot()) {
             @Override
             public T getRequestData() {
@@ -96,7 +100,7 @@ public abstract class RequestHook<D, R extends ProcessResult> implements Request
 
     @Override
     public <T> void dispatch(T requestData, Collection<? extends Processor<T, R>> childProcessors, boolean keepOrder) {
-        if (childProcessors.size() == 0) {
+        if (requestData == null || childProcessors.size() == 0) {
             fail();
             return;
         }
