@@ -19,6 +19,12 @@ import yanry.lib.java.model.process.RequestHandler;
  * @param <T> type of tag.
  */
 public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> extends HashMap<T, LinkedList<Processor<D, R>>> implements Processor<D, R> {
+    private boolean stackLike;
+
+    public TagProcessorDispatcher(boolean stackLike) {
+        this.stackLike = stackLike;
+    }
+
     /**
      * 添加子处理器。
      *
@@ -31,7 +37,11 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
             processors = new LinkedList<>();
             put(tag, processors);
         }
-        processors.add(processor);
+        if (stackLike) {
+            processors.addFirst(processor);
+        } else {
+            processors.addLast(processor);
+        }
     }
 
     /**
