@@ -52,7 +52,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dequeue by scheduler cancel: ", next);
                         }
-                        next.state.setValue(ShowData.STATE_DEQUEUE);
+                        next.setState(ShowData.STATE_DEQUEUE);
                         iterator.remove();
                     }
                 }
@@ -100,13 +100,13 @@ public class Scheduler {
         return displays.values();
     }
 
-    public <D extends ShowData> void show(D data, Class<? extends Display<D>> displayType) {
+    public <D extends ShowData> void show(D data, Class<? extends Display<? extends D>> displayType) {
         new ScheduleRunnable(manager) {
             @Override
             protected void doRun() {
-                if (data.state.getValue() == ShowData.STATE_SHOWING || data.state.getValue() == ShowData.STATE_ENQUEUE) {
+                if (data.getState().getValue() == ShowData.STATE_SHOWING || data.getState().getValue() == ShowData.STATE_ENQUEUE) {
                     if (manager.logger != null) {
-                        manager.logger.ww("deny showing for invalid state: ", data, ' ', data.state);
+                        manager.logger.ww("deny showing for invalid state: ", data, ' ', data.getState().getValue());
                     }
                     return;
                 }
@@ -120,7 +120,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dequeue by expelled: ", next);
                         }
-                        next.state.setValue(ShowData.STATE_DEQUEUE);
+                        next.setState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
@@ -144,7 +144,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dismiss by expelled: ", showingData);
                         }
-                        showingData.state.setValue(ShowData.STATE_DISMISS);
+                        showingData.setState(ShowData.STATE_DISMISS);
                         if (data.display != showingData.display) {
                             displaysToDismisses.add(showingData.display);
                         }
@@ -162,14 +162,14 @@ public class Scheduler {
                                 manager.logger.vv("insert head: ", data);
                             }
                             manager.queue.addFirst(data);
-                            data.state.setValue(ShowData.STATE_ENQUEUE);
+                            data.setState(ShowData.STATE_ENQUEUE);
                             break;
                         case ShowData.STRATEGY_APPEND_TAIL:
                             if (manager.logger != null) {
                                 manager.logger.vv("append tail: ", data);
                             }
                             manager.queue.addLast(data);
-                            data.state.setValue(ShowData.STATE_ENQUEUE);
+                            data.setState(ShowData.STATE_ENQUEUE);
                             break;
                     }
                 }
@@ -196,7 +196,7 @@ public class Scheduler {
             if (manager.logger != null) {
                 manager.logger.vv("dismiss by cancel: ", currentData);
             }
-            currentData.state.setValue(ShowData.STATE_DISMISS);
+            currentData.setState(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
                 currentData.display.internalDismiss();
             } else {

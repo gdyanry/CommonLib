@@ -1,13 +1,13 @@
 package yanry.lib.java.model.watch;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Objects;
+
+import yanry.lib.java.model.Registry;
 
 /**
  * Created by yanry on 2020/3/2.
  */
-public class ValueHolderImpl<V> extends LinkedList<ValueWatcher<V>> implements ValueHolder<V> {
+public class ValueHolderImpl<V> extends Registry<ValueWatcher<V>> implements ValueHolder<V> {
     private V value;
 
     public ValueHolderImpl() {
@@ -17,33 +17,31 @@ public class ValueHolderImpl<V> extends LinkedList<ValueWatcher<V>> implements V
         this.value = value;
     }
 
-    public boolean setValue(V value) {
+    /**
+     * @param value the new value to set.
+     * @return previous value.
+     */
+    public V setValue(V value) {
+        V oldValue = this.value;
         if (!Objects.equals(this.value, value)) {
-            V oldValue = this.value;
             this.value = value;
             if (size() > 0) {
-                ArrayList<ValueWatcher<V>> temp = new ArrayList<>(this);
-                for (ValueWatcher<V> watcher : temp) {
+                for (ValueWatcher<V> watcher : getCopy()) {
                     watcher.onValueChange(value, oldValue);
                 }
             }
-            return true;
         }
-        return false;
+        return oldValue;
     }
 
     @Override
     public boolean addWatcher(ValueWatcher<V> watcher) {
-        if (!contains(watcher)) {
-            add(watcher);
-            return true;
-        }
-        return false;
+        return register(watcher);
     }
 
     @Override
     public boolean removeWatcher(ValueWatcher<V> watcher) {
-        return remove(watcher);
+        return unregister(watcher);
     }
 
     @Override

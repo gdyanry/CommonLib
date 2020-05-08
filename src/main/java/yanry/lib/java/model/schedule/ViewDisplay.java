@@ -39,7 +39,7 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
                     if (scheduler.manager.logger != null) {
                         scheduler.manager.logger.vv("notify dismiss: ", currentData);
                     }
-                    currentData.state.setValue(ShowData.STATE_DISMISS);
+                    currentData.setState(ShowData.STATE_DISMISS);
                     scheduler.manager.rebalance(null, null);
                 }
             }.start(getClass().getSimpleName(), '@', hashCode(), " notify dismiss: ", view);

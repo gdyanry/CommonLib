@@ -44,6 +44,7 @@ public class ProcessorTest {
             @Override
             public void onFail(boolean isTimeout) {
                 System.out.println("timeout: " + isTimeout);
+                Runtime.getRuntime().exit(0);
 //                new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, this);
             }
         };

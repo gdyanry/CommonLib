@@ -1,12 +1,11 @@
 package yanry.lib.java.model.watch;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import yanry.lib.java.model.Registry;
 
 /**
  * Created by yanry on 2020/3/3.
  */
-public class BooleanHolderImpl extends LinkedList<BooleanWatcher> implements BooleanHolder {
+public class BooleanHolderImpl extends Registry<BooleanWatcher> implements BooleanHolder {
     private boolean value;
 
     public BooleanHolderImpl() {
@@ -20,8 +19,7 @@ public class BooleanHolderImpl extends LinkedList<BooleanWatcher> implements Boo
         if (this.value ^ value) {
             this.value = value;
             if (size() > 0) {
-                ArrayList<BooleanWatcher> temp = new ArrayList<>(this);
-                for (BooleanWatcher watcher : temp) {
+                for (BooleanWatcher watcher : getCopy()) {
                     watcher.onValueChange(value);
                 }
             }
@@ -32,16 +30,12 @@ public class BooleanHolderImpl extends LinkedList<BooleanWatcher> implements Boo
 
     @Override
     public boolean addWatcher(BooleanWatcher watcher) {
-        if (!contains(watcher)) {
-            add(watcher);
-            return true;
-        }
-        return false;
+        return register(watcher);
     }
 
     @Override
     public boolean removeWatcher(BooleanWatcher watcher) {
-        return remove(watcher);
+        return unregister(watcher);
     }
 
     @Override

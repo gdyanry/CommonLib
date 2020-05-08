@@ -29,7 +29,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    ValueHolderImpl<Integer> state;
+    private ValueHolderImpl<Integer> state;
 
     public ShowData() {
         super(false);
@@ -38,6 +38,14 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     public ValueHolder<Integer> getState() {
         return state;
+    }
+
+    int setState(int state) {
+        Integer previous = this.state.setValue(state);
+        if (previous != state) {
+            onStateChange(state, previous);
+        }
+        return previous;
     }
 
     public void dismiss(long delay) {
@@ -97,6 +105,9 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     protected boolean expelWaitingData(ShowData data) {
         return hasFlag(FLAG_EXPEL_WAITING_DATA);
+    }
+
+    protected void onStateChange(int to, int from) {
     }
 
     @Override
