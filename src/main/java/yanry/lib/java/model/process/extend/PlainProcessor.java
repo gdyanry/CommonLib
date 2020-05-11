@@ -11,6 +11,9 @@ import yanry.lib.java.model.process.RequestHandler;
  * 朴素处理器，该类主要是将{@link Processor#process(RequestHandler)}中提交结果的异步方式改为同步方式，使用起来更简单直观。
  * <p>
  * Created by yanry on 2020/1/10.
+ *
+ * @param <D> 待处理的数据类型。
+ * @param <R> 处理结果类型。
  */
 public abstract class PlainProcessor<D, R extends ProcessResult> implements Processor<D, R> {
 

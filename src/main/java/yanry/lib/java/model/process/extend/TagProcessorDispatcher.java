@@ -21,6 +21,9 @@ import yanry.lib.java.model.process.RequestHandler;
 public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> extends HashMap<T, LinkedList<Processor<D, R>>> implements Processor<D, R> {
     private boolean stackLike;
 
+    /**
+     * @param stackLike 标签对应的多个处理节点是否按栈操作顺序进行处理，为true时后添加的节点优先执行，为false时优先执行先添加的节点。
+     */
     public TagProcessorDispatcher(boolean stackLike) {
         this.stackLike = stackLike;
     }

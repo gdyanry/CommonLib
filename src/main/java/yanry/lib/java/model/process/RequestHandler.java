@@ -6,6 +6,9 @@ import java.util.Collection;
  * 请求处理扩展接口，增加了输出请求结果、转发请求和重定向请求的方法。
  * <p>
  * Created by yanry on 2020/5/5.
+ *
+ * @param <D> 待处理的数据类型。
+ * @param <R> 处理结果类型。
  */
 public interface RequestHandler<D, R extends ProcessResult> extends ProcessRequest<D, R> {
 
