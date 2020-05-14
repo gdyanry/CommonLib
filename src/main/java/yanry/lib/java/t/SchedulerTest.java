@@ -28,12 +28,20 @@ public class SchedulerTest {
         SchedulerManager schedulerManager = new SchedulerManager(new TimerRunner("schedule-runner", false), Logger.getDefault());
         Scheduler scheduler = schedulerManager.get("testScheduler");
         scheduler.getVisibility().addWatcher(newValue -> Logger.getDefault().ii(scheduler, " is visible: ", newValue));
+        // DURATION显示三秒
         TestData data = new TestData("DURATION");
         data.setDuration(3000);
         scheduler.show(data, TestDisplay.class);
 
-        TestData selfDismissData = new TestData("DISMISS");
-        selfDismissData.addFlag(ShowData.FLAG_DISMISS_ON_SHOW);
+        TestData selfDismissData = new TestData("DISMISS") {
+            @Override
+            protected void onStateChange(int to, int from) {
+                if (to == ShowData.STATE_SHOWING) {
+                    dismiss(0);
+                }
+            }
+        };
+        selfDismissData.setDuration(3000);
         scheduler.show(selfDismissData, TestDisplay.class);
         selfDismissData.getState().addWatcher((newValue, oldValue) -> {
             if (newValue == ShowData.STATE_DISMISS) {
@@ -47,7 +55,7 @@ public class SchedulerTest {
         public TestData(String name) {
             setExtra(name);
             getState().addWatcher(this);
-            setStrategy(STRATEGY_APPEND_TAIL);
+//            setStrategy(STRATEGY_APPEND_TAIL);
         }
 
         @Override

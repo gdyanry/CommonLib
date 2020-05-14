@@ -187,9 +187,7 @@ public class SchedulerManager {
             }
             data.display.show(data);
             data.setState(ShowData.STATE_SHOWING);
-            if (data != showData && data.hasFlag(ShowData.FLAG_DISMISS_ON_SHOW)) {
-                data.dismiss(0);
-            } else if (data.duration > 0) {
+            if (data.duration > 0) {
                 runner.schedule(data, data.duration);
             }
         }

@@ -11,7 +11,6 @@ public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_DISMISSED = 2;
     public static final int FLAG_EXPEL_WAITING_DATA = 4;
     public static final int FLAG_INVALID_ON_DELAYED_SHOW = 8;
-    public static final int FLAG_DISMISS_ON_SHOW = 16;
 
     public static final int STRATEGY_APPEND_TAIL = 2;
     public static final int STRATEGY_INSERT_HEAD = 1;
