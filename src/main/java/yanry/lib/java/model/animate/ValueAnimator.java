@@ -32,23 +32,17 @@ public class ValueAnimator extends FlagsHolder {
     }
 
     private long period;
-    private float[] keyValues;
     private int repeatCount;
-    private ProportionTransformer proportionTransformer;
 
     /**
      * @param period 动画周期。
      */
-    public ValueAnimator(long period, float... keyValues) {
+    public ValueAnimator(long period) {
         super(false);
         if (period <= 0) {
             throw new IllegalArgumentException("period must be > 0");
         }
-        if (keyValues.length < 2) {
-            throw new IllegalArgumentException("number of key value must be >= 2");
-        }
         this.period = period;
-        this.keyValues = keyValues;
     }
 
     /**
@@ -60,17 +54,10 @@ public class ValueAnimator extends FlagsHolder {
         this.repeatCount = repeatCount;
     }
 
-    public void setProportionTransformer(ProportionTransformer proportionTransformer) {
-        this.proportionTransformer = proportionTransformer;
-    }
-
-    public float[] getKeyValues() {
-        return keyValues;
-    }
-
     /**
      * 查询当前动画在给定时间下是否已结束。结束意味着在不改变配置的前提下，动画值将不再改变。
      *
+     * @param elapsedTime
      * @return
      */
     public boolean isFinish(long elapsedTime) {
@@ -80,13 +67,22 @@ public class ValueAnimator extends FlagsHolder {
         return repeatCount > 0 && elapsedTime >= period * repeatCount;
     }
 
+    public long getPeriod() {
+        return period;
+    }
+
     /**
      * 获取给定时间的动画值。
      *
-     * @param elapsedTime
+     * @param elapsedTime  时间
+     * @param interpolator 进度篡改器
+     * @param keyValues    关键值
      * @return
      */
-    public float getAnimatedValue(long elapsedTime) {
+    public float getAnimatedValue(long elapsedTime, ProgressInterpolator interpolator, float... keyValues) {
+        if (keyValues.length < 2) {
+            throw new IllegalArgumentException("number of key value must be >= 2");
+        }
         if (elapsedTime <= 0) {
             return keyValues[0];
         } else if (repeatCount > 0 && elapsedTime >= period * repeatCount) {
@@ -101,8 +97,8 @@ public class ValueAnimator extends FlagsHolder {
         if (!isForward) {
             proportion = 1 - proportion;
         }
-        if (proportionTransformer != null) {
-            proportion = proportionTransformer.transform(proportion);
+        if (interpolator != null) {
+            proportion = interpolator.getInterpolation(proportion);
         }
         float sectionUnit = 1f / (keyValues.length - 1);
         if (proportion < 0) {

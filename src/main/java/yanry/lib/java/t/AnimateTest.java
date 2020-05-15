@@ -4,8 +4,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import yanry.lib.java.model.Singletons;
-import yanry.lib.java.model.animate.ProportionTransformer;
-import yanry.lib.java.model.animate.SectionTransformer;
+import yanry.lib.java.model.animate.ProgressInterpolator;
+import yanry.lib.java.model.animate.SectionInterpolator;
 import yanry.lib.java.model.animate.TimeController;
 import yanry.lib.java.model.animate.ValueAnimator;
 import yanry.lib.java.model.log.Logger;
@@ -16,16 +16,16 @@ import yanry.lib.java.model.log.Logger;
 public class AnimateTest {
     public static void main(String[] args) {
         TimeController timeController = new TimeController();
-        ValueAnimator valueAnimator = new ValueAnimator(4000, 100, 90, 100);
-        ProportionTransformer transformer = new SectionTransformer(0.1f, 0.8f);
-        valueAnimator.setProportionTransformer(transformer);
+        ValueAnimator valueAnimator = new ValueAnimator(4000);
+        float[] keyValues = new float[]{100, 90, 100};
+        ProgressInterpolator interpolator = new SectionInterpolator(0.1f, 0.8f);
         valueAnimator.setRepeatCount(1);
         valueAnimator.addFlag(ValueAnimator.FLAG_REVERSE);
         Singletons.get(Timer.class).schedule(new TimerTask() {
             @Override
             public void run() {
                 long elapsedTime = timeController.getElapsedTime();
-                Logger.getDefault().d("%s, %s, %s", timeController.isPause(), elapsedTime, valueAnimator.getAnimatedValue(elapsedTime));
+                Logger.getDefault().d("%s, %s, %s", timeController.isPause(), elapsedTime, valueAnimator.getAnimatedValue(elapsedTime, interpolator, keyValues));
                 if (valueAnimator.isFinish(elapsedTime)) {
                     System.exit(0);
                 }

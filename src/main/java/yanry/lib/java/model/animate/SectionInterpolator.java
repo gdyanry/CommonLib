@@ -5,13 +5,13 @@ package yanry.lib.java.model.animate;
  * <p>
  * Created by yanry on 2020/5/14.
  */
-public class SectionTransformer implements ProportionTransformer {
+public class SectionInterpolator implements ProgressInterpolator {
     private float[] sections;
 
     /**
      * @param sections 区间分界点值，必须在0到1之间且按升序排列。
      */
-    public SectionTransformer(float... sections) {
+    public SectionInterpolator(float... sections) {
         if (sections.length == 0) {
             throw new IllegalArgumentException("number of section must be > 0");
         }
@@ -25,7 +25,7 @@ public class SectionTransformer implements ProportionTransformer {
     }
 
     @Override
-    public float transform(float input) {
+    public float getInterpolation(float input) {
         float lastSection = 0;
         int length = sections.length;
         for (int i = 0; i < length; i++) {

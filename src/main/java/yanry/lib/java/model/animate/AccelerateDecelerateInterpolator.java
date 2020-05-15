@@ -5,10 +5,10 @@ package yanry.lib.java.model.animate;
  * <p>
  * Created by yanry on 2019/12/21.
  */
-public class AccelerateDecelerateTransformer implements ProportionTransformer {
+public class AccelerateDecelerateInterpolator implements ProgressInterpolator {
 
     @Override
-    public float transform(float input) {
+    public float getInterpolation(float input) {
         return (float) (Math.cos(Math.PI * (1 + input)) / 2 + 0.5);
     }
 }
