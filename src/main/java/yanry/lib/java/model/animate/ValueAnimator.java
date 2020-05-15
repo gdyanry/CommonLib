@@ -64,6 +64,10 @@ public class ValueAnimator extends FlagsHolder {
         this.proportionTransformer = proportionTransformer;
     }
 
+    public float[] getKeyValues() {
+        return keyValues;
+    }
+
     /**
      * 查询当前动画在给定时间下是否已结束。结束意味着在不改变配置的前提下，动画值将不再改变。
      *
