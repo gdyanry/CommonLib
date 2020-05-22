@@ -5,7 +5,6 @@ import java.util.TimerTask;
 
 import yanry.lib.java.model.Singletons;
 import yanry.lib.java.model.animate.ProgressInterpolator;
-import yanry.lib.java.model.animate.SectionInterpolator;
 import yanry.lib.java.model.animate.TimeController;
 import yanry.lib.java.model.animate.ValueAnimator;
 import yanry.lib.java.model.log.Logger;
@@ -18,7 +17,7 @@ public class AnimateTest {
         TimeController timeController = new TimeController();
         ValueAnimator valueAnimator = new ValueAnimator(4000);
         float[] keyValues = new float[]{100, 90, 100};
-        ProgressInterpolator interpolator = new SectionInterpolator(0.1f, 0.8f);
+        ProgressInterpolator interpolator = input -> ProgressInterpolator.sectionInterpolate(input, 0.1f, 0.8f);
         valueAnimator.setRepeatCount(1);
         valueAnimator.addFlag(ValueAnimator.FLAG_REVERSE);
         Singletons.get(Timer.class).schedule(new TimerTask() {
