@@ -44,6 +44,10 @@ public class SingleThreadExecutor extends Thread implements Executor {
         }
     }
 
+    public boolean dequeue(Runnable task) {
+        return deque.remove(task);
+    }
+
     @Override
     public void run() {
         Logger.getDefault().dd(getName(), '@', getId(), " started.");

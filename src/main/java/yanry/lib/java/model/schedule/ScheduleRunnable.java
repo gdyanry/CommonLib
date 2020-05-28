@@ -24,16 +24,19 @@ public abstract class ScheduleRunnable implements Runnable {
     @Override
     public void run() {
         if (setRunning(true)) {
-            doRun();
-            while (true) {
-                ScheduleRunnable poll = manager.pendingRunnable.poll();
-                if (poll != null) {
-                    poll.doRun();
-                } else {
-                    break;
+            try {
+                doRun();
+                while (true) {
+                    ScheduleRunnable poll = manager.pendingRunnable.poll();
+                    if (poll != null) {
+                        poll.doRun();
+                    } else {
+                        break;
+                    }
                 }
+            } finally {
+                setRunning(false);
             }
-            setRunning(false);
         } else {
             manager.pendingRunnable.offer(this);
         }
@@ -42,8 +45,12 @@ public abstract class ScheduleRunnable implements Runnable {
     private boolean setRunning(boolean running) {
         if (manager.isRunning.compareAndSet(!running, running)) {
             ArrayList<Scheduler> schedulers = new ArrayList<>(manager.instances.values());
-            for (Scheduler scheduler : schedulers) {
-                scheduler.visibility.setValue(scheduler.current != null);
+            try {
+                for (Scheduler scheduler : schedulers) {
+                    scheduler.visibility.setValue(scheduler.current != null);
+                }
+            } catch (Exception e) {
+                manager.logger.catches(e);
             }
             return true;
         }
