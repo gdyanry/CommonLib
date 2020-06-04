@@ -1,4 +1,6 @@
-package yanry.lib.java.model.schedule;
+package yanry.lib.java.model.schedule.imple;
+
+import yanry.lib.java.model.schedule.ShowData;
 
 public abstract class ReusableDisplay<D extends ShowData, V> extends SyncDisplay<D, V> {
 

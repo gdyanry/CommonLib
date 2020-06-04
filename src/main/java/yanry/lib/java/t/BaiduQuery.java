@@ -1,14 +1,5 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.interfaces.StreamTransferHook;
-import yanry.lib.java.model.http.HttpPost;
-import yanry.lib.java.model.json.JSONObject;
-import yanry.lib.java.model.json.pattern.JsonPattern;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.util.IOUtil;
-import yanry.lib.java.util.StringUtil;
-import yanry.lib.java.util.object.ObjectUtil;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,15 +11,24 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
 
+import yanry.lib.java.interfaces.StreamTransferHook;
+import yanry.lib.java.model.http.HttpPost;
+import yanry.lib.java.model.json.JSONObject;
+import yanry.lib.java.model.json.pattern.JsonObjectPattern;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.util.IOUtil;
+import yanry.lib.java.util.StringUtil;
+import yanry.lib.java.util.object.ObjectUtil;
+
 public class BaiduQuery {
     public static void main(String... args) throws IOException {
-//        parseBaikeNluPatterns();
+        parseBaikeNluPatterns();
 //        parseBaikePatterns();
-        userInteract();
+//        userInteract();
     }
 
     private static void parseBaikeNluPatterns() throws IOException {
-        HashMap<String, Object> patterns = new HashMap<>();
+        HashMap<String, JsonObjectPattern> patterns = new HashMap<>();
         parseBaike("nlu", jsonObject -> {
             JSONObject result = jsonObject.getJSONObject("result");
             JSONObject nlu = result.getJSONObject("nlu");
@@ -37,11 +37,11 @@ public class BaiduQuery {
                     .append(nlu.getString("domain")).append('|')
                     .append(nlu.getString("intent")).append('|')
                     .append(nlu.optString("sub_intent")).toString();
-            JsonPattern pattern = (JsonPattern) patterns.get(key);
+            JsonObjectPattern pattern = patterns.get(key);
             if (pattern == null) {
-                patterns.put(key, JsonPattern.get(jsonObject));
+                patterns.put(key, JsonObjectPattern.get(jsonObject, 100));
             } else {
-                patterns.put(key, pattern.and(JsonPattern.get(jsonObject)));
+                patterns.put(key, pattern.and(jsonObject));
             }
             return key;
         });
@@ -69,13 +69,13 @@ public class BaiduQuery {
     }
 
     private static void parseBaikePatterns() throws IOException {
-        JsonPattern[] common = new JsonPattern[1];
+        JsonObjectPattern[] common = new JsonObjectPattern[1];
         parseBaike("full", jsonObject -> {
-            JsonPattern pattern = JsonPattern.get(jsonObject);
+            JsonObjectPattern pattern = JsonObjectPattern.get(jsonObject, 100);
             if (common[0] == null) {
                 common[0] = pattern;
             } else {
-                common[0] = common[0].and(pattern);
+                common[0] = common[0].and(jsonObject);
             }
             return pattern;
         });

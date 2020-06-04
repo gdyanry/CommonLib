@@ -1,5 +1,15 @@
 package yanry.lib.java.t;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
+
 import yanry.lib.java.interfaces.StreamTransferHook;
 import yanry.lib.java.model.Singletons;
 import yanry.lib.java.model.http.HttpGet;
@@ -9,9 +19,6 @@ import yanry.lib.java.model.json.JSONException;
 import yanry.lib.java.model.json.JSONObject;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.util.IOUtil;
-
-import java.io.IOException;
-import java.util.*;
 
 public class AiUi {
     private static final boolean IS_TEST_ENV = false;
@@ -32,18 +39,18 @@ public class AiUi {
 //        calendar.set(Calendar.HOUR_OF_DAY, 19);
 //        calendar.set(Calendar.MINUTE, 33);
 //        calendar.set(Calendar.SECOND, 24);
-        System.out.println(requestData());
+//        System.out.println(requestData());
 //        save(generate(new JSONObject(IOUtil.fileToString("g:/ai_data.txt", "gbk")), calendar.getTimeInMillis()), "g:/out.json");
 //        save(generate(new JSONObject(requestData()).getJSONObject("data"), System.currentTimeMillis()), "g:/out.json");
-        System.out.println(checkFestival(System.currentTimeMillis()));
+        System.out.println(checkFestival(calendar.getTimeInMillis()));
     }
 
     private static String requestData() throws IOException {
         String server = IS_TEST_ENV ? "210.75.9.11" : "bigdata.tclking.com";
         String url = String.format("http://%s/speechcraft/info/talkingskill", server);
         Map<String, Object> params = new HashMap<>();
-        params.put("version", 1579528642000L);
-        params.put("deviceType", "TCL-CN-MS838A-X8");
+        params.put("version", 0);
+        params.put("deviceType", "X8");
         HttpPost request = new HttpPost(url, params, "application/json") {
             @Override
             protected StreamTransferHook getUploadHook() {

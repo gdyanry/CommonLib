@@ -71,9 +71,9 @@ public class MathUtil {
      * @param medianValues
      * @return
      */
-    public static int bezierEvaluate(float fraction, int startValue, int endValue, int... medianValues) {
+    public static float bezierEvaluate(float fraction, float startValue, float endValue, float... medianValues) {
         int n = medianValues.length + 1;
-        int value = (int) (startValue * Math.pow(1 - fraction, n) + endValue * Math.pow(fraction, n));
+        float value = (float) (startValue * Math.pow(1 - fraction, n) + endValue * Math.pow(fraction, n));
         for (int i = 1; i < n; i++) {
             value += getPascalTriangleCoefficient(n, i) * medianValues[i - 1] * Math.pow(1 - fraction, n - i) * Math.pow(fraction, i);
         }

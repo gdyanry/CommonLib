@@ -1,5 +1,6 @@
 package yanry.lib.java.model;
 
+import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 
 /**
@@ -43,7 +44,7 @@ public class TimeLocker {
      *                 为-1时，表示当前不能更新，直到调用unlock()才接受更新。
      */
     private void setLockTime(long lockTime) {
-        Logger.getDefault().vv(this, " setLockTime: " + lockTime);
+        Logger.getDefault().concat(1, LogLevel.Verbose, "setLockTime: " + lockTime);
         this.lockTime = lockTime;
     }
 

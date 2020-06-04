@@ -11,13 +11,8 @@ import java.util.Map;
 public final class Singletons {
 
     private static Map<Class<?>, Object> container = new HashMap<>();
-    private static ObjectProvider objectProvider;
 
     private Singletons() {
-    }
-
-    public static void setObjectProvider(ObjectProvider objectProvider) {
-        Singletons.objectProvider = objectProvider;
     }
 
     public static <T> T get(Class<T> type) {
@@ -25,21 +20,24 @@ public final class Singletons {
         if (instance == null) {
             synchronized (type) {
                 if (instance == null) {
-                    if (objectProvider != null) {
-                        instance = objectProvider.getInstance(type);
+                    try {
+                        instance = type.getDeclaredConstructor().newInstance();
+                        container.put(type, instance);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                    if (instance == null) {
-                        try {
-                            instance = type.getDeclaredConstructor().newInstance();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    container.put(type, instance);
                 }
             }
         }
         return (T) instance;
+    }
+
+    public static <T> T peek(Class<T> type) {
+        return (T) container.get(type);
+    }
+
+    public static <T> void set(Class<T> type, T instance) {
+        container.put(type, instance);
     }
 
     /**
@@ -52,9 +50,5 @@ public final class Singletons {
 
     public static void clear() {
         container.clear();
-    }
-
-    public interface ObjectProvider {
-        <T> T getInstance(Class<T> type);
     }
 }

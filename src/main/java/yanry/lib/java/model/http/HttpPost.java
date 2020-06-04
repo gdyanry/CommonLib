@@ -1,19 +1,19 @@
 package yanry.lib.java.model.http;
 
-import yanry.lib.java.interfaces.StreamTransferHook;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.util.IOUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import yanry.lib.java.interfaces.StreamTransferHook;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.util.IOUtil;
+
 /**
  * Created by yanrongyu on 16/9/18.
  */
 
-public abstract class HttpPost extends HttpRequest {
+public class HttpPost extends HttpRequest {
 
     public HttpPost(String url, Map<String, Object> urlParams) throws IOException {
         this(url, urlParams, "application/octet-stream");
@@ -61,10 +61,12 @@ public abstract class HttpPost extends HttpRequest {
         os.close();
     }
 
+    protected StreamTransferHook getUploadHook() {
+        return null;
+    }
+
     @Override
     protected String getRequestMethod() {
         return "POST";
     }
-
-    protected abstract StreamTransferHook getUploadHook();
 }

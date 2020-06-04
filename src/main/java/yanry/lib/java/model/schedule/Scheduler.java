@@ -1,8 +1,12 @@
 package yanry.lib.java.model.schedule;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import yanry.lib.java.model.watch.BooleanHolder;
+import yanry.lib.java.model.watch.BooleanHolderImpl;
 
 /**
  * 本类适用的场景为：需要为不同的数据弹出不同的界面，同一时刻最多只显示一个界面，比如显示推送通知。
@@ -10,13 +14,20 @@ import java.util.Iterator;
  */
 public class Scheduler {
     SchedulerManager manager;
+    private Object tag;
     ShowData current;
-    private boolean visible;
-    HashMap<Class<? extends Display>, Display> displays;
+    BooleanHolderImpl visibility;
+    private HashMap<Class<? extends Display>, Display> displays;
 
-    Scheduler(SchedulerManager manager) {
+    Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
+        this.tag = tag;
+        visibility = new BooleanHolderImpl();
         displays = new HashMap<>();
+    }
+
+    public BooleanHolder getVisibility() {
+        return visibility;
     }
 
     public void addLink(Scheduler... schedulers) {
@@ -24,8 +35,8 @@ public class Scheduler {
         for (Scheduler scheduler : schedulers) {
             if (scheduler.manager == manager) {
                 linkedSchedulers.add(scheduler);
-            } else {
-                manager.logger.ww("can't link schedulers from different managers.");
+            } else if (manager.logger != null) {
+                manager.logger.ee("can't link scheduler ", scheduler.tag, " to ", tag);
             }
         }
     }
@@ -38,8 +49,10 @@ public class Scheduler {
                 while (iterator.hasNext()) {
                     ShowData next = iterator.next();
                     if (next.scheduler == Scheduler.this) {
-                        manager.logger.vv("dequeue by scheduler cancel: ", next);
-                        next.dispatchState(ShowData.STATE_DEQUEUE);
+                        if (manager.logger != null) {
+                            manager.logger.vv("dequeue by scheduler cancel: ", next);
+                        }
+                        next.setState(ShowData.STATE_DEQUEUE);
                         iterator.remove();
                     }
                 }
@@ -49,11 +62,16 @@ public class Scheduler {
                     manager.rebalance(null, displaysToDismisses);
                 }
             }
-        }.start();
+        }.start(tag, " cancel: ", dismissCurrent);
     }
 
     public ShowData getShowingData() {
         return current;
+    }
+
+    public void addDisplay(Display<?> display) {
+        display.setScheduler(this);
+        displays.put(display.getClass(), display);
     }
 
     public <T extends Display> T getDisplay(Class<T> displayType) {
@@ -64,17 +82,32 @@ public class Scheduler {
                 display.setScheduler(this);
                 displays.put(displayType, display);
             } catch (Exception e) {
-                manager.logger.catches(e);
+                if (manager.logger != null) {
+                    manager.logger.catches(e);
+                } else {
+                    e.printStackTrace();
+                }
             }
         }
         return display;
     }
 
-    public <D extends ShowData> void show(D data, Class<? extends Display<D, ?>> displayType) {
+    public <T extends Display> T removeDisplay(Class<T> displayType) {
+        return (T) displays.remove(displayType);
+    }
+
+    public Collection<Display> getDisplays() {
+        return displays.values();
+    }
+
+    public <D extends ShowData> void show(D data, Class<? extends Display<? extends D>> displayType) {
         new ScheduleRunnable(manager) {
             @Override
             protected void doRun() {
-                if (data.state == ShowData.STATE_SHOWING || data.state == ShowData.STATE_ENQUEUE) {
+                if (data.getState().getValue() == ShowData.STATE_SHOWING || data.getState().getValue() == ShowData.STATE_ENQUEUE) {
+                    if (manager.logger != null) {
+                        manager.logger.ww("deny showing for invalid state: ", data, ' ', data.getState().getValue());
+                    }
                     return;
                 }
                 data.scheduler = Scheduler.this;
@@ -84,8 +117,10 @@ public class Scheduler {
                 while (it.hasNext()) {
                     ShowData next = it.next();
                     if (next.scheduler == Scheduler.this && next.priority <= data.priority && data.expelWaitingData(next) && !next.hasFlag(ShowData.FLAG_REJECT_EXPELLED)) {
-                        manager.logger.vv("dequeue by expelled: ", next);
-                        next.dispatchState(ShowData.STATE_DEQUEUE);
+                        if (manager.logger != null) {
+                            manager.logger.vv("dequeue by expelled: ", next);
+                        }
+                        next.setState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
@@ -103,35 +138,43 @@ public class Scheduler {
                 if (showNow) {
                     HashSet<Display> displaysToDismisses = new HashSet<>();
                     for (ShowData showingData : concernedShowingData) {
-                        manager.runner.cancelPendingTimeout(showingData);
+                        manager.runner.cancel(showingData);
                         showingData.scheduler.current = null;
                         // 结束当前正在显示的关联任务
-                        manager.logger.vv("dismiss by expelled: ", showingData);
-                        showingData.dispatchState(ShowData.STATE_DISMISS);
+                        if (manager.logger != null) {
+                            manager.logger.vv("dismiss by expelled: ", showingData);
+                        }
+                        showingData.setState(ShowData.STATE_DISMISS);
                         if (data.display != showingData.display) {
                             displaysToDismisses.add(showingData.display);
                         }
                     }
-                    manager.logger.vv("show directly: ", data);
+                    if (manager.logger != null) {
+                        manager.logger.vv("show directly: ", data);
+                    }
                     // 显示及取消显示使得调度器处于非稳态，需要重新平衡到次稳态
                     manager.rebalance(data, displaysToDismisses);
                 } else {
                     switch (data.strategy) {
                         case ShowData.STRATEGY_SHOW_IMMEDIATELY:
                         case ShowData.STRATEGY_INSERT_HEAD:
-                            manager.logger.vv("insert head: ", data);
+                            if (manager.logger != null) {
+                                manager.logger.vv("insert head: ", data);
+                            }
                             manager.queue.addFirst(data);
-                            data.dispatchState(ShowData.STATE_ENQUEUE);
+                            data.setState(ShowData.STATE_ENQUEUE);
                             break;
                         case ShowData.STRATEGY_APPEND_TAIL:
-                            manager.logger.vv("append tail: ", data);
+                            if (manager.logger != null) {
+                                manager.logger.vv("append tail: ", data);
+                            }
                             manager.queue.addLast(data);
-                            data.dispatchState(ShowData.STATE_ENQUEUE);
+                            data.setState(ShowData.STATE_ENQUEUE);
                             break;
                     }
                 }
             }
-        }.start();
+        }.start(tag, " show: ", data);
     }
 
     HashSet<ShowData> getConcernedShowingData() {
@@ -149,9 +192,11 @@ public class Scheduler {
         if (current != null) {
             ShowData currentData = this.current;
             current = null;
-            manager.runner.cancelPendingTimeout(currentData);
-            manager.logger.vv("dismiss by cancel: ", currentData);
-            currentData.dispatchState(ShowData.STATE_DISMISS);
+            manager.runner.cancel(currentData);
+            if (manager.logger != null) {
+                manager.logger.vv("dismiss by cancel: ", currentData);
+            }
+            currentData.setState(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
                 currentData.display.internalDismiss();
             } else {
@@ -160,11 +205,8 @@ public class Scheduler {
         }
     }
 
-    boolean sync() {
-        if (visible ^ current != null) {
-            visible = current != null;
-            return true;
-        }
-        return false;
+    @Override
+    public String toString() {
+        return tag.toString();
     }
 }

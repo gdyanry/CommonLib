@@ -1,14 +1,14 @@
 package yanry.lib.java.t;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 import yanry.lib.java.interfaces.StreamTransferHook;
 import yanry.lib.java.model.http.HttpPost;
 import yanry.lib.java.model.json.JSONObject;
 import yanry.lib.java.util.StringUtil;
 import yanry.lib.java.util.console.query.ConsoleQuery;
-
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 public class TencentQuery {
     public static void main(String... args) throws NoSuchAlgorithmException, InvalidKeyException, IOException {

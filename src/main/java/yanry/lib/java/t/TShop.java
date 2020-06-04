@@ -1,10 +1,10 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.model.http.HttpGet;
-import yanry.lib.java.util.console.ConsoleUtil;
-
 import java.io.IOException;
 import java.net.URLEncoder;
+
+import yanry.lib.java.model.http.HttpGet;
+import yanry.lib.java.util.console.ConsoleUtil;
 
 public class TShop {
     public static void main(String... args) throws IOException {

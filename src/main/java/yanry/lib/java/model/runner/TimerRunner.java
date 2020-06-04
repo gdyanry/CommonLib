@@ -1,4 +1,4 @@
-package yanry.lib.java.model.schedule;
+package yanry.lib.java.model.runner;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -7,11 +7,11 @@ import java.util.TimerTask;
 /**
  * Created by yanry on 2019/12/17.
  */
-public class TimerScheduleRunner extends Timer implements ScheduleRunner {
+public class TimerRunner extends Timer implements Runner {
     private HashMap<Runnable, TimerTask> tasks;
     private Thread timerThread;
 
-    public TimerScheduleRunner(String name, boolean isDaemon) {
+    public TimerRunner(String name, boolean isDaemon) {
         super(name, isDaemon);
         tasks = new HashMap<>();
         schedule(new TimerTask() {
@@ -27,12 +27,12 @@ public class TimerScheduleRunner extends Timer implements ScheduleRunner {
         if (Thread.currentThread() == timerThread) {
             runnable.run();
         } else {
-            scheduleTimeout(runnable, 0);
+            schedule(runnable, 0);
         }
     }
 
     @Override
-    public void scheduleTimeout(Runnable runnable, long delay) {
+    public void schedule(Runnable runnable, long delay) {
         TimerTask old = tasks.get(runnable);
         if (old != null) {
             old.cancel();
@@ -49,7 +49,7 @@ public class TimerScheduleRunner extends Timer implements ScheduleRunner {
     }
 
     @Override
-    public void cancelPendingTimeout(Runnable runnable) {
+    public void cancel(Runnable runnable) {
         TimerTask timerTask = tasks.remove(runnable);
         if (timerTask != null) {
             timerTask.cancel();

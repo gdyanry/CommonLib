@@ -1,21 +1,5 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.interfaces.StreamTransferHook;
-import yanry.lib.java.model.Singletons;
-import yanry.lib.java.model.http.HttpGet;
-import yanry.lib.java.model.http.HttpPost;
-import yanry.lib.java.model.http.Https;
-import yanry.lib.java.model.json.JSONObject;
-import yanry.lib.java.model.log.ConsoleHandler;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
-import yanry.lib.java.util.AesUtil;
-import yanry.lib.java.util.IOUtil;
-import yanry.lib.java.util.StringUtil;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +10,28 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import yanry.lib.java.interfaces.StreamTransferHook;
+import yanry.lib.java.model.Singletons;
+import yanry.lib.java.model.http.HttpGet;
+import yanry.lib.java.model.http.HttpPost;
+import yanry.lib.java.model.http.Https;
+import yanry.lib.java.model.json.JSONObject;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.util.AesUtil;
+import yanry.lib.java.util.IOUtil;
+import yanry.lib.java.util.StringUtil;
 
 public class GeTuiPush {
     private static final byte[] IV = new byte[]{65, 20, -91, 123, -102, 126, 105, -28, -15, 13, 51, 32, 53, 45, -97, -40};
@@ -50,7 +55,7 @@ public class GeTuiPush {
     private static void pushWeatherAlarm(boolean isDebug, boolean byRegion) throws IOException {
         String dataToPush = "{\"signName\":\"腾讯天气\",\"templateCode\":\"10025\",\"param\":{\"locale\":\"深圳市南山区\",\"date\":\"%s\",\"type\":\"台风\",\"level\":\"橙色\"},\"region\":\"%s\",\"did\":\"%s\",\"custom\":null}";
         String region = byRegion ? "440305" : "";
-        String deviceId = byRegion ? "" : "PLs95BGVH8N丿KhzCmErgGA二二";
+        String deviceId = byRegion ? "" : "9VQ84HLJd6bWPDTzsbgPMQ二二";
         dataToPush = String.format(dataToPush, new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), region, deviceId);
         String appId = "x0oTtOgtzOPM1dRui3pLIsts4nC0CUjX";
         String secret = "qGai6LBHLE6idnwhuAMpoKC6UDavmboh";

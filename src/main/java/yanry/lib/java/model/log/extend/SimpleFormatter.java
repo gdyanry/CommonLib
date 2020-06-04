@@ -1,9 +1,9 @@
-package yanry.lib.java.model.log;
+package yanry.lib.java.model.log.extend;
 
 import yanry.lib.java.model.FlagsHolder;
+import yanry.lib.java.model.log.LogFormatter;
+import yanry.lib.java.model.log.LogRecord;
 import yanry.lib.java.util.StringUtil;
-
-import java.lang.management.ManagementFactory;
 
 public class SimpleFormatter extends FlagsHolder implements LogFormatter {
     public static final int SEQUENCE_NUMBER = 0;
@@ -13,7 +13,7 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
     public static final int TAG = 4;
     public static final int METHOD = 5;
     public static final int TIME = 6;
-    public static final int PROCESS = 7;
+    public static final int TIMESTAMP = 7;
 
     private Object separator;
     private int stackDepth;
@@ -34,14 +34,14 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
     @Override
     public String format(LogRecord logRecord) {
         StringBuilder sb = new StringBuilder();
-        if (hasFlag(PROCESS)) {
-            sb.append(ManagementFactory.getRuntimeMXBean().getName()).append(separator);
-        }
         if (hasFlag(SEQUENCE_NUMBER)) {
             sb.append(logRecord.getSequenceNumber()).append(separator);
         }
         if (hasFlag(LEVEL)) {
             sb.append(logRecord.getLevel().getAcronym()).append(separator);
+        }
+        if (hasFlag(TIMESTAMP)) {
+            sb.append(logRecord.getTimeMillis()).append(separator);
         }
         if (hasFlag(DATE)) {
             sb.append(String.format("%tF%s", logRecord.getTimeMillis(), separator));
@@ -50,7 +50,8 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
             sb.append(String.format("%tT.%<tL%s", logRecord.getTimeMillis(), separator));
         }
         if (hasFlag(THREAD)) {
-            sb.append(Thread.currentThread().getName()).append(separator);
+            Thread thread = Thread.currentThread();
+            sb.append(thread.getName()).append('@').append(thread.getId()).append(separator);
         }
         if (hasFlag(TAG)) {
             sb.append(logRecord.getTag()).append(separator);
@@ -60,6 +61,9 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
             if (e != null) {
                 sb.append(e.getMethodName()).append('(').append(e.getFileName()).append(':').append(e.getLineNumber()).append(')').append(separator);
             }
+        }
+        if (sb.length() > 0) {
+            sb.append('|').append(separator);
         }
         sb.append(logRecord.getMessage());
         if (stackDepth > 0) {

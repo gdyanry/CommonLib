@@ -1,18 +1,18 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.model.log.ConsoleHandler;
-import yanry.lib.java.model.log.LogLevel;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
-import yanry.lib.java.util.IOUtil;
-import yanry.lib.java.util.StringUtil;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import yanry.lib.java.model.log.LogLevel;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.util.IOUtil;
+import yanry.lib.java.util.StringUtil;
 
 
 /**
@@ -39,6 +39,12 @@ public class Test {
         System.out.println(~1);
         System.out.println(~0);
         Calendar calendar = GregorianCalendar.getInstance();
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, -2);
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+        format("%tF %<tT", calendar.getTimeInMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
         format("%tF %<tT", calendar.getTimeInMillis());
         calendar.add(Calendar.WEEK_OF_MONTH, -1);
         format("%tF %<tT", calendar.getTimeInMillis());

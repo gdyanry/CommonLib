@@ -1,40 +1,50 @@
 package yanry.lib.java.model.schedule;
 
-import yanry.lib.java.model.log.Logger;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SchedulerManager implements Runnable {
-    ScheduleRunner runner;
+import yanry.lib.java.interfaces.Filter;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.runner.Runner;
+
+public class SchedulerManager {
+    Runner runner;
     Logger logger;
-    boolean isRunning;
+    AtomicBoolean isRunning;
+    ConcurrentLinkedQueue<ScheduleRunnable> pendingRunnable;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
     HashMap<Object, Scheduler> instances;
-    private LinkedList<SchedulerWatcher> schedulerWatchers;
 
-    public SchedulerManager(ScheduleRunner runner, Logger logger) {
+    public SchedulerManager(Runner runner, Logger logger) {
         this.runner = runner;
         this.logger = logger;
+        isRunning = new AtomicBoolean();
+        pendingRunnable = new ConcurrentLinkedQueue<>();
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
         instances = new HashMap<>();
-        schedulerWatchers = new LinkedList<>();
     }
 
     public Scheduler get(Object tag) {
         Scheduler scheduler = instances.get(tag);
         if (scheduler == null) {
-            scheduler = new Scheduler(this);
+            scheduler = new Scheduler(this, tag);
             instances.put(tag, scheduler);
             HashSet<Scheduler> set = new HashSet<>();
             set.add(scheduler);
             conflictedSchedulers.put(scheduler, set);
         }
         return scheduler;
+    }
+
+    public Scheduler peek(Object tag) {
+        return instances.get(tag);
     }
 
     public void link(Scheduler a, Scheduler b) {
@@ -52,17 +62,29 @@ public class SchedulerManager implements Runnable {
             @Override
             protected void doRun() {
                 for (ShowData data : queue) {
-                    logger.vv("dequeue by all cancel: ", data);
-                    data.dispatchState(ShowData.STATE_DEQUEUE);
+                    if (logger != null) {
+                        logger.vv("dequeue by all cancel: ", data);
+                    }
+                    data.setState(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
-                if (dismissCurrent) {
-                    for (Scheduler scheduler : instances.values()) {
+                if (dismissCurrent && instances.size() > 0) {
+                    ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+                    for (Scheduler scheduler : schedulers) {
                         scheduler.dismissCurrent(null);
                     }
                 }
             }
-        }.start();
+        }.start(this, " cancel all: ", dismissCurrent);
+    }
+
+    public void cancelScheduler(boolean dismissCurrent, Filter<Scheduler> schedulerFilter) {
+        ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+        for (Scheduler scheduler : schedulers) {
+            if (schedulerFilter.accept(scheduler)) {
+                scheduler.cancel(dismissCurrent);
+            }
+        }
     }
 
     public boolean hasScheduler(Object tag) {
@@ -78,29 +100,26 @@ public class SchedulerManager implements Runnable {
                 while (it.hasNext()) {
                     ShowData data = it.next();
                     if (data.tag == tag) {
-                        logger.vv("dequeue by tag cancel: ", data);
-                        data.dispatchState(ShowData.STATE_DEQUEUE);
+                        if (logger != null) {
+                            logger.vv("dequeue by tag cancel: ", data);
+                        }
+                        data.setState(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
                 // 清理当前显示的窗口
                 HashSet<Display> displaysToDismisses = new HashSet<>();
-                for (Scheduler scheduler : instances.values()) {
-                    if (scheduler.current.tag == tag) {
-                        scheduler.dismissCurrent(displaysToDismisses);
+                if (instances.size() > 0) {
+                    ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+                    for (Scheduler scheduler : schedulers) {
+                        if (scheduler.current.tag == tag) {
+                            scheduler.dismissCurrent(displaysToDismisses);
+                        }
                     }
+                    rebalance(null, displaysToDismisses);
                 }
-                rebalance(null, displaysToDismisses);
             }
-        }.start();
-    }
-
-    public void addSchedulerWatcher(SchedulerWatcher listener) {
-        schedulerWatchers.add(listener);
-    }
-
-    public void removeSchedulerWatcher(SchedulerWatcher listener) {
-        schedulerWatchers.remove(listener);
+        }.start(this, " cancel by tag: ", tag);
     }
 
     void rebalance(ShowData showData, HashSet<Display> displaysToDismisses) {
@@ -142,8 +161,10 @@ public class SchedulerManager implements Runnable {
             ShowData next = iterator.next();
             if (invalidData.contains(next)) {
                 // 从队列中清除无效的数据
-                logger.vv("dequeue by invalid: ", next);
-                next.dispatchState(ShowData.STATE_DEQUEUE);
+                if (logger != null) {
+                    logger.vv("dequeue by invalid: ", next);
+                }
+                next.setState(ShowData.STATE_DEQUEUE);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
                 // 从队列中清除即将显示的数据
@@ -161,26 +182,13 @@ public class SchedulerManager implements Runnable {
             }
         }
         for (ShowData data : dataToShow) {
-            if (data != showData) {
+            if (data != showData && logger != null) {
                 logger.vv("loop and show: ", data);
             }
             data.display.show(data);
-            data.dispatchState(ShowData.STATE_SHOWING);
-            runner.cancelPendingTimeout(data);
+            data.setState(ShowData.STATE_SHOWING);
             if (data.duration > 0) {
-                runner.scheduleTimeout(data, data.duration);
-            }
-        }
-        runner.scheduleTimeout(this, 0);
-    }
-
-    @Override
-    public final void run() {
-        for (Scheduler scheduler : instances.values()) {
-            if (scheduler.sync()) {
-                for (SchedulerWatcher watcher : schedulerWatchers) {
-                    watcher.onSchedulerStateChange(scheduler, scheduler.current != null);
-                }
+                runner.schedule(data, data.duration);
             }
         }
     }

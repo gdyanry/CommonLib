@@ -1,15 +1,15 @@
 package yanry.lib.java.t;
 
-import yanry.lib.java.model.log.ConsoleHandler;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.model.log.SimpleFormatter;
-import yanry.lib.java.model.mock.MockAsMap;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.log.extend.ConsoleHandler;
+import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.model.mock.MockAsMap;
 
 public class MockTest extends MockAsMap {
     private Executor executor;

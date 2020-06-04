@@ -47,6 +47,9 @@ public abstract class LogRecord {
     }
 
     public StackTraceElement nextStackTraceElement() {
+        if (encapsulationLayerCount < 0) {
+            return null;
+        }
         if (stackTrace == null) {
             // stack trace index: 1
             stackTrace = Thread.currentThread().getStackTrace();

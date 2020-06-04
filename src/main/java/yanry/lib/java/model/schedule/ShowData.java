@@ -1,9 +1,10 @@
 package yanry.lib.java.model.schedule;
 
-import yanry.lib.java.model.FlagsHolder;
-
 import java.util.HashSet;
-import java.util.LinkedList;
+
+import yanry.lib.java.model.FlagsHolder;
+import yanry.lib.java.model.watch.ValueHolder;
+import yanry.lib.java.model.watch.ValueHolderImpl;
 
 public class ShowData extends FlagsHolder implements Runnable {
     public static final int FLAG_REJECT_EXPELLED = 1;
@@ -27,32 +28,38 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    int state;
-    private LinkedList<OnDataStateChangeListener> stateListeners;
+    private ValueHolderImpl<Integer> state;
 
     public ShowData() {
         super(false);
-        stateListeners = new LinkedList<>();
+        state = new ValueHolderImpl<>(0);
     }
 
-    public int getState() {
+    public ValueHolder<Integer> getState() {
         return state;
+    }
+
+    int setState(int state) {
+        Integer previous = this.state.setValue(state);
+        if (previous != state) {
+            onStateChange(state, previous);
+        }
+        return previous;
     }
 
     public void dismiss(long delay) {
         // 此处scheduler.current==this不能用state==STATE_SHOWING替代，因为state是在show完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
         if (scheduler != null && scheduler.current == this) {
             if (delay > 0) {
-                scheduler.manager.runner.scheduleTimeout(this, delay);
+                scheduler.manager.runner.schedule(this, delay);
             } else {
                 new ScheduleRunnable(scheduler.manager) {
                     @Override
                     protected void doRun() {
-                        scheduler.manager.runner.cancelPendingTimeout(ShowData.this);
-                        scheduler.manager.logger.vv("dismiss by manual: ", ShowData.this);
+                        scheduler.manager.runner.cancel(ShowData.this);
                         doDismiss();
                     }
-                }.start();
+                }.start("dismiss by manual: ", ShowData.this);
             }
         }
     }
@@ -75,8 +82,9 @@ public class ShowData extends FlagsHolder implements Runnable {
     /**
      * @param strategy must be one of {@link #STRATEGY_SHOW_IMMEDIATELY}, {@link #STRATEGY_INSERT_HEAD}, {@link #STRATEGY_APPEND_TAIL}.
      */
-    public void setStrategy(int strategy) {
+    public ShowData setStrategy(int strategy) {
         this.strategy = strategy;
+        return this;
     }
 
     public Object getExtra() {
@@ -88,35 +96,34 @@ public class ShowData extends FlagsHolder implements Runnable {
         return this;
     }
 
-    public void addOnStateChangeListener(OnDataStateChangeListener listener) {
-        stateListeners.add(listener);
-    }
-
-    void dispatchState(int state) {
-        for (OnDataStateChangeListener listener : stateListeners) {
-            listener.onDataStateChange(state);
+    public void cancelDismiss() {
+        if (scheduler != null && scheduler.current == this) {
+            scheduler.manager.runner.cancel(this);
         }
-        this.state = state;
     }
 
     protected boolean expelWaitingData(ShowData data) {
         return hasFlag(FLAG_EXPEL_WAITING_DATA);
     }
 
+    protected void onStateChange(int to, int from) {
+    }
+
     @Override
     public final void run() {
-        if (scheduler != null) {
-            scheduler.manager.isRunning = true;
-            scheduler.manager.logger.vv("dismiss by timeout: ", this);
-            doDismiss();
-            scheduler.manager.isRunning = false;
-        }
+        new ScheduleRunnable(scheduler.manager) {
+            @Override
+            protected void doRun() {
+                scheduler.manager.runner.cancel(ShowData.this);
+                doDismiss();
+            }
+        }.start("dismiss by timeout: ", ShowData.this);
     }
 
     private void doDismiss() {
         if (scheduler != null && scheduler.current == this) {
             scheduler.current = null;
-            dispatchState(STATE_DISMISS);
+            this.state.setValue(STATE_DISMISS);
             HashSet<Display> displaysToDismisses = new HashSet<>();
             displaysToDismisses.add(display);
             scheduler.manager.rebalance(null, displaysToDismisses);

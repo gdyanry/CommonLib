@@ -1,7 +1,5 @@
 package yanry.lib.java.util;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +9,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class StringUtil {
 
@@ -102,8 +103,12 @@ public class StringUtil {
         return HexUtil.bytesToHex(mac.doFinal(input));
     }
 
+    public static String toFixedLengthString(int value, int length) {
+        return String.format("%0" + length + "d", value);
+    }
+
     public static String generateFixedLengthNumber(Random r, int length) {
-        return String.format("%0" + length + "d", r.nextInt((int) Math.pow(10, length)));
+        return toFixedLengthString(r.nextInt((int) Math.pow(10, length)), length);
     }
 
     private static void appendSpace(StringBuilder stringBuilder, int level) {

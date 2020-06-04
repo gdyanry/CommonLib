@@ -1,26 +1,34 @@
-package yanry.lib.java.model.schedule;
+package yanry.lib.java.model.schedule.imple;
+
+import yanry.lib.java.model.schedule.AsyncBridge;
+import yanry.lib.java.model.schedule.ShowData;
+import yanry.lib.java.model.schedule.ViewDisplay;
 
 /**
  * 对应的View需要在创建时调用{@link #notifyCreate(AsyncBridge)}，并在销毁时调用{@link #notifyDismiss(V)}。
  * rongyu.yan
  * 2018/11/13
  **/
-public abstract class AsyncDisplay<D extends ShowData, V> extends Display<D, V> {
+public abstract class AsyncDisplay<D extends ShowData, V> extends ViewDisplay<D, V> {
     private D data;
     private AsyncBridge<D, V> bridge;
 
     public void notifyCreate(AsyncBridge<D, V> function) {
         this.bridge = function;
         if (data != null) {
-            setView(function.show(data));
-            data = null;
+            if (data.getState().getValue() == ShowData.STATE_SHOWING) {
+                setView(function.show(data));
+                data = null;
+            } else if (data.getState().getValue() == ShowData.STATE_DISMISS) {
+                dismiss(function.show(data));
+            }
         }
     }
 
     @Override
     protected void show(D data) {
         this.data = data;
-        if (getView() == null) {
+        if (getViewHolder().getValue() == null) {
             showView(data);
         } else {
             bridge.show(data);

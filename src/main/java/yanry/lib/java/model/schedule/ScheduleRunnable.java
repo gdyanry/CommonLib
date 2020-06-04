@@ -1,5 +1,9 @@
 package yanry.lib.java.model.schedule;
 
+import java.util.ArrayList;
+
+import yanry.lib.java.model.log.LogLevel;
+
 /**
  * Created by yanry on 2019/12/17.
  */
@@ -10,19 +14,47 @@ public abstract class ScheduleRunnable implements Runnable {
         this.manager = manager;
     }
 
-    public void start() {
+    public void start(Object... logParts) {
+        if (manager.logger != null) {
+            manager.logger.concat(2, LogLevel.Debug, logParts);
+        }
         manager.runner.run(this);
     }
 
     @Override
     public void run() {
-        if (manager.isRunning) {
-            manager.runner.scheduleTimeout(this, 0);
+        if (setRunning(true)) {
+            try {
+                doRun();
+                while (true) {
+                    ScheduleRunnable poll = manager.pendingRunnable.poll();
+                    if (poll != null) {
+                        poll.doRun();
+                    } else {
+                        break;
+                    }
+                }
+            } finally {
+                setRunning(false);
+            }
         } else {
-            manager.isRunning = true;
-            doRun();
-            manager.isRunning = false;
+            manager.pendingRunnable.offer(this);
         }
+    }
+
+    private boolean setRunning(boolean running) {
+        if (manager.isRunning.compareAndSet(!running, running)) {
+            ArrayList<Scheduler> schedulers = new ArrayList<>(manager.instances.values());
+            try {
+                for (Scheduler scheduler : schedulers) {
+                    scheduler.visibility.setValue(scheduler.current != null);
+                }
+            } catch (Exception e) {
+                manager.logger.catches(e);
+            }
+            return true;
+        }
+        return false;
     }
 
     protected abstract void doRun();
