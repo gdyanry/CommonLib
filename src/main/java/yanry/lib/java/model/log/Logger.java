@@ -56,7 +56,11 @@ public class Logger {
     }
 
     public void addHandler(Object handlerTag, LogHandler handler) {
-        handlers.put(handlerTag, handler);
+        if (handler == null) {
+            handlers.remove(handlerTag);
+        } else {
+            handlers.put(handlerTag, handler);
+        }
     }
 
     /**

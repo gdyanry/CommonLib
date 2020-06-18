@@ -1,5 +1,7 @@
 package yanry.lib.java.model.log;
 
+import java.util.Objects;
+
 public class ConcatLogRecord extends LogRecord {
     private Object[] msgParts;
 
@@ -14,7 +16,7 @@ public class ConcatLogRecord extends LogRecord {
             return "";
         }
         if (msgParts.length == 1) {
-            return msgParts[0].toString();
+            return Objects.toString(msgParts[0]);
         }
         StringBuilder stringBuilder = new StringBuilder();
         for (Object part : msgParts) {

@@ -55,7 +55,7 @@ public class GeTuiPush {
     private static void pushWeatherAlarm(boolean isDebug, boolean byRegion) throws IOException {
         String dataToPush = "{\"signName\":\"腾讯天气\",\"templateCode\":\"10025\",\"param\":{\"locale\":\"深圳市南山区\",\"date\":\"%s\",\"type\":\"台风\",\"level\":\"橙色\"},\"region\":\"%s\",\"did\":\"%s\",\"custom\":null}";
         String region = byRegion ? "440305" : "";
-        String deviceId = byRegion ? "" : "9VQ84HLJd6bWPDTzsbgPMQ二二";
+        String deviceId = byRegion ? "" : "547294416";
         dataToPush = String.format(dataToPush, new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), region, deviceId);
         String appId = "x0oTtOgtzOPM1dRui3pLIsts4nC0CUjX";
         String secret = "qGai6LBHLE6idnwhuAMpoKC6UDavmboh";
