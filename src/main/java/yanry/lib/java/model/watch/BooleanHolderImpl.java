@@ -18,12 +18,16 @@ public class BooleanHolderImpl extends Registry<BooleanWatcher> implements Boole
     public boolean setValue(boolean value) {
         if (this.value ^ value) {
             this.value = value;
+            onValueChange(value);
             for (BooleanWatcher watcher : getCopy()) {
                 watcher.onValueChange(value);
             }
             return true;
         }
         return false;
+    }
+
+    protected void onValueChange(boolean to) {
     }
 
     @Override
