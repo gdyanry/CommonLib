@@ -48,8 +48,8 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     public void dismiss(long delay) {
-        // 此处scheduler.current==this不能用state==STATE_SHOWING替代，因为state是在show完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
-        if (scheduler != null && scheduler.current == this) {
+        // 此处scheduler.showingData==this不能用state==STATE_SHOWING替代，因为state是在show完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
+        if (scheduler != null && scheduler.showingData.getValue() == this) {
             if (delay > 0) {
                 scheduler.manager.runner.schedule(this, delay);
             } else {
@@ -97,7 +97,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     public void cancelDismiss() {
-        if (scheduler != null && scheduler.current == this) {
+        if (scheduler != null && scheduler.showingData.getValue() == this) {
             scheduler.manager.runner.cancel(this);
         }
     }
@@ -121,8 +121,8 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     private void doDismiss() {
-        if (scheduler != null && scheduler.current == this) {
-            scheduler.current = null;
+        if (scheduler != null && scheduler.showingData.getValue() == this) {
+            scheduler.showingData.setValue(null);
             this.state.setValue(STATE_DISMISS);
             HashSet<Display> displaysToDismisses = new HashSet<>();
             displaysToDismisses.add(display);

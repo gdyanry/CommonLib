@@ -7,6 +7,8 @@ import java.util.Iterator;
 
 import yanry.lib.java.model.watch.BooleanHolder;
 import yanry.lib.java.model.watch.BooleanHolderImpl;
+import yanry.lib.java.model.watch.ValueHolder;
+import yanry.lib.java.model.watch.ValueHolderImpl;
 
 /**
  * 本类适用的场景为：需要为不同的数据弹出不同的界面，同一时刻最多只显示一个界面，比如显示推送通知。
@@ -15,13 +17,14 @@ import yanry.lib.java.model.watch.BooleanHolderImpl;
 public class Scheduler {
     SchedulerManager manager;
     private Object tag;
-    ShowData current;
+    ShowingDataHolder showingData;
     BooleanHolderImpl visibility;
     private HashMap<Class<? extends Display>, Display> displays;
 
     Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
         this.tag = tag;
+        showingData = new ShowingDataHolder();
         visibility = new BooleanHolderImpl();
         displays = new HashMap<>();
     }
@@ -65,8 +68,8 @@ public class Scheduler {
         }.start(tag, " cancel: ", dismissCurrent);
     }
 
-    public ShowData getShowingData() {
-        return current;
+    public ValueHolder<ShowData> getShowingData() {
+        return showingData;
     }
 
     public void addDisplay(Display<?> display) {
@@ -139,7 +142,7 @@ public class Scheduler {
                     HashSet<Display> displaysToDismisses = new HashSet<>();
                     for (ShowData showingData : concernedShowingData) {
                         manager.runner.cancel(showingData);
-                        showingData.scheduler.current = null;
+                        showingData.scheduler.showingData.setValue(null);
                         // 结束当前正在显示的关联任务
                         if (manager.logger != null) {
                             manager.logger.vv("dismiss by expelled: ", showingData);
@@ -181,17 +184,17 @@ public class Scheduler {
         HashSet<ShowData> result = new HashSet<>();
         HashSet<Scheduler> schedulers = manager.conflictedSchedulers.get(this);
         for (Scheduler scheduler : schedulers) {
-            if (scheduler.current != null) {
-                result.add(scheduler.current);
+            ShowData showData = scheduler.showingData.getValue();
+            if (showData != null) {
+                result.add(showData);
             }
         }
         return result;
     }
 
     void dismissCurrent(HashSet<Display> displaysToDismisses) {
-        if (current != null) {
-            ShowData currentData = this.current;
-            current = null;
+        ShowData currentData = this.showingData.setValue(null);
+        if (currentData != null) {
             manager.runner.cancel(currentData);
             if (manager.logger != null) {
                 manager.logger.vv("dismiss by cancel: ", currentData);
@@ -208,5 +211,12 @@ public class Scheduler {
     @Override
     public String toString() {
         return tag.toString();
+    }
+
+    class ShowingDataHolder extends ValueHolderImpl<ShowData> {
+        boolean isBoundTo(Display<?> display) {
+            ShowData showingData = getValue();
+            return showingData != null && showingData.display == display;
+        }
     }
 }

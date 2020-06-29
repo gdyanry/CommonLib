@@ -44,10 +44,10 @@ public abstract class ScheduleRunnable implements Runnable {
 
     private boolean setRunning(boolean running) {
         if (manager.isRunning.compareAndSet(!running, running)) {
-            ArrayList<Scheduler> schedulers = new ArrayList<>(manager.instances.values());
+            ArrayList<Scheduler> schedulers = new ArrayList<>(manager.schedulers.values());
             try {
                 for (Scheduler scheduler : schedulers) {
-                    scheduler.visibility.setValue(scheduler.current != null);
+                    scheduler.visibility.setValue(scheduler.showingData != null);
                 }
             } catch (Exception e) {
                 manager.logger.catches(e);

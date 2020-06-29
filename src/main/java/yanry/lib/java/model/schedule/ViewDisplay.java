@@ -20,7 +20,7 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
         viewHolder.setValue(view);
     }
 
-    public ValueHolder<V> getViewHolder() {
+    public ValueHolder<V> getShowingView() {
         return viewHolder;
     }
 
@@ -28,9 +28,8 @@ public abstract class ViewDisplay<D extends ShowData, V> extends Display<D> {
      * 此数据界面被提前关闭（非超时，比如由用户按返回键触发）时需要调用此方法通知显示队列中等待的数据，否则队列中下一条数据要等到前一条数据超时时间后才会显示。
      */
     public boolean notifyDismiss(V view) {
-        if (view == viewHolder.getValue() && scheduler != null && scheduler.current != null && scheduler.current.display == this) {
-            ShowData currentData = scheduler.current;
-            scheduler.current = null;
+        if (view == viewHolder.getValue() && scheduler != null && scheduler.showingData.isBoundTo(this)) {
+            ShowData currentData = scheduler.showingData.setValue(null);
             new ScheduleRunnable(scheduler.manager) {
                 @Override
                 protected void doRun() {

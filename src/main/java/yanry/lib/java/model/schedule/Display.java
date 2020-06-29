@@ -16,15 +16,15 @@ public abstract class Display<D extends ShowData> {
     }
 
     public D getShowingData() {
-        if (scheduler != null && scheduler.current != null && scheduler.current.display == this) {
-            return (D) scheduler.current;
+        if (scheduler != null && scheduler.showingData.isBoundTo(this)) {
+            return (D) scheduler.showingData.getValue();
         }
         return null;
     }
 
     public void dismiss(long delay) {
-        if (scheduler != null && scheduler.current != null && scheduler.current.display == this) {
-            scheduler.current.dismiss(delay);
+        if (scheduler != null && scheduler.showingData.isBoundTo(this)) {
+            scheduler.showingData.getValue().dismiss(delay);
         }
     }
 

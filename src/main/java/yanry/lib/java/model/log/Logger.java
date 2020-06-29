@@ -174,7 +174,7 @@ public class Logger {
         concat(-1, LogLevel.Error, parts);
     }
 
-    public void catches(Exception e) {
+    public void catches(Throwable e) {
         if (handlers.size() == 0) {
             defaultHandler.catches(tag, e);
         } else {

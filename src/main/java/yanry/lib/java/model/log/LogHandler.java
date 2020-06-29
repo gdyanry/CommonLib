@@ -23,5 +23,5 @@ public abstract class LogHandler {
 
     protected abstract void handleFormattedLog(LogRecord logRecord, String formattedLog);
 
-    protected abstract void catches(Object tag, Exception e);
+    protected abstract void catches(Object tag, Throwable e);
 }

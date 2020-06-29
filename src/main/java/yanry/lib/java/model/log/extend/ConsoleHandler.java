@@ -84,7 +84,7 @@ public class ConsoleHandler extends LogHandler {
     }
 
     @Override
-    protected void catches(Object tag, Exception e) {
+    protected void catches(Object tag, Throwable e) {
         e.printStackTrace();
     }
 }

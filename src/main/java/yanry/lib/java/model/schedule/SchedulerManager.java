@@ -19,7 +19,7 @@ public class SchedulerManager {
     ConcurrentLinkedQueue<ScheduleRunnable> pendingRunnable;
     LinkedList<ShowData> queue;
     HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
-    HashMap<Object, Scheduler> instances;
+    HashMap<Object, Scheduler> schedulers;
 
     public SchedulerManager(Runner runner, Logger logger) {
         this.runner = runner;
@@ -28,14 +28,14 @@ public class SchedulerManager {
         pendingRunnable = new ConcurrentLinkedQueue<>();
         queue = new LinkedList<>();
         conflictedSchedulers = new HashMap<>();
-        instances = new HashMap<>();
+        schedulers = new HashMap<>();
     }
 
     public Scheduler get(Object tag) {
-        Scheduler scheduler = instances.get(tag);
+        Scheduler scheduler = schedulers.get(tag);
         if (scheduler == null) {
             scheduler = new Scheduler(this, tag);
-            instances.put(tag, scheduler);
+            schedulers.put(tag, scheduler);
             HashSet<Scheduler> set = new HashSet<>();
             set.add(scheduler);
             conflictedSchedulers.put(scheduler, set);
@@ -44,7 +44,7 @@ public class SchedulerManager {
     }
 
     public Scheduler peek(Object tag) {
-        return instances.get(tag);
+        return schedulers.get(tag);
     }
 
     public void link(Scheduler a, Scheduler b) {
@@ -68,8 +68,8 @@ public class SchedulerManager {
                     data.setState(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
-                if (dismissCurrent && instances.size() > 0) {
-                    ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+                if (dismissCurrent && schedulers.size() > 0) {
+                    ArrayList<Scheduler> schedulers = new ArrayList<>(SchedulerManager.this.schedulers.values());
                     for (Scheduler scheduler : schedulers) {
                         scheduler.dismissCurrent(null);
                     }
@@ -79,7 +79,7 @@ public class SchedulerManager {
     }
 
     public void cancelScheduler(boolean dismissCurrent, Filter<Scheduler> schedulerFilter) {
-        ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+        ArrayList<Scheduler> schedulers = new ArrayList<>(this.schedulers.values());
         for (Scheduler scheduler : schedulers) {
             if (schedulerFilter.accept(scheduler)) {
                 scheduler.cancel(dismissCurrent);
@@ -88,7 +88,7 @@ public class SchedulerManager {
     }
 
     public boolean hasScheduler(Object tag) {
-        return instances.get(tag) != null;
+        return schedulers.get(tag) != null;
     }
 
     public void cancelByTag(Object tag) {
@@ -109,10 +109,11 @@ public class SchedulerManager {
                 }
                 // 清理当前显示的窗口
                 HashSet<Display> displaysToDismisses = new HashSet<>();
-                if (instances.size() > 0) {
-                    ArrayList<Scheduler> schedulers = new ArrayList<>(instances.values());
+                if (schedulers.size() > 0) {
+                    ArrayList<Scheduler> schedulers = new ArrayList<>(SchedulerManager.this.schedulers.values());
                     for (Scheduler scheduler : schedulers) {
-                        if (scheduler.current.tag == tag) {
+                        ShowData showData = scheduler.showingData.getValue();
+                        if (showData != null && showData.tag == tag) {
                             scheduler.dismissCurrent(displaysToDismisses);
                         }
                     }
@@ -125,8 +126,8 @@ public class SchedulerManager {
     void rebalance(ShowData showData, HashSet<Display> displaysToDismisses) {
         HashSet<ShowData> dataToShow = new HashSet<>();
         if (showData != null) {
-            // 此处调用是为了后面getConcernedShowingTasks()能得到正确的结果
-            showData.scheduler.current = showData;
+            // 此处赋值是为了后面getConcernedShowingTasks()能得到正确的结果
+            showData.scheduler.showingData.setValue(showData);
             dataToShow.add(showData);
         }
         HashSet<ShowData> invalidData = new HashSet<>();
@@ -137,7 +138,7 @@ public class SchedulerManager {
                 if (data.hasFlag(ShowData.FLAG_INVALID_ON_DELAYED_SHOW)) {
                     invalidData.add(data);
                 } else {
-                    data.scheduler.current = data;
+                    data.scheduler.showingData.setValue(data);
                     dataToShow.add(data);
                 }
             } else {
@@ -148,8 +149,8 @@ public class SchedulerManager {
                         } else {
                             // 替换优先级较低的待显示数据
                             dataToShow.remove(showingData);
-                            showingData.scheduler.current = null;
-                            data.scheduler.current = data;
+                            showingData.scheduler.showingData.setValue(null);
+                            data.scheduler.showingData.setValue(data);
                             dataToShow.add(data);
                         }
                     }
