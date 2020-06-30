@@ -65,7 +65,7 @@ public class Scheduler {
                     manager.rebalance(null, displaysToDismisses);
                 }
             }
-        }.start(tag, " cancel: ", dismissCurrent);
+        }.start('[', tag, "] cancel: ", dismissCurrent);
     }
 
     public ValueHolder<ShowData> getShowingData() {
@@ -177,7 +177,7 @@ public class Scheduler {
                     }
                 }
             }
-        }.start(tag, " show: ", data);
+        }.start('[', tag, "] show: ", data);
     }
 
     HashSet<ShowData> getConcernedShowingData() {

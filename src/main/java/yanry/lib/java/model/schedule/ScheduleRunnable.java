@@ -35,6 +35,7 @@ public abstract class ScheduleRunnable implements Runnable {
                     }
                 }
             } finally {
+                // 防止业务抛异常导致running状态一直为true
                 setRunning(false);
             }
         } else {
