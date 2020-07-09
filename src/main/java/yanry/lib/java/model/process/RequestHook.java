@@ -10,11 +10,11 @@ import java.util.LinkedList;
  */
 abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler<D, R>, ProcessNode<D, R> {
     RequestHook<?, R> parent;
-    private Processor<D, R> processor;
+    private Processor<? super D, R> processor;
     private String fullName;
     private long startTime;
 
-    RequestHook(RequestHook<?, R> parent, Processor<D, R> processor) {
+    RequestHook(RequestHook<?, R> parent, Processor<? super D, R> processor) {
         while (parent != null && parent.processor.isAnonymous()) {
             parent = parent.parent;
         }
@@ -43,8 +43,8 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
         }
     }
 
-    private <T> void dispatchInOrder(T requestData, LinkedList<? extends Processor<T, R>> remainingProcessors) {
-        Processor<T, R> processor = remainingProcessors.peekFirst();
+    private <T> void dispatchInOrder(T requestData, LinkedList<? extends Processor<? super T, R>> remainingProcessors) {
+        Processor<? super T, R> processor = remainingProcessors.peekFirst();
         new RequestRelay<T, R>(this, processor, getRequestRoot()) {
             @Override
             public T getRequestData() {
@@ -78,7 +78,7 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
     }
 
     @Override
-    public <T> void redirect(T requestData, Processor<T, R> processor) {
+    public <T> void redirect(T requestData, Processor<? super T, R> processor) {
         if (requestData == null) {
             fail();
             return;
@@ -99,16 +99,16 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
     }
 
     @Override
-    public <T> void dispatch(T requestData, Collection<? extends Processor<T, R>> childProcessors, boolean keepOrder) {
+    public <T> void dispatch(T requestData, Collection<? extends Processor<? super T, R>> childProcessors, boolean keepOrder) {
         if (requestData == null || childProcessors.size() == 0) {
             fail();
             return;
         }
-        LinkedList<? extends Processor<T, R>> remainingProcessors = new LinkedList<>(childProcessors);
+        LinkedList<? extends Processor<? super T, R>> remainingProcessors = new LinkedList<>(childProcessors);
         if (keepOrder) {
             dispatchInOrder(requestData, remainingProcessors);
         } else {
-            for (Processor<T, R> processor : childProcessors) {
+            for (Processor<? super T, R> processor : childProcessors) {
                 new RequestRelay<T, R>(this, processor, getRequestRoot()) {
                     @Override
                     public T getRequestData() {
@@ -138,7 +138,7 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
     }
 
     @Override
-    public Processor<D, R> getProcessor() {
+    public Processor<? super D, R> getProcessor() {
         return processor;
     }
 

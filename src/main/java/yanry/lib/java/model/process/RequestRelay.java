@@ -9,7 +9,7 @@ abstract class RequestRelay<D, R extends ProcessResult> extends RequestHook<D, R
     private RequestRoot<?, R> requestRoot;
     private boolean isFail;
 
-    RequestRelay(RequestHook<?, R> parent, Processor<D, R> processor, RequestRoot<?, R> requestRoot) {
+    RequestRelay(RequestHook<?, R> parent, Processor<? super D, R> processor, RequestRoot<?, R> requestRoot) {
         super(parent, processor);
         this.requestRoot = requestRoot;
     }

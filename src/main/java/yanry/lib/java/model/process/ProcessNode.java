@@ -28,7 +28,7 @@ public interface ProcessNode<D, R extends ProcessResult> {
      *
      * @return
      */
-    Processor<D, R> getProcessor();
+    Processor<? super D, R> getProcessor();
 
     /**
      * 获取当前节点的开始处理时间戳。

@@ -72,7 +72,7 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
     protected abstract T getTag(D requestData);
 
     @Override
-    public final void process(RequestHandler<D, R> request) {
+    public final void process(RequestHandler<? extends D, R> request) {
         T tag = getTag(request.getRequestData());
         LinkedList<Processor<D, R>> processors = get(tag);
         if (tag == null) {
@@ -92,7 +92,7 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
         }
     }
 
-    private void dispatch(RequestHandler<D, R> request, List<Processor<D, R>> processors) {
+    private void dispatch(RequestHandler<? extends D, R> request, List<Processor<D, R>> processors) {
         if (processors == null) {
             request.fail();
         } else {

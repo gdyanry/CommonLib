@@ -32,6 +32,6 @@ public class Registry<T> {
     }
 
     public List<T> getCopy() {
-        return registrants == null ? Collections.EMPTY_LIST : new ArrayList<>(registrants);
+        return registrants == null || registrants.size() == 0 ? Collections.EMPTY_LIST : new ArrayList<>(registrants);
     }
 }

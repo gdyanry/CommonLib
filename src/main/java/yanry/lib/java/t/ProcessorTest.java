@@ -107,7 +107,7 @@ public class ProcessorTest {
         }
 
         @Override
-        public void process(RequestHandler<Integer, ProcessResult> request) {
+        public void process(RequestHandler<? extends Integer, ProcessResult> request) {
             request.dispatch(request.getRequestData(), childProcessors, keepOrder);
         }
 
@@ -135,7 +135,7 @@ public class ProcessorTest {
         }
 
         @Override
-        public void process(RequestHandler<Integer, ProcessResult> request) {
+        public void process(RequestHandler<? extends Integer, ProcessResult> request) {
             request.dispatch(request.getRequestData(), childProcessors, keepOrder);
         }
 

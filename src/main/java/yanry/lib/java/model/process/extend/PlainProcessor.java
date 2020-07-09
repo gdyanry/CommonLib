@@ -36,7 +36,7 @@ public abstract class PlainProcessor<D, R extends ProcessResult> implements Proc
     protected abstract R process(D requestData) throws Exception;
 
     @Override
-    public final void process(RequestHandler<D, R> hook) {
+    public final void process(RequestHandler<? extends D, R> hook) {
         Executor executor = getExecutor();
         if (executor == null) {
             doProcess(hook);
@@ -45,11 +45,11 @@ public abstract class PlainProcessor<D, R extends ProcessResult> implements Proc
         }
     }
 
-    private void doProcess(RequestHandler<D, R> hook) {
+    private void doProcess(RequestHandler<? extends D, R> hook) {
         R result = null;
         try {
             result = process(hook.getRequestData());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.getDefault().catches(e);
         } finally {
             if (hook.isOpen()) {

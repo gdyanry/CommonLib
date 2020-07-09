@@ -8,9 +8,8 @@ import yanry.lib.java.model.log.Logger;
  * Created by yanry on 2020/1/12.
  *
  * @param <D> 待处理的数据类型。
- * @param <R> 处理结果类型。
  */
-public interface ProcessRequest<D, R extends ProcessResult> {
+public interface ProcessRequest<D> {
     D getRequestData();
 
     /**
@@ -19,7 +18,7 @@ public interface ProcessRequest<D, R extends ProcessResult> {
     boolean isOpen();
 
     /**
-     * 失败结束当前请求。
+     * 取消请求并触发失败回调。
      *
      * @return 操作是否成功。
      */

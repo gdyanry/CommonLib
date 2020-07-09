@@ -10,7 +10,7 @@ import java.util.Collection;
  * @param <D> 待处理的数据类型。
  * @param <R> 处理结果类型。
  */
-public interface RequestHandler<D, R extends ProcessResult> extends ProcessRequest<D, R> {
+public interface RequestHandler<D, R extends ProcessResult> extends ProcessRequest<D> {
 
     /**
      * 成功结束当前请求。
@@ -28,7 +28,7 @@ public interface RequestHandler<D, R extends ProcessResult> extends ProcessReque
      * @param requestData 请求数据。
      * @param processor   被“重定向”的处理器。
      */
-    <T> void redirect(T requestData, Processor<T, R> processor);
+    <T> void redirect(T requestData, Processor<? super T, R> processor);
 
     /**
      * 将当前请求分发给多个子处理器处理。
@@ -37,5 +37,5 @@ public interface RequestHandler<D, R extends ProcessResult> extends ProcessReque
      * @param childProcessors 子处理器集合。
      * @param keepOrder       子处理器是否按顺序执行（即当前一个子处理器处理失败时后一个子处理才开始处理）。
      */
-    <T> void dispatch(T requestData, Collection<? extends Processor<T, R>> childProcessors, boolean keepOrder);
+    <T> void dispatch(T requestData, Collection<? extends Processor<? super T, R>> childProcessors, boolean keepOrder);
 }

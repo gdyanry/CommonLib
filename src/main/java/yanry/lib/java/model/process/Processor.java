@@ -21,7 +21,7 @@ public interface Processor<D, R extends ProcessResult> {
      * @param completeCallback 请求结果回调。
      * @return 当前请求对象。
      */
-    default ProcessRequest<D, R> request(Logger logger, D requestData, ProcessCallback<R> completeCallback) {
+    default ProcessRequest<D> request(Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         String shortName = getShortName();
         if (logger != null) {
             logger.concat(1, LogLevel.Debug, shortName, " start request: ", requestData);
@@ -41,7 +41,7 @@ public interface Processor<D, R extends ProcessResult> {
     default <T> Processor<T, R> wrap(DataTransformer<T, D> dataTransformer) {
         return new Processor<T, R>() {
             @Override
-            public void process(RequestHandler<T, R> request) {
+            public void process(RequestHandler<? extends T, R> request) {
                 request.redirect(dataTransformer.transform(request.getRequestData()), Processor.this);
             }
 
@@ -96,5 +96,5 @@ public interface Processor<D, R extends ProcessResult> {
      *
      * @param request 请求对象，处理请求时可用于查询请求数据和请求状态，分发处理，或者提交处理结果。
      */
-    void process(RequestHandler<D, R> request);
+    void process(RequestHandler<? extends D, R> request);
 }
