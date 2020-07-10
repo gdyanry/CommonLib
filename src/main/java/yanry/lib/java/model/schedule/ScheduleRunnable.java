@@ -48,9 +48,9 @@ public abstract class ScheduleRunnable implements Runnable {
             ArrayList<Scheduler> schedulers = new ArrayList<>(manager.schedulers.values());
             try {
                 for (Scheduler scheduler : schedulers) {
-                    scheduler.visibility.setValue(scheduler.showingData != null);
+                    scheduler.visibility.setValue(scheduler.showingData.getValue() != null);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 manager.logger.catches(e);
             }
             return true;
