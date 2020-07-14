@@ -123,7 +123,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     private void doDismiss() {
         if (scheduler != null && scheduler.showingData.getValue() == this) {
             scheduler.showingData.setValue(null);
-            this.state.setValue(STATE_DISMISS);
+            setState(STATE_DISMISS);
             HashSet<Display> displaysToDismisses = new HashSet<>();
             displaysToDismisses.add(display);
             scheduler.manager.rebalance(null, displaysToDismisses);
