@@ -18,7 +18,7 @@ import yanry.lib.java.model.process.RequestHandler;
  * @param <R> type of process result.
  * @param <T> type of tag.
  */
-public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> extends HashMap<T, LinkedList<Processor<D, R>>> implements Processor<D, R> {
+public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> extends HashMap<T, LinkedList<Processor<? super D, R>>> implements Processor<D, R> {
     private boolean stackLike;
 
     /**
@@ -34,8 +34,8 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
      * @param tag       子处理器对应的标签值，若为null则表示通用处理器。
      * @param processor
      */
-    public void addChildProcessor(T tag, Processor<D, R> processor) {
-        LinkedList<Processor<D, R>> processors = get(tag);
+    public void addChildProcessor(T tag, Processor<? super D, R> processor) {
+        LinkedList<Processor<? super D, R>> processors = get(tag);
         if (processors == null) {
             processors = new LinkedList<>();
             put(tag, processors);
@@ -53,7 +53,7 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
      * @param processor
      * @param tags      子处理器对应的标签值。
      */
-    public void addChildProcessor(Processor<D, R> processor, T... tags) {
+    public void addChildProcessor(Processor<? super D, R> processor, T... tags) {
         if (tags == null || tags.length == 0) {
             addChildProcessor(null, processor);
         } else {
@@ -63,8 +63,8 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
         }
     }
 
-    public void removeChildProcessor(Processor<D, R> processor) {
-        for (LinkedList<Processor<D, R>> processors : values()) {
+    public void removeChildProcessor(Processor<? super D, R> processor) {
+        for (LinkedList<Processor<? super D, R>> processors : values()) {
             processors.remove(processor);
         }
     }
@@ -74,17 +74,17 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
     @Override
     public final void process(RequestHandler<? extends D, R> request) {
         T tag = getTag(request.getRequestData());
-        LinkedList<Processor<D, R>> processors = get(tag);
+        LinkedList<Processor<? super D, R>> processors = get(tag);
         if (tag == null) {
             dispatch(request, processors);
         } else {
-            LinkedList<Processor<D, R>> commonProcessors = get(null);
+            LinkedList<Processor<? super D, R>> commonProcessors = get(null);
             if (commonProcessors == null) {
                 dispatch(request, processors);
             } else if (processors == null) {
                 dispatch(request, commonProcessors);
             } else {
-                ArrayList<Processor<D, R>> combinedProcessors = new ArrayList<>(commonProcessors.size() + processors.size());
+                ArrayList<Processor<? super D, R>> combinedProcessors = new ArrayList<>(commonProcessors.size() + processors.size());
                 combinedProcessors.addAll(processors);
                 combinedProcessors.addAll(commonProcessors);
                 dispatch(request, combinedProcessors);
@@ -92,7 +92,7 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
         }
     }
 
-    private void dispatch(RequestHandler<? extends D, R> request, List<Processor<D, R>> processors) {
+    private void dispatch(RequestHandler<? extends D, R> request, List<Processor<? super D, R>> processors) {
         if (processors == null) {
             request.fail();
         } else {

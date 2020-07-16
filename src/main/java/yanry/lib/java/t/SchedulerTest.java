@@ -29,9 +29,9 @@ public class SchedulerTest {
         Scheduler scheduler = schedulerManager.get("testScheduler");
         scheduler.getVisibility().addWatcher(newValue -> Logger.getDefault().ii(scheduler, " is visible: ", newValue));
         // DURATION显示三秒
-        TestData data = new TestData("DURATION");
-        data.setDuration(3000);
-        scheduler.show(data, TestDisplay.class);
+        TestData durationData = new TestData("DURATION");
+        durationData.setDuration(3000);
+        scheduler.show(durationData, TestDisplay.class);
 
         TestData selfDismissData = new TestData("DISMISS") {
             @Override
@@ -45,7 +45,7 @@ public class SchedulerTest {
         scheduler.show(selfDismissData, TestDisplay.class);
         selfDismissData.getState().addWatcher((newValue, oldValue) -> {
             if (newValue == ShowData.STATE_DISMISS) {
-                scheduler.show(data, TestDisplay.class);
+                scheduler.show(durationData, TestDisplay.class);
             }
         });
     }
