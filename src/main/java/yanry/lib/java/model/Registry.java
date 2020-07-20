@@ -1,6 +1,10 @@
 package yanry.lib.java.model;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -31,7 +35,19 @@ public class Registry<T> {
         return registrants != null && registrants.remove(registrant);
     }
 
+    @Nullable
+    public Collection<T> getRaw() {
+        return registrants;
+    }
+
+    @NotNull
     public List<T> getCopy() {
         return registrants == null || registrants.size() == 0 ? Collections.EMPTY_LIST : new ArrayList<>(registrants);
+    }
+
+    public void clear() {
+        if (registrants != null) {
+            registrants.clear();
+        }
     }
 }
