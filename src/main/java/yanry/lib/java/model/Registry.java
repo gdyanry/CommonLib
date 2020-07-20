@@ -1,8 +1,5 @@
 package yanry.lib.java.model;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,12 +32,20 @@ public class Registry<T> {
         return registrants != null && registrants.remove(registrant);
     }
 
-    @Nullable
+    /**
+     * 获取内部集合，可能为null
+     *
+     * @return
+     */
     public Collection<T> getRaw() {
         return registrants;
     }
 
-    @NotNull
+    /**
+     * 获取内部集合备份，不为null
+     *
+     * @return
+     */
     public List<T> getCopy() {
         return registrants == null || registrants.size() == 0 ? Collections.EMPTY_LIST : new ArrayList<>(registrants);
     }
