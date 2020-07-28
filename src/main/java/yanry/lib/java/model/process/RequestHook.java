@@ -100,7 +100,7 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
 
     @Override
     public <T> void dispatch(T requestData, Collection<? extends Processor<? super T, R>> childProcessors, boolean keepOrder) {
-        if (requestData == null || childProcessors.size() == 0) {
+        if (requestData == null || childProcessors == null || childProcessors.size() == 0) {
             fail();
             return;
         }
