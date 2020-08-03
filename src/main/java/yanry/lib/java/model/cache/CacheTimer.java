@@ -2,9 +2,9 @@ package yanry.lib.java.model.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import yanry.lib.java.entity.DaemonTimer;
 import yanry.lib.java.model.Singletons;
@@ -13,11 +13,11 @@ import yanry.lib.java.model.Singletons;
  * Created by yanry on 2020/4/27.
  */
 public abstract class CacheTimer<T> {
-    private HashMap<T, Long> tagTime;
+    private ConcurrentHashMap<T, Long> tagTime;
     private TimerTask timerTask;
 
     public CacheTimer() {
-        tagTime = new HashMap<>();
+        tagTime = new ConcurrentHashMap<>();
     }
 
     public boolean startTiming(long minTimeout) {

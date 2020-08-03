@@ -1,5 +1,6 @@
 package yanry.lib.java.model.task;
 
+import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
 
 /**
@@ -21,13 +22,19 @@ public abstract class RetryAction implements Runnable {
         this.remainingTry = retryCount;
     }
 
-    public void start() {
-        if (schedule == null) {
+    public boolean start() {
+        if (schedule == null && remainingTry > 0) {
             schedule = () -> execute(this);
             scheduleRunner.run(schedule);
+            return true;
         } else {
-            throw new IllegalStateException("retry action has been started.");
+            Logger.getDefault().ww("retry action has been started.");
+            return false;
         }
+    }
+
+    public boolean isActive() {
+        return schedule != null && remainingTry > 0;
     }
 
     public void cancel() {
