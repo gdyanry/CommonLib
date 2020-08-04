@@ -13,6 +13,9 @@ public class Registry<T> {
     private ConcurrentLinkedQueue<T> registrants;
 
     public boolean register(T registrant) {
+        if (registrant == null) {
+            return false;
+        }
         if (registrants == null) {
             synchronized (this) {
                 if (registrants == null) {

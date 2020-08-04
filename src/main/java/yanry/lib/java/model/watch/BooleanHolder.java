@@ -9,4 +9,11 @@ public interface BooleanHolder {
     boolean removeWatcher(BooleanWatcher watcher);
 
     boolean getValue();
+
+    default boolean getAndWatch(BooleanWatcher watcher) {
+        if (watcher != null) {
+            watcher.onValueChange(getValue());
+        }
+        return addWatcher(watcher);
+    }
 }

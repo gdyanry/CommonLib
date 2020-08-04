@@ -9,4 +9,11 @@ public interface ValueHolder<V> {
     boolean removeWatcher(ValueWatcher<V> watcher);
 
     V getValue();
+
+    default boolean getAndWatch(ValueWatcher<V> watcher) {
+        if (watcher != null) {
+            watcher.onValueChange(getValue(), null);
+        }
+        return addWatcher(watcher);
+    }
 }
