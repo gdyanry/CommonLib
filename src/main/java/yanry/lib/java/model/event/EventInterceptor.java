@@ -8,6 +8,8 @@ package yanry.lib.java.model.event;
  **/
 public interface EventInterceptor<E extends Event> {
 
+    boolean isEnable();
+
     /**
      * 拦截事件查询
      *

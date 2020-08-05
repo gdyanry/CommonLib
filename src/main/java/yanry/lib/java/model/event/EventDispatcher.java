@@ -12,7 +12,7 @@ import yanry.lib.java.model.log.Logger;
  * @author: rongyu.yan
  * @create: 2020-07-25 15:32
  **/
-public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> extends Registry<I> implements EventInterceptor<E> {
+public abstract class EventDispatcher<E extends Event, I extends EventInterceptor<E>> extends Registry<I> implements EventInterceptor<E> {
     private Logger logger;
 
     public EventDispatcher(Logger logger) {
@@ -29,13 +29,14 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
         if (copy.size() > 0) {
             ListIterator<I> listIterator = copy.listIterator();
             while (listIterator.hasNext()) {
-                if (listIterator.next().onDispatchEvent(event) > 0) {
+                I next = listIterator.next();
+                if (next.isEnable() && next.onDispatchEvent(event) > 0) {
                     break;
                 }
             }
             while (listIterator.hasPrevious()) {
                 I previous = listIterator.previous();
-                if (previous.onEvent(event) > 0) {
+                if (previous.isEnable() && previous.onEvent(event) > 0) {
                     return;
                 }
             }
@@ -50,12 +51,14 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
             event.iteratorCache.put(this, listIterator);
             while (listIterator.hasNext()) {
                 I next = listIterator.next();
-                int skipLevel = next.onDispatchEvent(event);
-                if (skipLevel > 0) {
-                    if (logger != null) {
-                        logger.vv(next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel());
+                if (next.isEnable()) {
+                    int skipLevel = next.onDispatchEvent(event);
+                    if (skipLevel > 0) {
+                        if (logger != null) {
+                            logger.vv(next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel());
+                        }
+                        return --skipLevel;
                     }
-                    return --skipLevel;
                 }
             }
         }
@@ -67,13 +70,15 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
         ListIterator<I> listIterator = event.iteratorCache.get(this);
         while (listIterator.hasPrevious()) {
             I previous = listIterator.previous();
-            int skipLevel = previous.onEvent(event);
-            if (skipLevel > 0) {
-                if (logger != null) {
-                    logger.vv(previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel());
+            if (previous.isEnable()) {
+                int skipLevel = previous.onEvent(event);
+                if (skipLevel > 0) {
+                    if (logger != null) {
+                        logger.vv(previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel());
+                    }
+                    event.iteratorCache.remove(this);
+                    return --skipLevel;
                 }
-                event.iteratorCache.remove(this);
-                return --skipLevel;
             }
         }
         event.iteratorCache.remove(this);
