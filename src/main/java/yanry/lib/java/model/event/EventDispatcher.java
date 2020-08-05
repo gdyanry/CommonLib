@@ -12,7 +12,7 @@ import yanry.lib.java.model.log.Logger;
  * @author: rongyu.yan
  * @create: 2020-07-25 15:32
  **/
-public abstract class EventDispatcher<E extends Event, I extends EventInterceptor<E>> extends Registry<I> implements EventInterceptor<E> {
+public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> extends Registry<I> implements EventInterceptor<E> {
     private Logger logger;
 
     public EventDispatcher(Logger logger) {
