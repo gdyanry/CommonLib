@@ -63,7 +63,7 @@ public class TencentQuery {
         post.send(data.getBytes("utf-8"));
         if (post.isSuccess()) {
             String resp = post.getString("utf-8");
-            System.out.println(resp);
+            System.out.println(StringUtil.formatJson(resp));
         } else {
             System.err.println(post.getConnection().getResponseCode());
         }

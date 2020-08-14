@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import yanry.lib.java.model.Registry;
-import yanry.lib.java.model.log.Logger;
 
 /**
  * 事件分发器，同时本身也是事件拦截器
@@ -13,12 +12,6 @@ import yanry.lib.java.model.log.Logger;
  * @create: 2020-07-25 15:32
  **/
 public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> extends Registry<I> implements EventInterceptor<E> {
-    private Logger logger;
-
-    public EventDispatcher(Logger logger) {
-        this.logger = logger;
-    }
-
     /**
      * 分发事件
      *
@@ -49,14 +42,15 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
         if (copy.size() > 0) {
             ListIterator<I> listIterator = copy.listIterator();
             event.iteratorCache.put(this, listIterator);
+            long now = System.currentTimeMillis();
             while (listIterator.hasNext()) {
                 I next = listIterator.next();
                 if (next.isEnable()) {
                     int skipLevel = next.onDispatchEvent(event);
+                    long tick = System.currentTimeMillis();
+                    event.log(next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
+                    now = tick;
                     if (skipLevel > 0) {
-                        if (logger != null) {
-                            logger.vv(next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel());
-                        }
                         return --skipLevel;
                     }
                 }
@@ -68,14 +62,15 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
     @Override
     public int onEvent(E event) {
         ListIterator<I> listIterator = event.iteratorCache.get(this);
+        long now = System.currentTimeMillis();
         while (listIterator.hasPrevious()) {
             I previous = listIterator.previous();
             if (previous.isEnable()) {
                 int skipLevel = previous.onEvent(event);
+                long tick = System.currentTimeMillis();
+                event.log(previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
+                now = tick;
                 if (skipLevel > 0) {
-                    if (logger != null) {
-                        logger.vv(previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel());
-                    }
                     event.iteratorCache.remove(this);
                     return --skipLevel;
                 }
