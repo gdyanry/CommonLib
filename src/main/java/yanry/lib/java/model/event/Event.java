@@ -19,9 +19,9 @@ public class Event {
         this.logLevel = logLevel;
     }
 
-    void log(Object... logParts) {
+    void log(int skipLevel, Object... logParts) {
         if (logger != null) {
-            logger.concat(logLevel, logParts);
+            logger.concat(skipLevel > 0 ? logLevel : LogLevel.Verbose, logParts);
         }
     }
 

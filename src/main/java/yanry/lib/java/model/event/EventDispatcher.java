@@ -48,7 +48,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
                 if (next.isEnable()) {
                     int skipLevel = next.onDispatchEvent(event);
                     long tick = System.currentTimeMillis();
-                    event.log(next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
+                    event.log(skipLevel, next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
                     now = tick;
                     if (skipLevel > 0) {
                         return --skipLevel;
@@ -68,7 +68,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
             if (previous.isEnable()) {
                 int skipLevel = previous.onEvent(event);
                 long tick = System.currentTimeMillis();
-                event.log(previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
+                event.log(skipLevel, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
                 now = tick;
                 if (skipLevel > 0) {
                     event.iteratorCache.remove(this);
