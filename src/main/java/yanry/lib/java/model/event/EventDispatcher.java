@@ -68,7 +68,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
             if (previous.isEnable()) {
                 int skipLevel = previous.onEvent(event);
                 long tick = System.currentTimeMillis();
-                event.log(skipLevel, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
+                event.log(skipLevel, previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
                 now = tick;
                 if (skipLevel > 0) {
                     event.iteratorCache.remove(this);
