@@ -3,6 +3,7 @@ package yanry.lib.java.model.process;
 import yanry.lib.java.interfaces.DataTransformer;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.runner.Runner;
 
 /**
  * 请求处理器接口。
@@ -16,17 +17,18 @@ public interface Processor<D, R extends ProcessResult> {
     /**
      * 通过当前处理器发起请求。
      *
+     * @param runner           用于处理超时
      * @param logger           用于输出处理请求过程中的日志信息，若为null则不输出日志。
      * @param requestData      请求数据。
      * @param completeCallback 请求结果回调。
      * @return 当前请求对象。
      */
-    default ProcessRequest<D> request(Logger logger, D requestData, ProcessCallback<R> completeCallback) {
+    default ProcessRequest<D> request(Runner runner, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         String shortName = getShortName();
         if (logger != null) {
             logger.concat(1, LogLevel.Debug, shortName, " start request: ", requestData);
         }
-        RequestRoot<D, R> requestRoot = new RequestRoot<>(this, logger, requestData, completeCallback);
+        RequestRoot<D, R> requestRoot = new RequestRoot<>(this, runner, logger, requestData, completeCallback);
         requestRoot.process();
         return requestRoot;
     }
@@ -62,7 +64,7 @@ public interface Processor<D, R extends ProcessResult> {
     }
 
     /**
-     * @return 处理超时时间，默认为0，即不设置超时。
+     * @return 处理超时时间，默认为0，即不设置超时。只有当调用根节点的{@link #request(Runner, Logger, Object, ProcessCallback)}时Runner不为null，超时才会生效
      */
     default long getTimeout() {
         return 0;

@@ -1,16 +1,14 @@
 package yanry.lib.java.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by yanry on 2020/5/8.
  */
 public class Registry<T> {
-    private ConcurrentLinkedQueue<T> registrants;
+    private CopyOnWriteArrayList<T> registrants;
 
     public boolean register(T registrant) {
         if (registrant == null) {
@@ -19,7 +17,7 @@ public class Registry<T> {
         if (registrants == null) {
             synchronized (this) {
                 if (registrants == null) {
-                    registrants = new ConcurrentLinkedQueue<>();
+                    registrants = new CopyOnWriteArrayList<>();
                     registrants.add(registrant);
                     return true;
                 }
@@ -36,26 +34,11 @@ public class Registry<T> {
     }
 
     /**
-     * 获取内部集合，可能为null
+     * 获取内部List，不为null
      *
      * @return
      */
-    public Collection<T> getRaw() {
-        return registrants;
-    }
-
-    /**
-     * 获取内部集合备份，不为null
-     *
-     * @return
-     */
-    public List<T> getCopy() {
-        return registrants == null || registrants.size() == 0 ? Collections.EMPTY_LIST : new ArrayList<>(registrants);
-    }
-
-    public void clear() {
-        if (registrants != null) {
-            registrants.clear();
-        }
+    public List<T> getList() {
+        return registrants == null ? Collections.EMPTY_LIST : registrants;
     }
 }

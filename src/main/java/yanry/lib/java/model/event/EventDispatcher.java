@@ -18,7 +18,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
      * @param event
      */
     public void dispatchEvent(E event) {
-        List<I> copy = getCopy();
+        List<I> copy = getList();
         if (copy.size() > 0) {
             ListIterator<I> listIterator = copy.listIterator();
             while (listIterator.hasNext()) {
@@ -38,7 +38,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> ext
 
     @Override
     public int onDispatchEvent(E event) {
-        List<I> copy = getCopy();
+        List<I> copy = getList();
         if (copy.size() > 0) {
             ListIterator<I> listIterator = copy.listIterator();
             event.iteratorCache.put(this, listIterator);

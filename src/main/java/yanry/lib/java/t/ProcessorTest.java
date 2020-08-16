@@ -16,6 +16,7 @@ import yanry.lib.java.model.process.ProcessResult;
 import yanry.lib.java.model.process.Processor;
 import yanry.lib.java.model.process.RequestHandler;
 import yanry.lib.java.model.process.extend.PlainProcessor;
+import yanry.lib.java.model.runner.TimerRunner;
 
 /**
  * Created by yanry on 2020/1/11.
@@ -48,7 +49,7 @@ public class ProcessorTest {
 //                new RootProcessor(FACTOR, false).request(Logger.getDefault(), 10086, this);
             }
         };
-        new RootProcessor(FACTOR, false).request(Logger.getDefault(), 2, completeCallback);
+        new RootProcessor(FACTOR, false).request(new TimerRunner("processor-test", false), Logger.getDefault(), 2, completeCallback);
     }
 
     private static class NodeProcessor extends PlainProcessor<String, ProcessResult> {

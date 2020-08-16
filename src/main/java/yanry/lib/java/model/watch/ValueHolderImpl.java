@@ -26,7 +26,7 @@ public class ValueHolderImpl<V> extends Registry<ValueWatcher<V>> implements Val
         if (!Objects.equals(this.value, value)) {
             this.value = value;
             onValueChange(value, oldValue);
-            for (ValueWatcher<V> watcher : getCopy()) {
+            for (ValueWatcher<V> watcher : getList()) {
                 watcher.onValueChange(value, oldValue);
             }
         }

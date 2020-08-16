@@ -1,49 +1,44 @@
 package yanry.lib.java.model.process;
 
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import yanry.lib.java.model.Singletons;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.model.runner.Runner;
 
 /**
  * Created by yanry on 2020/1/11.
  */
 final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
+    private Runner runner;
     final Logger logger;
     final D requestData;
     private ProcessCallback<R> completeCallback;
     private AtomicBoolean open;
-    private HashMap<RequestHook<?, R>, TimerTask> pendingTimeout;
+    private LinkedList<RequestHook<?, R>> pendingTimeout;
 
-    public RequestRoot(Processor<D, R> processor, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
+    public RequestRoot(Processor<D, R> processor, Runner runner, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         super(null, processor);
+        this.runner = runner;
         this.logger = logger;
         this.requestData = requestData;
         this.completeCallback = completeCallback;
         open = new AtomicBoolean(true);
-        pendingTimeout = new HashMap<>();
+        pendingTimeout = new LinkedList<>();
     }
 
     void setTimeout(RequestHook<?, R> requestHook, long timeout) {
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                pendingTimeout.remove(requestHook);
-                requestHook.fail(true);
-            }
-        };
-        pendingTimeout.put(requestHook, timerTask);
-        Singletons.get(Timer.class).schedule(timerTask, timeout);
+        if (runner != null) {
+            pendingTimeout.add(requestHook);
+            runner.schedule(requestHook, timeout);
+        }
     }
 
     void cancelTimeout(RequestHook<?, R> requestHook) {
-        TimerTask timerTask = pendingTimeout.remove(requestHook);
-        if (timerTask != null) {
-            timerTask.cancel();
+        if (runner != null) {
+            pendingTimeout.remove(requestHook);
+            runner.cancel(requestHook);
         }
     }
 
@@ -70,8 +65,10 @@ final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
     }
 
     private void clearTimeout() {
-        for (TimerTask timerTask : pendingTimeout.values()) {
-            timerTask.cancel();
+        if (runner != null) {
+            for (RequestHook<?, R> hook : pendingTimeout) {
+                runner.cancel(hook);
+            }
         }
         pendingTimeout.clear();
     }

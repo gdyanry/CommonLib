@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * <p>
  * Created by yanry on 2020/1/11.
  */
-abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler<D, R>, ProcessNode<D, R> {
+abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler<D, R>, ProcessNode<D, R>, Runnable {
     RequestHook<?, R> parent;
     private Processor<? super D, R> processor;
     private String fullName;
@@ -145,6 +145,11 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
     @Override
     public long getStartTime() {
         return startTime;
+    }
+
+    @Override
+    public void run() {
+        fail(true);
     }
 
     @Override

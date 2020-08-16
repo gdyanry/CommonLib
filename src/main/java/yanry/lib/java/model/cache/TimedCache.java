@@ -80,6 +80,7 @@ public class TimedCache<V> {
         TimerTask task = tasks.remove(key);
         if (task != null) {
 			task.cancel();
+			timer.purge();
 		}
 	}
 
