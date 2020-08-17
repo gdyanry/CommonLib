@@ -31,21 +31,28 @@ public abstract class NonblockingCountDownLatch implements Runnable {
     public void countDown() {
         if (counter.decrementAndGet() == 0) {
             onComplete(STATE_UNTOUCHED);
+            cancelTimeout();
+        }
+    }
+
+    private void cancelTimeout() {
+        if (runner != null) {
             runner.cancel(this);
+            runner = null;
         }
     }
 
     public void successInterrupt() {
         if (counter.getAndSet(0) > 0) {
             onComplete(STATE_SUCCESS);
-            runner.cancel(this);
+            cancelTimeout();
         }
     }
 
     public void failInterrupt() {
         if (counter.getAndSet(0) > 0) {
             onComplete(STATE_FAIL);
-            runner.cancel(this);
+            cancelTimeout();
         }
     }
 
