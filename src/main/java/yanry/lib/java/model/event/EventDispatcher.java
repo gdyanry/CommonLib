@@ -11,7 +11,7 @@ import yanry.lib.java.model.Registry;
  * @author: rongyu.yan
  * @create: 2020-07-25 15:32
  **/
-public class EventDispatcher<E extends Event, I extends EventInterceptor<E>> extends Registry<I> implements EventInterceptor<E> {
+public class EventDispatcher<E extends Event, I extends EventInterceptor<? super E>> extends Registry<I> implements EventInterceptor<E> {
     /**
      * 分发事件
      *
