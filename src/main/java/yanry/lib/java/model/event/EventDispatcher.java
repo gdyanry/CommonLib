@@ -61,22 +61,22 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
 
     @Override
     public int onEvent(E event) {
-        ListIterator<I> listIterator = event.iteratorCache.get(this);
-        long now = System.currentTimeMillis();
-        while (listIterator.hasPrevious()) {
-            I previous = listIterator.previous();
-            if (previous.isEnable()) {
-                int skipLevel = previous.onEvent(event);
-                long tick = System.currentTimeMillis();
-                event.log(skipLevel, previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
-                now = tick;
-                if (skipLevel > 0) {
-                    event.iteratorCache.remove(this);
-                    return --skipLevel;
+        ListIterator<I> listIterator = event.iteratorCache.remove(this);
+        if (listIterator != null) {
+            long now = System.currentTimeMillis();
+            while (listIterator.hasPrevious()) {
+                I previous = listIterator.previous();
+                if (previous.isEnable()) {
+                    int skipLevel = previous.onEvent(event);
+                    long tick = System.currentTimeMillis();
+                    event.log(skipLevel, previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
+                    now = tick;
+                    if (skipLevel > 0) {
+                        return --skipLevel;
+                    }
                 }
             }
         }
-        event.iteratorCache.remove(this);
         return 0;
     }
 }
