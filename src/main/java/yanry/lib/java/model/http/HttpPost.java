@@ -15,7 +15,7 @@ import yanry.lib.java.util.IOUtil;
 
 public class HttpPost extends HttpRequest {
 
-    public HttpPost(String url, Map<String, Object> urlParams) throws IOException {
+    public HttpPost(String url, Map<String, ? extends Object> urlParams) throws IOException {
         this(url, urlParams, "application/octet-stream");
     }
 
@@ -26,10 +26,10 @@ public class HttpPost extends HttpRequest {
         getConnection().setRequestProperty("Content-type", contentType);
     }
 
-    public void send(Map<String, Object> textFields, String charset) throws IOException {
+    public void send(Map<String, ? extends Object> textFields, String charset) throws IOException {
         if (textFields != null && !textFields.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for (Map.Entry<String, Object> entry : textFields.entrySet()) {
+            for (Map.Entry<String, ? extends Object> entry : textFields.entrySet()) {
                 sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
             send(sb.deleteCharAt(sb.length() - 1).toString().getBytes(charset));
