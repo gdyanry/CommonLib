@@ -51,7 +51,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
                     event.log(skipLevel, next, " intercept event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
                     now = tick;
                     if (skipLevel > 0) {
-                        return --skipLevel;
+                        return skipLevel--;
                     }
                 }
             }
@@ -72,7 +72,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
                     event.log(skipLevel, previous, " handle event: ", event, ", skipLevel=", skipLevel, ", currentLevel=", event.getCurrentLevel(), ", elapsedTime=", tick - now);
                     now = tick;
                     if (skipLevel > 0) {
-                        return --skipLevel;
+                        return skipLevel--;
                     }
                 }
             }
