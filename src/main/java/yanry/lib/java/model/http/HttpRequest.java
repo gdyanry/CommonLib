@@ -1,11 +1,11 @@
 package yanry.lib.java.model.http;
 
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.util.IOUtil;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
+
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.util.IOUtil;
 
 /**
  * @author yanry
@@ -18,7 +18,7 @@ public abstract class HttpRequest {
     private long contentLength;
     private boolean cancel;
 
-    public HttpRequest(String url, Map<String, Object> urlParams) throws IOException {
+    public HttpRequest(String url, Map<String, ? extends Object> urlParams) throws IOException {
         startTime = System.currentTimeMillis();
         conn = Https.getConnection(Https.getUrl(url, urlParams));
         conn.setRequestMethod(getRequestMethod());

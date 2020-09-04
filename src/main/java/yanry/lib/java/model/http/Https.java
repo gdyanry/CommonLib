@@ -1,8 +1,5 @@
 package yanry.lib.java.model.http;
 
-import yanry.lib.java.model.log.Logger;
-
-import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -12,6 +9,14 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+
+import yanry.lib.java.model.log.Logger;
 
 /**
  * @author yanry
@@ -55,12 +60,12 @@ public class Https {
         return (HttpURLConnection) u.openConnection();
     }
 
-    public static String getUrl(String baseUrl, Map<String, Object> params) {
+    public static String getUrl(String baseUrl, Map<String, ? extends Object> params) {
         if (params == null || params.isEmpty()) {
             return baseUrl;
         }
         StringBuilder sb = new StringBuilder(baseUrl).append("?");
-        for (Entry<String, Object> entry : params.entrySet()) {
+        for (Entry<String, ? extends Object> entry : params.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         return sb.deleteCharAt(sb.length() - 1).toString();

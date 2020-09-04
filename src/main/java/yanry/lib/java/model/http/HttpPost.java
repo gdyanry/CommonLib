@@ -19,7 +19,7 @@ public class HttpPost extends HttpRequest {
         this(url, urlParams, "application/octet-stream");
     }
 
-    public HttpPost(String url, Map<String, Object> urlParams, String contentType) throws IOException {
+    public HttpPost(String url, Map<String, ? extends Object> urlParams, String contentType) throws IOException {
         super(url, urlParams);
         getConnection().setDoOutput(true);
         getConnection().setUseCaches(false);

@@ -1,11 +1,17 @@
 package yanry.lib.java.model.http;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
+
 import yanry.lib.java.interfaces.StreamTransferHook;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.util.IOUtil;
-
-import java.io.*;
-import java.util.Map;
 
 /**
  * Created by yanry on 2015/8/10.
@@ -16,7 +22,7 @@ public abstract class HttpMultipart extends HttpRequest {
 
     private OutputStream os;
 
-    public HttpMultipart(String url, Map<String, Object> urlParams) throws IOException {
+    public HttpMultipart(String url, Map<String, ? extends Object> urlParams) throws IOException {
         super(url, urlParams);
         getConnection().setDoOutput(true);
         getConnection().setUseCaches(false);

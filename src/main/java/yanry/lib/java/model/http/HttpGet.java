@@ -12,7 +12,7 @@ public class HttpGet extends HttpRequest {
         this(url, null, 0);
     }
 
-    public HttpGet(String url, Map<String, Object> urlParams, long startPos) throws IOException {
+    public HttpGet(String url, Map<String, ? extends Object> urlParams, long startPos) throws IOException {
         super(url, urlParams);
         if (startPos > 0) {
             getConnection().setRequestProperty("RANGE", "bytes=" + startPos + "-");
