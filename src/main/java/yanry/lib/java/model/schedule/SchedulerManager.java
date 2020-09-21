@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -99,7 +100,7 @@ public class SchedulerManager {
                 Iterator<ShowData> it = queue.iterator();
                 while (it.hasNext()) {
                     ShowData data = it.next();
-                    if (data.tag == tag) {
+                    if (Objects.equals(data.tag, tag)) {
                         if (logger != null) {
                             logger.vv("dequeue by tag cancel: ", data);
                         }
@@ -113,7 +114,7 @@ public class SchedulerManager {
                     ArrayList<Scheduler> schedulers = new ArrayList<>(SchedulerManager.this.schedulers.values());
                     for (Scheduler scheduler : schedulers) {
                         ShowData showData = scheduler.showingData.getValue();
-                        if (showData != null && showData.tag == tag) {
+                        if (showData != null && Objects.equals(showData.tag, tag)) {
                             scheduler.dismissCurrent(displaysToDismisses);
                         }
                     }
