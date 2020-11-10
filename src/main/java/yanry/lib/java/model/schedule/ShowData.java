@@ -6,19 +6,55 @@ import yanry.lib.java.model.FlagsHolder;
 import yanry.lib.java.model.watch.ValueHolder;
 import yanry.lib.java.model.watch.ValueHolderImpl;
 
+/**
+ * 需要“显示”的数据
+ */
 public class ShowData extends FlagsHolder implements Runnable {
+    /**
+     * 拒绝被清出队列
+     */
     public static final int FLAG_REJECT_EXPELLED = 1;
+    /**
+     * 拒绝被关闭
+     */
     public static final int FLAG_REJECT_DISMISSED = 2;
+    /**
+     * 清理队列
+     */
     public static final int FLAG_EXPEL_WAITING_DATA = 4;
+    /**
+     * 进入队列后不再显示
+     */
     public static final int FLAG_INVALID_ON_DELAYED_SHOW = 8;
 
+    /**
+     * 如果有数据正在显示则放入队列尾部等候
+     */
     public static final int STRATEGY_APPEND_TAIL = 2;
+    /**
+     * 如果有数据正在显示则放入队列首部等候
+     */
     public static final int STRATEGY_INSERT_HEAD = 1;
+    /**
+     * 如果有数据正在显示则将其关闭，立即显示
+     */
     public static final int STRATEGY_SHOW_IMMEDIATELY = 0;
 
+    /**
+     * 正在队列中等候
+     */
     public static final int STATE_ENQUEUE = 1;
+    /**
+     * 从队列中被清理
+     */
     public static final int STATE_DEQUEUE = 2;
+    /**
+     * 正在显示中
+     */
     public static final int STATE_SHOWING = 3;
+    /**
+     * 已关闭
+     */
     public static final int STATE_DISMISS = 4;
 
     Object extra;

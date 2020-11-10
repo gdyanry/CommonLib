@@ -13,6 +13,9 @@ import yanry.lib.java.interfaces.Filter;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
 
+/**
+ * 调度器管理器，同一管理器下的不同调度器之间可以添加关联
+ */
 public class SchedulerManager {
     Runner runner;
     Logger logger;
@@ -32,6 +35,12 @@ public class SchedulerManager {
         schedulers = new HashMap<>();
     }
 
+    /**
+     * 获取指定标签对应的调度器，若不存在则创建
+     *
+     * @param tag
+     * @return
+     */
     public Scheduler get(Object tag) {
         Scheduler scheduler = schedulers.get(tag);
         if (scheduler == null) {
@@ -44,10 +53,22 @@ public class SchedulerManager {
         return scheduler;
     }
 
+    /**
+     * 获取指定标签对应的调度器，若不存在则返回Null
+     *
+     * @param tag
+     * @return
+     */
     public Scheduler peek(Object tag) {
         return schedulers.get(tag);
     }
 
+    /**
+     * 双向关联
+     *
+     * @param a
+     * @param b
+     */
     public void link(Scheduler a, Scheduler b) {
         a.addLink(b);
         b.addLink(a);

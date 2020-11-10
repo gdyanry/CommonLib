@@ -32,6 +32,7 @@ abstract class RequestRelay<D, R extends ProcessResult> extends RequestHook<D, R
                 }
             }
             requestRoot.cancelTimeout(this);
+            getProcessor().onPass(getRequestData(), isTimeout);
             onPass();
             return true;
         }

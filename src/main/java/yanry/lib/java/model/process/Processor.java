@@ -94,6 +94,15 @@ public interface Processor<D, R extends ProcessResult> {
     }
 
     /**
+     * 当前处理器及其子处理器未能处理请求的回调。
+     *
+     * @param requestData
+     * @param isTimeout
+     */
+    default void onPass(D requestData, boolean isTimeout) {
+    }
+
+    /**
      * 处理请求。
      *
      * @param request 请求对象，处理请求时可用于查询请求数据和请求状态，分发处理，或者提交处理结果。
