@@ -9,12 +9,22 @@ import java.io.UnsupportedEncodingException;
  */
 public class HexUtil {
 
-    public static String bytesToHex(byte... bytes) {
+    /**
+     * 字节数组转化成16进制表示的字符串
+     *
+     * @param joint 连接字符串
+     * @param bytes 待转化字节数组
+     * @return
+     */
+    public static String bytesToHex(String joint, byte... bytes) {
         if (bytes == null || bytes.length == 0) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
+            if (joint != null && joint.length() > 0 && sb.length() > 0) {
+                sb.append(joint);
+            }
             sb.append(byteToHex(b));
         }
         return sb.toString();

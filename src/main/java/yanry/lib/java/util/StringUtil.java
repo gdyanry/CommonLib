@@ -1,5 +1,7 @@
 package yanry.lib.java.util;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -9,9 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 public class StringUtil {
 
@@ -93,14 +92,14 @@ public class StringUtil {
     }
 
     public static String digest(String input, String charset, MessageDigest md) throws UnsupportedEncodingException {
-        return HexUtil.bytesToHex(md.digest(input.getBytes(charset)));
+        return HexUtil.bytesToHex(null, md.digest(input.getBytes(charset)));
     }
 
     public static String hmac(byte[] input, byte[] key, String algorithm) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac mac = Mac.getInstance(algorithm);
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, algorithm);
         mac.init(secretKeySpec);
-        return HexUtil.bytesToHex(mac.doFinal(input));
+        return HexUtil.bytesToHex(null, mac.doFinal(input));
     }
 
     public static String toFixedLengthString(int value, int length) {
@@ -172,6 +171,13 @@ public class StringUtil {
         return stringBuilder.toString();
     }
 
+    /**
+     * 计算两个字符串之间的最小编辑距离。
+     *
+     * @param a
+     * @param b
+     * @return
+     */
     public static int getMinEditDistance(String a, String b) {
         if (a == null || b == null) {
             return -1;

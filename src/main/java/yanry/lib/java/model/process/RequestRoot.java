@@ -1,11 +1,11 @@
 package yanry.lib.java.model.process;
 
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by yanry on 2020/1/11.
@@ -16,7 +16,7 @@ final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
     final D requestData;
     private ProcessCallback<R> completeCallback;
     private AtomicBoolean open;
-    private LinkedList<RequestHook<?, R>> pendingTimeout;
+    private ConcurrentLinkedQueue<RequestHook<?, R>> pendingTimeout;
 
     public RequestRoot(Processor<D, R> processor, Runner runner, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         super(null, processor);
@@ -25,7 +25,7 @@ final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
         this.requestData = requestData;
         this.completeCallback = completeCallback;
         open = new AtomicBoolean(true);
-        pendingTimeout = new LinkedList<>();
+        pendingTimeout = new ConcurrentLinkedQueue<>();
     }
 
     void setTimeout(RequestHook<?, R> requestHook, long timeout) {

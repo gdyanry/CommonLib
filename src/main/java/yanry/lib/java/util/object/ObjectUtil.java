@@ -100,7 +100,7 @@ public class ObjectUtil {
     }
 
     public static String getSnapshotMd5(Object object) throws IOException, NoSuchAlgorithmException {
-        return HexUtil.bytesToHex(MessageDigest.getInstance("MD5").digest(getSnapshot(object)));
+        return HexUtil.bytesToHex(null, MessageDigest.getInstance("MD5").digest(getSnapshot(object)));
     }
 }
 
