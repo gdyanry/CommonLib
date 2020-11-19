@@ -1,14 +1,14 @@
 package yanry.lib.java.model.schedule;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import yanry.lib.java.model.watch.BooleanHolder;
 import yanry.lib.java.model.watch.BooleanHolderImpl;
 import yanry.lib.java.model.watch.ValueHolder;
 import yanry.lib.java.model.watch.ValueHolderImpl;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * 本类适用的场景为：需要为不同的数据弹出不同的界面，同一时刻最多只显示一个界面，比如显示推送通知。
@@ -183,10 +183,12 @@ public class Scheduler {
     HashSet<ShowData> getConcernedShowingData() {
         HashSet<ShowData> result = new HashSet<>();
         HashSet<Scheduler> schedulers = manager.conflictedSchedulers.get(this);
-        for (Scheduler scheduler : schedulers) {
-            ShowData showData = scheduler.showingData.getValue();
-            if (showData != null) {
-                result.add(showData);
+        if (schedulers != null) {
+            for (Scheduler scheduler : schedulers) {
+                ShowData showData = scheduler.showingData.getValue();
+                if (showData != null) {
+                    result.add(showData);
+                }
             }
         }
         return result;

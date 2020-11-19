@@ -1,5 +1,14 @@
 package yanry.lib.java.t;
 
+import yanry.lib.java.interfaces.StreamTransferHook;
+import yanry.lib.java.model.http.HttpPost;
+import yanry.lib.java.model.json.JSONObject;
+import yanry.lib.java.model.json.pattern.JsonObjectPattern;
+import yanry.lib.java.model.log.Logger;
+import yanry.lib.java.util.IOUtil;
+import yanry.lib.java.util.StringUtil;
+import yanry.lib.java.util.object.ObjectUtil;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,20 +20,11 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
 
-import yanry.lib.java.interfaces.StreamTransferHook;
-import yanry.lib.java.model.http.HttpPost;
-import yanry.lib.java.model.json.JSONObject;
-import yanry.lib.java.model.json.pattern.JsonObjectPattern;
-import yanry.lib.java.model.log.Logger;
-import yanry.lib.java.util.IOUtil;
-import yanry.lib.java.util.StringUtil;
-import yanry.lib.java.util.object.ObjectUtil;
-
 public class BaiduQuery {
     public static void main(String... args) throws IOException {
-        parseBaikeNluPatterns();
+//        parseBaikeNluPatterns();
 //        parseBaikePatterns();
-//        userInteract();
+        userInteract();
     }
 
     private static void parseBaikeNluPatterns() throws IOException {

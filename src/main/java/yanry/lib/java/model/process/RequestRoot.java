@@ -15,8 +15,8 @@ final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
     final Logger logger;
     final D requestData;
     private ProcessCallback<R> completeCallback;
-    private AtomicBoolean open;
-    private ConcurrentLinkedQueue<RequestHook<?, R>> pendingTimeout;
+    private AtomicBoolean open = new AtomicBoolean(true);
+    private ConcurrentLinkedQueue<RequestHook<?, R>> pendingTimeout = new ConcurrentLinkedQueue<>();
 
     public RequestRoot(Processor<D, R> processor, Runner runner, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         super(null, processor);
@@ -24,8 +24,6 @@ final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
         this.logger = logger;
         this.requestData = requestData;
         this.completeCallback = completeCallback;
-        open = new AtomicBoolean(true);
-        pendingTimeout = new ConcurrentLinkedQueue<>();
     }
 
     void setTimeout(RequestHook<?, R> requestHook, long timeout) {

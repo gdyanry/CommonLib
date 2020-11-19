@@ -1,17 +1,13 @@
 package yanry.lib.java.model.schedule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import yanry.lib.java.interfaces.Filter;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 调度器管理器，同一管理器下的不同调度器之间可以添加关联
@@ -19,20 +15,15 @@ import yanry.lib.java.model.runner.Runner;
 public class SchedulerManager {
     Runner runner;
     Logger logger;
-    AtomicBoolean isRunning;
-    ConcurrentLinkedQueue<ScheduleRunnable> pendingRunnable;
-    LinkedList<ShowData> queue;
-    HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers;
-    HashMap<Object, Scheduler> schedulers;
+    AtomicBoolean isRunning = new AtomicBoolean();
+    ConcurrentLinkedQueue<ScheduleRunnable> pendingRunnable = new ConcurrentLinkedQueue<>();
+    LinkedList<ShowData> queue = new LinkedList<>();
+    HashMap<Scheduler, HashSet<Scheduler>> conflictedSchedulers = new HashMap<>();
+    ConcurrentHashMap<Object, Scheduler> schedulers = new ConcurrentHashMap<>();
 
     public SchedulerManager(Runner runner, Logger logger) {
         this.runner = runner;
         this.logger = logger;
-        isRunning = new AtomicBoolean();
-        pendingRunnable = new ConcurrentLinkedQueue<>();
-        queue = new LinkedList<>();
-        conflictedSchedulers = new HashMap<>();
-        schedulers = new HashMap<>();
     }
 
     /**

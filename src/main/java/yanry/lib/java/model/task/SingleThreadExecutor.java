@@ -1,10 +1,10 @@
 package yanry.lib.java.model.task;
 
+import yanry.lib.java.model.log.Logger;
+
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
-
-import yanry.lib.java.model.log.Logger;
 
 /**
  * 单线程Executor，支持简单的优先级。
@@ -35,9 +35,8 @@ public class SingleThreadExecutor extends Thread implements Executor {
 
     public void enqueue(Runnable task, boolean urgent) {
         if (terminated) {
-            throw new IllegalStateException("decoder is terminated.");
-        }
-        if (urgent) {
+            Logger.getDefault().dd(getName(), '@', getId(), " is terminated.");
+        } else if (urgent) {
             deque.offerFirst(task);
         } else {
             deque.offerLast(task);

@@ -1,25 +1,5 @@
 package yanry.lib.java.t;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import yanry.lib.java.interfaces.StreamTransferHook;
 import yanry.lib.java.model.Singletons;
 import yanry.lib.java.model.http.HttpGet;
@@ -32,6 +12,21 @@ import yanry.lib.java.model.log.extend.SimpleFormatter;
 import yanry.lib.java.util.AesUtil;
 import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class GeTuiPush {
     private static final byte[] IV = new byte[]{65, 20, -91, 123, -102, 126, 105, -28, -15, 13, 51, 32, 53, 45, -97, -40};
@@ -46,7 +41,7 @@ public class GeTuiPush {
         Map<String, InputStream> certificates = new HashMap<>();
         certificates.put("tclking", new FileInputStream("f:/tclking_cert/tclking.crt"));
         Https.initSSL(null, certificates, null, null);
-        pushWeatherAlarm(false, false);
+        pushWeatherAlarm(true, true);
 //        pushAiUpdate();
 //        getTaskId(10324);
         System.out.println(getAlias("115051789"));
