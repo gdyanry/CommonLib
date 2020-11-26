@@ -49,12 +49,12 @@ public class SimpleFormatter extends FlagsHolder implements LogFormatter {
         if (hasFlag(TIME)) {
             sb.append(String.format("%tT.%<tL%s", logRecord.getTimeMillis(), separator));
         }
+        if (hasFlag(TAG)) {
+            sb.append(logRecord.getTag()).append(separator);
+        }
         if (hasFlag(THREAD)) {
             Thread thread = Thread.currentThread();
             sb.append(thread.getName()).append('@').append(thread.getId()).append(separator);
-        }
-        if (hasFlag(TAG)) {
-            sb.append(logRecord.getTag()).append(separator);
         }
         if (hasFlag(METHOD) && stackDepth == 0) {
             StackTraceElement e = logRecord.nextStackTraceElement();
