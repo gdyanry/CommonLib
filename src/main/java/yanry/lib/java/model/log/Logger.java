@@ -1,8 +1,8 @@
 package yanry.lib.java.model.log;
 
-import java.util.HashMap;
-
 import yanry.lib.java.model.log.extend.ConsoleHandler;
+
+import java.util.HashMap;
 
 public class Logger {
     private final static HashMap<Object, Logger> instances = new HashMap<>();
@@ -175,11 +175,13 @@ public class Logger {
     }
 
     public void catches(Throwable e) {
-        if (handlers.size() == 0) {
-            defaultHandler.catches(tag, e);
-        } else {
-            for (LogHandler handler : handlers.values()) {
-                handler.catches(tag, e);
+        if (e != null) {
+            if (handlers.size() == 0) {
+                defaultHandler.catches(tag, e);
+            } else {
+                for (LogHandler handler : handlers.values()) {
+                    handler.catches(tag, e);
+                }
             }
         }
     }

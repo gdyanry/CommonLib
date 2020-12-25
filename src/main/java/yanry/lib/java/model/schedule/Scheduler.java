@@ -17,16 +17,13 @@ import java.util.Iterator;
 public class Scheduler {
     SchedulerManager manager;
     private Object tag;
-    ShowingDataHolder showingData;
-    BooleanHolderImpl visibility;
-    private HashMap<Class<? extends Display>, Display> displays;
+    ShowingDataHolder showingData = new ShowingDataHolder();
+    BooleanHolderImpl visibility = new BooleanHolderImpl();
+    private HashMap<Class<? extends Display>, Display> displays = new HashMap<>();
 
     Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
         this.tag = tag;
-        showingData = new ShowingDataHolder();
-        visibility = new BooleanHolderImpl();
-        displays = new HashMap<>();
     }
 
     public BooleanHolder getVisibility() {
@@ -107,11 +104,14 @@ public class Scheduler {
         new ScheduleRunnable(manager) {
             @Override
             protected void doRun() {
-                if (data.getState().getValue() == ShowData.STATE_SHOWING || data.getState().getValue() == ShowData.STATE_ENQUEUE) {
+                if (data.getState().getValue() == ShowData.STATE_SHOWING) {
                     if (manager.logger != null) {
-                        manager.logger.ww("deny showing for invalid state: ", data, ' ', data.getState().getValue());
+                        manager.logger.ww("data is already showing: ", data);
                     }
                     return;
+                }
+                if (data.getState().getValue() == ShowData.STATE_ENQUEUE && manager.queue.remove(data) && manager.logger != null) {
+                    manager.logger.dd("remove data from queue to schedule show: ", data);
                 }
                 data.scheduler = Scheduler.this;
                 data.display = getDisplay(displayType);

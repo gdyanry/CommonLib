@@ -1,7 +1,5 @@
 package yanry.lib.java.t;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
@@ -11,6 +9,8 @@ import yanry.lib.java.model.schedule.SchedulerManager;
 import yanry.lib.java.model.schedule.ShowData;
 import yanry.lib.java.model.schedule.imple.ReusableDisplay;
 import yanry.lib.java.model.watch.ValueWatcher;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by yanry on 2019/12/17.
@@ -48,6 +48,10 @@ public class SchedulerTest {
                 scheduler.show(durationData, TestDisplay.class);
             }
         });
+        TestData enqueueData = new TestData("ENQUEUE");
+        enqueueData.setStrategy(ShowData.STRATEGY_APPEND_TAIL).setDuration(5000);
+        scheduler.show(enqueueData, TestDisplay.class);
+        scheduler.show(enqueueData, TestDisplay.class);
     }
 
     public static class TestData extends ShowData implements ValueWatcher<Integer> {

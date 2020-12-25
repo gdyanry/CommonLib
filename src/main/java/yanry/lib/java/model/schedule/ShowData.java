@@ -1,10 +1,10 @@
 package yanry.lib.java.model.schedule;
 
-import java.util.HashSet;
-
 import yanry.lib.java.model.FlagsHolder;
 import yanry.lib.java.model.watch.ValueHolder;
 import yanry.lib.java.model.watch.ValueHolderImpl;
+
+import java.util.HashSet;
 
 /**
  * 需要“显示”的数据
@@ -64,11 +64,10 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    private ValueHolderImpl<Integer> state;
+    private ValueHolderImpl<Integer> state = new ValueHolderImpl<>(0);
 
     public ShowData() {
         super(false);
-        state = new ValueHolderImpl<>(0);
     }
 
     public ValueHolder<Integer> getState() {
