@@ -3,6 +3,7 @@ package yanry.lib.java.model.schedule;
 import yanry.lib.java.interfaces.Filter;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
+import yanry.lib.java.model.runner.RunnerBlockMonitor;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -203,6 +204,35 @@ public class SchedulerManager {
             data.setState(ShowData.STATE_SHOWING);
             if (data.duration > 0) {
                 runner.schedule(data, data.duration);
+            }
+        }
+    }
+
+    /**
+     * 监测Runner是否被阻塞，当监测到阻塞时可以设置新的Runner
+     */
+    public abstract class SchedulerRunnerMonitor extends RunnerBlockMonitor {
+
+        /**
+         * @param monitoringRunner 执行监控的Runner
+         */
+        public SchedulerRunnerMonitor(Runner monitoringRunner) {
+            super(monitoringRunner, runner);
+        }
+
+        /**
+         * 检测到Runner阻塞的回调
+         *
+         * @param blockedRunner 当前被阻塞的Runner
+         * @return 新的备用Runner，当不为null时用于替换被阻塞的Runner
+         */
+        protected abstract Runner onRunnerBlocked(Runner blockedRunner);
+
+        @Override
+        protected void onAckTimeout() {
+            Runner backupRunner = onRunnerBlocked(runner);
+            if (backupRunner != null) {
+                runner = backupRunner;
             }
         }
     }

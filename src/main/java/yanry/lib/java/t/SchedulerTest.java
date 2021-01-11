@@ -3,6 +3,7 @@ package yanry.lib.java.t;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.model.runner.RunnerBlockMonitor;
 import yanry.lib.java.model.runner.TimerRunner;
 import yanry.lib.java.model.schedule.Scheduler;
 import yanry.lib.java.model.schedule.SchedulerManager;
@@ -10,6 +11,7 @@ import yanry.lib.java.model.schedule.ShowData;
 import yanry.lib.java.model.schedule.imple.ReusableDisplay;
 import yanry.lib.java.model.watch.ValueWatcher;
 
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -20,11 +22,15 @@ public class SchedulerTest {
         SimpleFormatter formatter = new SimpleFormatter();
         formatter.addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD)
                 .addFlag(SimpleFormatter.THREAD).addFlag(SimpleFormatter.LEVEL);
-//        formatter.setMethodStack(10);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
         Logger.getDefault().addHandler(handler);
 
+//        testSchedule();
+        testMonitor();
+    }
+
+    private static void testSchedule() {
         SchedulerManager schedulerManager = new SchedulerManager(new TimerRunner("schedule-runner", false), Logger.getDefault());
         Scheduler scheduler = schedulerManager.get("testScheduler");
         scheduler.getVisibility().addWatcher(newValue -> Logger.getDefault().ii(scheduler, " is visible: ", newValue));
@@ -52,6 +58,33 @@ public class SchedulerTest {
         enqueueData.setStrategy(ShowData.STRATEGY_APPEND_TAIL).setDuration(5000);
         scheduler.show(enqueueData, TestDisplay.class);
         scheduler.show(enqueueData, TestDisplay.class);
+    }
+
+    private static void testMonitor() {
+        TimerRunner monitored = new TimerRunner("monitored", false);
+        TimerRunner monitoring = new TimerRunner("monitoring", false);
+        RunnerBlockMonitor runnerBlockMonitor = new RunnerBlockMonitor(monitoring, monitored) {
+            @Override
+            protected void onAckTimeout() {
+
+            }
+        };
+        Logger.getDefault().dd("start monitor.");
+        runnerBlockMonitor.start(500, 2000, 0);
+        monitored.schedule(new TimerTask() {
+            private long sleep = 100;
+
+            @Override
+            public void run() {
+                try {
+                    sleep += 100;
+                    Logger.getDefault().dd("sleep: ", sleep);
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 1000);
     }
 
     public static class TestData extends ShowData implements ValueWatcher<Integer> {

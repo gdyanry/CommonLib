@@ -80,6 +80,8 @@ public class Test {
 
         System.out.println(String.format("%02x", (int) (0xff * 0.9)));
         System.out.println(1f * 0xdb / 0xff);
+        System.out.println(String.format("%x", -60));
+        System.out.println(String.format("%x", (byte) -60));
     }
 
     private static void format(String msg, Object... args) {

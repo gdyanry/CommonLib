@@ -6,4 +6,6 @@ public interface Runner {
     void schedule(Runnable runnable, long delay);
 
     void cancel(Runnable runnable);
+
+    void terminate();
 }

@@ -8,12 +8,11 @@ import java.util.TimerTask;
  * Created by yanry on 2019/12/17.
  */
 public class TimerRunner extends Timer implements Runner {
-    private HashMap<Runnable, TimerTask> tasks;
+    private HashMap<Runnable, TimerTask> tasks = new HashMap<>();
     private Thread timerThread;
 
     public TimerRunner(String name, boolean isDaemon) {
         super(name, isDaemon);
-        tasks = new HashMap<>();
         schedule(new TimerTask() {
             @Override
             public void run() {
@@ -54,5 +53,10 @@ public class TimerRunner extends Timer implements Runner {
         if (timerTask != null) {
             timerTask.cancel();
         }
+    }
+
+    @Override
+    public void terminate() {
+        cancel();
     }
 }
