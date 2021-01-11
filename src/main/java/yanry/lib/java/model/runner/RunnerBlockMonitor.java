@@ -28,6 +28,13 @@ public abstract class RunnerBlockMonitor implements Runnable {
         this.monitoredRunner = monitoredRunner;
     }
 
+    public void setMonitoredRunner(Runner monitoredRunner) {
+        if (state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_CHECK)) {
+            this.monitoredRunner.cancel(state);
+        }
+        this.monitoredRunner = monitoredRunner;
+    }
+
     /**
      * 开始监控。可重复调用。
      *
@@ -38,8 +45,10 @@ public abstract class RunnerBlockMonitor implements Runnable {
     public void start(long ackTimeout, long checkPeriod, long delay) {
         this.ackTimeout = ackTimeout;
         this.checkPeriod = checkPeriod;
+        if (state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_CHECK)) {
+            monitoredRunner.cancel(state);
+        }
         monitoringRunner.schedule(this, delay);
-        monitoredRunner.cancel(state);
     }
 
     /**
@@ -55,11 +64,9 @@ public abstract class RunnerBlockMonitor implements Runnable {
     @Override
     public void run() {
         if (state.compareAndSet(STATE_MONITOR_CHECK, STATE_MONITOR_REQ)) {
-            Logger.getDefault().dd("REQ");
             monitoredRunner.schedule(state, 0);
             monitoringRunner.schedule(this, ackTimeout);
         } else if (state.compareAndSet(STATE_MONITOR_ACK, STATE_MONITOR_CHECK)) {
-            Logger.getDefault().dd("CHECK");
             monitoringRunner.schedule(this, checkPeriod);
         } else {
             Logger.getDefault().ww(monitoredRunner, " ack timeout.");
@@ -70,7 +77,6 @@ public abstract class RunnerBlockMonitor implements Runnable {
     private class MonitorState extends AtomicInteger implements Runnable {
         @Override
         public void run() {
-            Logger.getDefault().dd("ACK");
             state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_ACK);
         }
     }

@@ -233,6 +233,7 @@ public class SchedulerManager {
             Runner backupRunner = onRunnerBlocked(runner);
             if (backupRunner != null) {
                 runner = backupRunner;
+                setMonitoredRunner(backupRunner);
             }
         }
     }
