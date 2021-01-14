@@ -3,6 +3,7 @@ package yanry.lib.java.t;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.log.extend.ConsoleHandler;
 import yanry.lib.java.model.log.extend.SimpleFormatter;
+import yanry.lib.java.model.runner.Runner;
 import yanry.lib.java.model.runner.RunnerBlockMonitor;
 import yanry.lib.java.model.runner.TimerRunner;
 import yanry.lib.java.model.schedule.Scheduler;
@@ -61,16 +62,15 @@ public class SchedulerTest {
     }
 
     private static void testMonitor() {
-        TimerRunner monitored = new TimerRunner("monitored", false);
-        TimerRunner monitoring = new TimerRunner("monitoring", false);
-        RunnerBlockMonitor runnerBlockMonitor = new RunnerBlockMonitor(monitoring, monitored) {
+        RunnerBlockMonitor monitor = new RunnerBlockMonitor(new TimerRunner("monitoring", false)) {
             @Override
-            protected void onAckTimeout() {
+            protected void onAckTimeout(Runner monitoredRunner) {
 
             }
         };
         Logger.getDefault().dd("start monitor.");
-        runnerBlockMonitor.start(500, 2000, 0);
+        TimerRunner monitored = new TimerRunner("monitored", false);
+        monitor.start(monitored, 500, 2000, 0);
         monitored.schedule(new TimerTask() {
             private long sleep = 100;
 

@@ -21,33 +21,32 @@ public abstract class RunnerBlockMonitor implements Runnable {
 
     /**
      * @param monitoringRunner 执行监控的Runner
-     * @param monitoredRunner  被监控的Runner
      */
-    public RunnerBlockMonitor(Runner monitoringRunner, Runner monitoredRunner) {
+    public RunnerBlockMonitor(Runner monitoringRunner) {
         this.monitoringRunner = monitoringRunner;
-        this.monitoredRunner = monitoredRunner;
     }
 
-    public void setMonitoredRunner(Runner monitoredRunner) {
+    public void setMonitoredRunner() {
+        if (state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_CHECK)) {
+            this.monitoredRunner.cancel(state);
+        }
+    }
+
+    /**
+     * 开始监控。
+     *
+     * @param monitoredRunner 被监控Runner
+     * @param ackTimeout      判断是否阻塞的超时时间
+     * @param checkPeriod     检测时间间隔
+     * @param delay           开始监控的延迟时间
+     */
+    public void start(Runner monitoredRunner, long ackTimeout, long checkPeriod, long delay) {
+        this.ackTimeout = ackTimeout;
+        this.checkPeriod = checkPeriod;
         if (state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_CHECK)) {
             this.monitoredRunner.cancel(state);
         }
         this.monitoredRunner = monitoredRunner;
-    }
-
-    /**
-     * 开始监控。可重复调用。
-     *
-     * @param ackTimeout  判断是否阻塞的超时时间
-     * @param checkPeriod 检测时间间隔
-     * @param delay       开始监控的延迟时间
-     */
-    public void start(long ackTimeout, long checkPeriod, long delay) {
-        this.ackTimeout = ackTimeout;
-        this.checkPeriod = checkPeriod;
-        if (state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_CHECK)) {
-            monitoredRunner.cancel(state);
-        }
         monitoringRunner.schedule(this, delay);
     }
 
@@ -56,10 +55,13 @@ public abstract class RunnerBlockMonitor implements Runnable {
      */
     public void stop() {
         monitoringRunner.cancel(this);
-        monitoredRunner.cancel(state);
+        if (state.compareAndSet(STATE_MONITOR_REQ, STATE_MONITOR_CHECK)) {
+            monitoredRunner.cancel(state);
+            monitoredRunner = null;
+        }
     }
 
-    protected abstract void onAckTimeout();
+    protected abstract void onAckTimeout(Runner runner);
 
     @Override
     public void run() {
@@ -70,7 +72,7 @@ public abstract class RunnerBlockMonitor implements Runnable {
             monitoringRunner.schedule(this, checkPeriod);
         } else {
             Logger.getDefault().ww(monitoredRunner, " ack timeout.");
-            onAckTimeout();
+            onAckTimeout(monitoredRunner);
         }
     }
 
