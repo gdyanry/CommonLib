@@ -21,16 +21,17 @@ import java.util.regex.Pattern;
  * 2015年2月11日 上午9:34:13
  */
 public class Test {
-
-    private static final byte[] IV = new byte[]{65, 20, -91, 123, -102, 126, 105, -28, -15, 13, 51, 32, 53, 45, -97, -40};
-    private static final byte[] KEY = new byte[]{-49, 59, -97, -82, 5, -125, -92, -15, -7, -4, 95, -87, 85, -47, -34, -10};
-
-    public static void main(String[] args) throws IOException {
+    public static void setupLogger() {
         SimpleFormatter formatter = new SimpleFormatter();
-        formatter.addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.METHOD);
+        formatter.addFlag(SimpleFormatter.SEQUENCE_NUMBER).addFlag(SimpleFormatter.TIME).addFlag(SimpleFormatter.LEVEL).addFlag(SimpleFormatter.METHOD);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
+        handler.setLevel(LogLevel.Verbose);
         Logger.getDefault().addHandler(handler);
+    }
+
+    public static void main(String[] args) throws IOException {
+        setupLogger();
 
         format(IOUtil.getAppRelativeFile("").getAbsolutePath());
 

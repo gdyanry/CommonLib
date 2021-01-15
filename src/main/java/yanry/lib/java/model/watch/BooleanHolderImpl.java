@@ -2,22 +2,24 @@ package yanry.lib.java.model.watch;
 
 import yanry.lib.java.model.Registry;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Created by yanry on 2020/3/3.
  */
 public class BooleanHolderImpl extends Registry<BooleanWatcher> implements BooleanHolder {
-    private boolean value;
+    private AtomicBoolean val;
 
     public BooleanHolderImpl() {
+        val = new AtomicBoolean();
     }
 
     public BooleanHolderImpl(boolean value) {
-        this.value = value;
+        val = new AtomicBoolean(value);
     }
 
     public boolean setValue(boolean value) {
-        if (this.value ^ value) {
-            this.value = value;
+        if (val.compareAndSet(!value, value)) {
             onValueChange(value);
             for (BooleanWatcher watcher : getList()) {
                 watcher.onValueChange(value);
@@ -42,6 +44,6 @@ public class BooleanHolderImpl extends Registry<BooleanWatcher> implements Boole
 
     @Override
     public boolean getValue() {
-        return value;
+        return val.get();
     }
 }
