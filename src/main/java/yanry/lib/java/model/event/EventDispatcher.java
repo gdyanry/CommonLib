@@ -20,7 +20,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
      *
      * @param event
      */
-    public void dispatchEvent(E event) {
+    public final void dispatchEvent(E event) {
         sequenceActionRunner.schedule(() -> {
             List<I> copy = getList();
             if (copy.size() > 0) {
@@ -28,6 +28,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
                 dispatchEvent(event, listIterator);
                 handleEvent(event, listIterator);
             }
+            onEventDispatched(event);
         });
     }
 
@@ -67,6 +68,9 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
         }
         event.iteratorCache.remove(this);
         return 0;
+    }
+
+    protected void onEventDispatched(E event) {
     }
 
     @Override
