@@ -83,6 +83,9 @@ public class Test {
         System.out.println(1f * 0xdb / 0xff);
         System.out.println(String.format("%x", -60));
         System.out.println(String.format("%x", (byte) -60));
+
+        pattern = Pattern.compile("^(早上|中午|下午).+点(.+分)?在.+上?提醒我?$");
+        System.out.println(pattern.matcher("早上九点在电视提醒他").matches());
     }
 
     private static void format(String msg, Object... args) {

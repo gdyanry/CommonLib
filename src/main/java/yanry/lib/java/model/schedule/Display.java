@@ -22,12 +22,6 @@ public abstract class Display<D extends ShowData> {
         return null;
     }
 
-    public void dismiss(long delay) {
-        if (scheduler != null && scheduler.showingData.isBoundTo(this)) {
-            scheduler.showingData.getValue().dismiss(delay);
-        }
-    }
-
     protected abstract void internalDismiss();
 
     protected abstract void show(D data);
