@@ -9,6 +9,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+/**
+ * 封装并非马上需要使用的数据加载（异步加载）行为，当需要使用数据（调用{@link #get()}）的时候如果数据尚未加载完成，则会阻塞线程直至得到结果。
+ *
+ * @param <T> 加载的数据类型
+ */
 public abstract class LazyLoader<T> implements Callable<T>, Supplier<T> {
     private Future<T> future;
 

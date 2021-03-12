@@ -27,8 +27,8 @@ public class SchedulerTest {
         handler.setFormatter(formatter);
         Logger.getDefault().addHandler(handler);
 
-//        testSchedule();
-        testMonitor();
+        testSchedule();
+//        testMonitor();
     }
 
     private static void testSchedule() {
@@ -70,7 +70,7 @@ public class SchedulerTest {
         };
         Logger.getDefault().dd("start monitor.");
         TimerRunner monitored = new TimerRunner("monitored", false);
-        monitor.start(monitored, 500, 2000, 0);
+        monitor.start(monitored, 600, 1000, 0);
         monitored.schedule(new TimerTask() {
             private long sleep = 100;
 

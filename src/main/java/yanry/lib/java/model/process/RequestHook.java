@@ -43,27 +43,6 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
         }
     }
 
-    private <T> void dispatchInOrder(T requestData, LinkedList<? extends Processor<? super T, R>> remainingProcessors) {
-        Processor<? super T, R> processor = remainingProcessors.peekFirst();
-        new RequestRelay<T, R>(this, processor, getRequestRoot()) {
-            @Override
-            public T getRequestData() {
-                return requestData;
-            }
-
-            @Override
-            protected void onPass() {
-                if (RequestHook.this.isOpen() && remainingProcessors.remove(processor)) {
-                    if (remainingProcessors.size() == 0) {
-                        RequestHook.this.fail();
-                    } else {
-                        RequestHook.this.dispatchInOrder(requestData, remainingProcessors);
-                    }
-                }
-            }
-        }.process();
-    }
-
     void dispatchHit(R result) {
         processor.onHit(getRequestData(), result);
     }
@@ -79,7 +58,7 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
 
     @Override
     public <T> void redirect(T requestData, Processor<? super T, R> processor) {
-        if (requestData == null) {
+        if (requestData == null || processor == null) {
             fail();
             return;
         }
@@ -90,7 +69,7 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
             }
 
             @Override
-            protected void onPass() {
+            protected void onFail() {
                 if (RequestHook.this.isOpen()) {
                     RequestHook.this.fail();
                 }
@@ -109,22 +88,64 @@ abstract class RequestHook<D, R extends ProcessResult> implements RequestHandler
             dispatchInOrder(requestData, remainingProcessors);
         } else {
             for (Processor<? super T, R> processor : childProcessors) {
-                new RequestRelay<T, R>(this, processor, getRequestRoot()) {
-                    @Override
-                    public T getRequestData() {
-                        return requestData;
-                    }
-
-                    @Override
-                    protected void onPass() {
-                        if (RequestHook.this.isOpen() && remainingProcessors.remove(processor) && remainingProcessors.size() == 0) {
-                            // 所有子处理器均失败时触发当前处理器失败
-                            RequestHook.this.fail();
+                if (processor == null) {
+                    checkFail(remainingProcessors, null);
+                } else {
+                    new RequestRelay<T, R>(this, processor, getRequestRoot()) {
+                        @Override
+                        public T getRequestData() {
+                            return requestData;
                         }
-                    }
-                }.process();
+
+                        @Override
+                        protected void onFail() {
+                            RequestHook.this.checkFail(remainingProcessors, processor);
+                        }
+                    }.process();
+                }
             }
         }
+    }
+
+    private <T> void dispatchInOrder(T requestData, LinkedList<? extends Processor<? super T, R>> remainingProcessors) {
+        Processor<? super T, R> processor;
+        while ((processor = remainingProcessors.peekFirst()) == null) {
+            if (!checkFail(remainingProcessors, null)) {
+                return;
+            }
+        }
+        new RequestRelay<T, R>(this, processor, getRequestRoot()) {
+            @Override
+            public T getRequestData() {
+                return requestData;
+            }
+
+            @Override
+            protected void onFail() {
+                if (RequestHook.this.checkFail(remainingProcessors, getProcessor())) {
+                    RequestHook.this.dispatchInOrder(requestData, remainingProcessors);
+                }
+            }
+        }.process();
+    }
+
+    /**
+     * @param remainingProcessors
+     * @param processorToRemove
+     * @param <T>
+     * @return 是否继续
+     */
+    private <T> boolean checkFail(LinkedList<? extends Processor<? super T, R>> remainingProcessors, Processor<? super T, R> processorToRemove) {
+        if (isOpen()) {
+            remainingProcessors.remove(processorToRemove);
+            if (remainingProcessors.size() == 0) {
+                // 所有子处理器均失败时触发当前处理器失败
+                fail();
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
