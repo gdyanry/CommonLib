@@ -17,29 +17,63 @@ import java.util.concurrent.Future;
 public abstract class LazyLoader<T> implements Callable<T>, Supplier<T> {
     private Future<T> future;
 
-    public LazyLoader(ExecutorService executorService) {
-        future = executorService.submit(this);
+    public boolean startLoading(ExecutorService executorService) {
+        if (future == null) {
+            future = executorService.submit(this);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Attempts to cancel execution of this task.  This attempt will
+     * fail if the task has already completed, has already been cancelled,
+     * or could not be cancelled for some other reason.  If the task has already started,
+     * then the {@code mayInterruptIfRunning} parameter determines
+     * whether the thread executing this task should be interrupted in
+     * an attempt to stop the task.
+     *
+     * @param mayInterruptIfRunning {@code true} if the thread executing this
+     *                              task should be interrupted; otherwise, in-progress tasks are allowed
+     *                              to complete
+     * @return {@code false} if the task could not be cancelled,
+     * typically because it has already completed normally;
+     * {@code true} otherwise
+     */
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        if (future != null) {
+            return future.cancel(mayInterruptIfRunning);
+        }
+        return false;
     }
 
     @Override
     public T get() {
-        try {
-            if (future.isDone()) {
-                return future.get();
-            } else {
-                long start = System.currentTimeMillis();
-                T target = future.get();
-                Logger.getDefault().concat(LogLevel.Debug, "lazy loader waits ", System.currentTimeMillis() - start, "ms: ", target);
-                return target;
-            }
-        } catch (ExecutionException e) {
-            Logger.getDefault().catches(e);
-        } catch (InterruptedException e) {
-            Logger.getDefault().catches(e);
+        if (future == null) {
+            Logger.getDefault().ww("lazy loader is not started yet: ", this);
+        } else {
             try {
-                return call();
-            } catch (Exception ex) {
-                Logger.getDefault().catches(ex);
+                if (future.isDone()) {
+                    return future.get();
+                } else {
+                    long start = System.currentTimeMillis();
+                    T target = future.get();
+                    Logger.getDefault().concat(LogLevel.Debug, "lazy loader waits ", System.currentTimeMillis() - start, "ms: ", target);
+                    return target;
+                }
+            } catch (ExecutionException e) {
+                Logger.getDefault().catches(e);
+            } catch (InterruptedException e) {
+                Logger.getDefault().catches(e);
+                if (future.isCancelled()) {
+                    Logger.getDefault().dd("lazy loader is cancel: ", this);
+                } else {
+                    try {
+                        return call();
+                    } catch (Exception ex) {
+                        Logger.getDefault().catches(ex);
+                    }
+                }
             }
         }
         return null;
