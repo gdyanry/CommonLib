@@ -6,7 +6,10 @@ public abstract class ReusableDisplay<D extends ShowData, V> extends SyncDisplay
 
     @Override
     protected final V showData(V currentView, D data) {
-        if (currentView == null || !enableReuse()) {
+        if (currentView == null) {
+            currentView = createView(data);
+        } else if (!enableReuse()) {
+            dismiss(currentView);
             currentView = createView(data);
         }
         if (currentView != null) {
