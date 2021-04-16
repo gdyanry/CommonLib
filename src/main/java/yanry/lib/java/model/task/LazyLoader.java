@@ -1,5 +1,6 @@
 package yanry.lib.java.model.task;
 
+import yanry.lib.java.interfaces.Supplier;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.*;
  *
  * @param <T> 加载的数据类型
  */
-public abstract class LazyLoader<T> implements Callable<T>, Future<T> {
+public abstract class LazyLoader<T> implements Callable<T>, Future<T>, Supplier<T> {
     private Future<T> future;
 
     public boolean startLoading(ExecutorService executorService) {
