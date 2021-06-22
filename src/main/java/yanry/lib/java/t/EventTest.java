@@ -13,14 +13,34 @@ public class EventTest {
         EventDispatcher<Event, EventInterceptor<Event>> topDispatcher = new EventDispatcher<Event, EventInterceptor<Event>>() {
             @Override
             public String toString() {
-                return "top";
+                return "1";
             }
         };
+
+        topDispatcher.register(new EventInterceptor<Event>() {
+
+            @Override
+            public int onDispatchEvent(Event event) {
+                Logger.getDefault().ii(this, " onDispatchEvent>: ", event.getCurrentLevel());
+                return 0;
+            }
+
+            @Override
+            public int onEvent(Event event) {
+                Logger.getDefault().ww(this, " onEvent: ", event.getCurrentLevel());
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return "2A";
+            }
+        });
 
         EventDispatcher<Event, EventInterceptor<Event>> subDispatcher = new EventDispatcher<Event, EventInterceptor<Event>>() {
             @Override
             public String toString() {
-                return "sub";
+                return "2B";
             }
         };
         subDispatcher.register(new EventInterceptor<Event>() {
@@ -31,7 +51,7 @@ public class EventTest {
                 if (++count < 3) {
                     Logger.getDefault().ii(this, " onDispatchEvent<: ", event.getCurrentLevel());
                     Event secondEvent = new Event() {
-                        private String name = String.valueOf((char) ('A' + count));
+                        private String name = String.valueOf((char) ('a' + count));
 
                         @Override
                         public String toString() {
@@ -54,7 +74,7 @@ public class EventTest {
 
             @Override
             public String toString() {
-                return "subInterceptor";
+                return "3";
             }
         });
         topDispatcher.register(subDispatcher);
@@ -74,13 +94,13 @@ public class EventTest {
 
             @Override
             public String toString() {
-                return "topInterceptor";
+                return "2C";
             }
         });
         Event firstEvent = new Event() {
             @Override
             public String toString() {
-                return "A";
+                return "a";
             }
         };
         firstEvent.configLogger(Logger.getDefault(), LogLevel.Debug);

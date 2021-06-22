@@ -8,6 +8,7 @@ import yanry.lib.java.util.IOUtil;
 import yanry.lib.java.util.StringUtil;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
@@ -85,7 +86,9 @@ public class Test {
         System.out.println(String.format("%x", (byte) -60));
 
         pattern = Pattern.compile("^(早上|中午|下午).+点(.+分)?在.+上?提醒我?$");
-        System.out.println(pattern.matcher("早上九点在电视提醒他").matches());
+        concat(pattern.matcher("早上九点在电视提醒他").matches());
+
+        concat(InetAddress.getByName("control.tclai.top"));
     }
 
     private static void format(String msg, Object... args) {

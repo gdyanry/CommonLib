@@ -41,16 +41,16 @@ public class GeTuiPush {
         Map<String, InputStream> certificates = new HashMap<>();
         certificates.put("tclking", new FileInputStream("f:/tclking_cert/tclking.crt"));
         Https.initSSL(null, certificates, null, null);
-        pushWeatherAlarm(true, true);
+        pushWeatherAlarm(true, false);
 //        pushAiUpdate();
 //        getTaskId(10324);
-        System.out.println(getAlias("115051789"));
+//        System.out.println(getAlias("204168534"));
     }
 
     private static void pushWeatherAlarm(boolean isDebug, boolean byRegion) throws IOException {
         String dataToPush = "{\"signName\":\"腾讯天气\",\"templateCode\":\"10025\",\"param\":{\"locale\":\"深圳市南山区\",\"date\":\"%s\",\"type\":\"台风\",\"level\":\"橙色\"},\"region\":\"%s\",\"did\":\"%s\",\"custom\":null}";
         String region = byRegion ? "440305" : "";
-        String deviceId = byRegion ? "" : "547294416";
+        String deviceId = byRegion ? "" : "557705183";
         dataToPush = String.format(dataToPush, new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), region, deviceId);
         String appId = "x0oTtOgtzOPM1dRui3pLIsts4nC0CUjX";
         String secret = "qGai6LBHLE6idnwhuAMpoKC6UDavmboh";

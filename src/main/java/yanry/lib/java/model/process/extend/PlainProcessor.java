@@ -1,11 +1,11 @@
 package yanry.lib.java.model.process.extend;
 
-import java.util.concurrent.Executor;
-
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.process.ProcessResult;
 import yanry.lib.java.model.process.Processor;
 import yanry.lib.java.model.process.RequestHandler;
+
+import java.util.concurrent.Executor;
 
 /**
  * 朴素处理器，该类主要是将{@link Processor#process(RequestHandler)}中提交结果的异步方式改为同步方式，使用起来更简单直观。
@@ -36,27 +36,27 @@ public abstract class PlainProcessor<D, R extends ProcessResult> implements Proc
     protected abstract R process(D requestData) throws Exception;
 
     @Override
-    public final void process(RequestHandler<? extends D, R> hook) {
+    public final void process(RequestHandler<? extends D, R> request) {
         Executor executor = getExecutor();
         if (executor == null) {
-            doProcess(hook);
+            doProcess(request);
         } else {
-            executor.execute(() -> doProcess(hook));
+            executor.execute(() -> doProcess(request));
         }
     }
 
-    private void doProcess(RequestHandler<? extends D, R> hook) {
+    private void doProcess(RequestHandler<? extends D, R> request) {
         R result = null;
         try {
-            result = process(hook.getRequestData());
+            result = process(request.getRequestData());
         } catch (Throwable e) {
             Logger.getDefault().catches(e);
         } finally {
-            if (hook.isOpen()) {
+            if (request.isOpen()) {
                 if (result == null) {
-                    hook.fail();
+                    request.fail();
                 } else {
-                    hook.hit(result);
+                    request.hit(result);
                 }
             }
         }

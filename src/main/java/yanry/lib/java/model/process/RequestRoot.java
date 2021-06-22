@@ -88,6 +88,7 @@ final class RequestRoot<D, R extends ProcessResult> extends RequestHook<D, R> {
                 logger.concat(LogLevel.Debug, this, isTimeout ? " timeout: " : " fail: ", System.currentTimeMillis() - getStartTime(), "ms");
             }
             clearTimeout();
+            getProcessor().onPass(getRequestData(), isTimeout);
             if (completeCallback != null) {
                 completeCallback.onFail(isTimeout);
             }
