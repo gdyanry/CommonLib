@@ -1,0 +1,5 @@
+/build
+/.idea
+/.gradle
+CommonLib.iml
+/out

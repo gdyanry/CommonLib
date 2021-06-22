@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.github.gdyanry'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
