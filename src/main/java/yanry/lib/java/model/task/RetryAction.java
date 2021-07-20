@@ -66,8 +66,14 @@ public abstract class RetryAction implements Runnable {
     public final void run() {
         if (remainingTry-- > 0) {
             long retryDelay = tryAction(remainingTry);
-            if (retryDelay >= 0 && remainingTry > 0) {
-                scheduleRunner.schedule(schedule, retryDelay);
+            if (retryDelay >= 0) {
+                if (remainingTry > 0) {
+                    scheduleRunner.schedule(schedule, retryDelay);
+                } else {
+                    onFail();
+                }
+            } else {
+                remainingTry = 0;
             }
         } else {
             onFail();
