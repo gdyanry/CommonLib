@@ -1,11 +1,13 @@
 package yanry.lib.java.model;
 
+import yanry.lib.java.model.watch.ValueHolderImpl;
+import yanry.lib.java.util.BitUtil;
+
 /**
  * Created by yanry on 2019/12/15.
  */
-public class FlagsHolder {
+public class FlagsHolder extends ValueHolderImpl<Integer> {
     private boolean indexBase;
-    private int flags;
 
     public FlagsHolder(boolean indexBase) {
         this.indexBase = indexBase;
@@ -15,46 +17,17 @@ public class FlagsHolder {
         return indexBase;
     }
 
-    public int getFlags() {
-        return flags;
-    }
-
-    public void setFlags(int flags) {
-        this.flags = flags;
-    }
-
     public boolean hasFlag(int value) {
-        if (indexBase) {
-            if (value >= 0 && value < 32) {
-                value = 1 << value;
-            } else {
-                return false;
-            }
-        }
-        return (flags & value) == value;
+        return BitUtil.hasFlag(getValue(), value, indexBase);
     }
 
     public FlagsHolder addFlag(int value) {
-        if (indexBase) {
-            if (value >= 0 && value < 32) {
-                value = 1 << value;
-            } else {
-                throw new IllegalArgumentException("invalid index value: " + value);
-            }
-        }
-        flags |= value;
+        setValue(BitUtil.addFlag(getValue(), value, indexBase));
         return this;
     }
 
     public FlagsHolder removeFlag(int value) {
-        if (indexBase) {
-            if (value >= 0 && value < 32) {
-                value = 1 << value;
-            } else {
-                throw new IllegalArgumentException("invalid index value: " + value);
-            }
-        }
-        flags &= ~value;
+        setValue(BitUtil.removeFlag(getValue(), value, indexBase));
         return this;
     }
 }
