@@ -10,6 +10,7 @@ public class FlagsHolder extends ValueHolderImpl<Integer> {
     private boolean indexBase;
 
     public FlagsHolder(boolean indexBase) {
+        super(0);
         this.indexBase = indexBase;
     }
 
