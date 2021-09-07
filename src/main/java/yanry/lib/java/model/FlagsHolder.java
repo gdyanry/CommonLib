@@ -1,16 +1,15 @@
 package yanry.lib.java.model;
 
-import yanry.lib.java.model.watch.ValueHolderImpl;
+import yanry.lib.java.model.watch.IntHolderImpl;
 import yanry.lib.java.util.BitUtil;
 
 /**
  * Created by yanry on 2019/12/15.
  */
-public class FlagsHolder extends ValueHolderImpl<Integer> {
+public class FlagsHolder extends IntHolderImpl {
     private boolean indexBase;
 
     public FlagsHolder(boolean indexBase) {
-        super(0);
         this.indexBase = indexBase;
     }
 

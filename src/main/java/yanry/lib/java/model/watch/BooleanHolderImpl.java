@@ -20,7 +20,7 @@ public class BooleanHolderImpl extends Registry<BooleanWatcher> implements Boole
 
     public boolean setValue(boolean value) {
         if (val.compareAndSet(!value, value)) {
-            onValueChange(value);
+            onDispatchValueChange(value);
             for (BooleanWatcher watcher : getList()) {
                 watcher.onValueChange(value);
             }
@@ -29,7 +29,7 @@ public class BooleanHolderImpl extends Registry<BooleanWatcher> implements Boole
         return false;
     }
 
-    protected void onValueChange(boolean to) {
+    protected void onDispatchValueChange(boolean to) {
     }
 
     @Override

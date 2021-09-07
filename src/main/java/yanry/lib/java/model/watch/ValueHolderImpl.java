@@ -1,8 +1,8 @@
 package yanry.lib.java.model.watch;
 
-import java.util.Objects;
-
 import yanry.lib.java.model.Registry;
+
+import java.util.Objects;
 
 /**
  * Created by yanry on 2020/3/2.
@@ -25,7 +25,7 @@ public class ValueHolderImpl<V> extends Registry<ValueWatcher<V>> implements Val
         V oldValue = this.value;
         if (!Objects.equals(this.value, value)) {
             this.value = value;
-            onValueChange(value, oldValue);
+            onDispatchValueChange(value, oldValue);
             for (ValueWatcher<V> watcher : getList()) {
                 watcher.onValueChange(value, oldValue);
             }
@@ -33,7 +33,7 @@ public class ValueHolderImpl<V> extends Registry<ValueWatcher<V>> implements Val
         return oldValue;
     }
 
-    protected void onValueChange(V to, V from) {
+    protected void onDispatchValueChange(V to, V from) {
     }
 
     @Override
