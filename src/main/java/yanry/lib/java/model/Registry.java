@@ -1,44 +1,77 @@
 package yanry.lib.java.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by yanry on 2020/5/8.
  */
 public class Registry<T> {
-    private CopyOnWriteArrayList<T> registrants;
+    private List<T> registrantList = Collections.EMPTY_LIST;
+    private Comparator<T> comparator;
 
-    public boolean register(T registrant) {
-        if (registrant == null) {
-            return false;
-        }
-        if (registrants == null) {
-            synchronized (this) {
-                if (registrants == null) {
-                    registrants = new CopyOnWriteArrayList<>();
-                    registrants.add(registrant);
-                    return true;
-                }
-            }
-        }
-        if (registrants.contains(registrant)) {
-            return false;
-        }
-        return registrants.add(registrant);
+    public void setComparator(Comparator<T> comparator) {
+        this.comparator = comparator;
     }
 
-    public boolean unregister(T registrant) {
-        return registrants != null && registrants.remove(registrant);
+    public boolean register(T... registrants) {
+        if (registrants == null || registrants.length == 0) {
+            return false;
+        }
+        synchronized (this) {
+            ArrayList<T> newList = new ArrayList<>(registrantList.size() + registrants.length);
+            if (registrantList.size() > 0) {
+                newList.addAll(registrantList);
+            }
+            boolean changed = false;
+            for (T registrant : registrants) {
+                if (registrant != null && !newList.contains(registrant)) {
+                    newList.add(registrant);
+                    changed = true;
+                }
+            }
+            if (changed) {
+                if (comparator != null) {
+                    newList.sort(comparator);
+                }
+                registrantList = Collections.unmodifiableList(newList);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean unregister(T... registrants) {
+        if (registrants == null || registrants.length == 0) {
+            return false;
+        }
+        synchronized (this) {
+            if (registrantList.size() == 0) {
+                return false;
+            }
+            ArrayList<T> newList = new ArrayList<>(registrantList);
+            boolean changed = false;
+            for (T registrant : registrants) {
+                if (registrant != null && newList.remove(registrant)) {
+                    changed = true;
+                }
+            }
+            if (changed) {
+                registrantList = Collections.unmodifiableList(newList);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * 获取内部List，不为null
+     * 获取内部List，不为null且不可修改
      *
      * @return
      */
     public List<T> getList() {
-        return registrants == null ? Collections.EMPTY_LIST : registrants;
+        return registrantList;
     }
 }
