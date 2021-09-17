@@ -19,6 +19,7 @@ public final class Singletons {
         Object instance = container.get(type);
         if (instance == null) {
             synchronized (type) {
+                instance = container.get(type);
                 if (instance == null) {
                     try {
                         instance = type.getDeclaredConstructor().newInstance();

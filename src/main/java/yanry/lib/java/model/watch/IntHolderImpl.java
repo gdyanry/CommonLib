@@ -2,10 +2,11 @@ package yanry.lib.java.model.watch;
 
 import yanry.lib.java.model.Registry;
 
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class IntHolderImpl extends Registry<IntWatcher> implements IntHolder {
     private int value;
+    private AtomicInteger valueHolder = new AtomicInteger();
 
     public IntHolderImpl() {
     }
@@ -16,7 +17,7 @@ public class IntHolderImpl extends Registry<IntWatcher> implements IntHolder {
 
     public int setValue(int value) {
         int oldValue = this.value;
-        if (!Objects.equals(this.value, value)) {
+        if (oldValue != value) {
             this.value = value;
             onDispatchValueChange(value, oldValue);
             for (IntWatcher watcher : getList()) {

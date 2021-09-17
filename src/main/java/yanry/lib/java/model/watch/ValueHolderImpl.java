@@ -23,7 +23,7 @@ public class ValueHolderImpl<V> extends Registry<ValueWatcher<V>> implements Val
      */
     public V setValue(V value) {
         V oldValue = this.value;
-        if (!Objects.equals(this.value, value)) {
+        if (!Objects.equals(oldValue, value)) {
             this.value = value;
             onDispatchValueChange(value, oldValue);
             for (ValueWatcher<V> watcher : getList()) {

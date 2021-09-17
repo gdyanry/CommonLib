@@ -44,7 +44,12 @@ public interface Processor<D, R extends ProcessResult> {
         return new Processor<T, R>() {
             @Override
             public void process(RequestHandler<? extends T, R> request) {
-                request.redirect(dataTransformer.transform(request.getRequestData()), Processor.this);
+                D transformedData = dataTransformer.transform(request.getRequestData());
+                if (transformedData == null) {
+                    request.fail();
+                } else {
+                    request.redirect(transformedData, Processor.this);
+                }
             }
 
             @Override
