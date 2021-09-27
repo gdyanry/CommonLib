@@ -2,11 +2,8 @@ package yanry.lib.java.model.watch;
 
 import yanry.lib.java.model.Registry;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class IntHolderImpl extends Registry<IntWatcher> implements IntHolder {
     private int value;
-    private AtomicInteger valueHolder = new AtomicInteger();
 
     public IntHolderImpl() {
     }

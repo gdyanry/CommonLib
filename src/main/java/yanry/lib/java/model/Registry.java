@@ -34,7 +34,7 @@ public class Registry<T> {
             }
             if (changed) {
                 if (comparator != null) {
-                    newList.sort(comparator);
+                    Collections.sort(newList, comparator);
                 }
                 registrantList = Collections.unmodifiableList(newList);
                 return true;
