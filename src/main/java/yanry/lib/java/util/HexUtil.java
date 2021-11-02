@@ -1,6 +1,9 @@
 package yanry.lib.java.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author yanry
@@ -14,7 +17,7 @@ public class HexUtil {
      *
      * @param joint 连接字符串
      * @param bytes 待转化字节数组
-     * @return
+     * @return result hex text
      */
     public static String bytesToHex(String joint, byte... bytes) {
         if (bytes == null || bytes.length == 0) {
@@ -25,15 +28,18 @@ public class HexUtil {
             if (joint != null && joint.length() > 0 && sb.length() > 0) {
                 sb.append(joint);
             }
-            sb.append(byteToHex(b));
+            append(sb, b);
         }
         return sb.toString();
     }
 
-    private static String byteToHex(byte b) {
+    private static void append(StringBuilder sb, byte b) {
         String strHex = Integer.toHexString(b & 0xFF);
-        // 每个字节由两个字符表示，位数不够，高位补0
-        return (strHex.length() == 1) ? "0" + strHex : strHex;
+        if (strHex.length() == 1) {
+            // 每个字节由两个字符表示，位数不够，高位补0
+            sb.append('0');
+        }
+        sb.append(strHex);
     }
 
     public static String charsetHex(String input, String charset, int width)
@@ -49,7 +55,7 @@ public class HexUtil {
                 if (needSpace) {
                     sb.append("   ");
                 }
-                sb.append(byteToHex(b));
+                append(sb, b);
                 needSpace = true;
                 if (++counter % width == 0) {
                     sb.append('\n');
@@ -59,10 +65,11 @@ public class HexUtil {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(String.format("%02x", Math.round(0xff * 0.98f)));
-        byte b = Byte.MIN_VALUE;
-        System.out.println(Integer.toHexString(b));
-        System.out.println(Integer.toHexString(b & 0xFF));
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+        System.out.printf("%02x%n", Math.round(0xff * 0.98f));
+        System.out.println(FileUtil.getMD5(new File("C:\\Users\\56916\\Downloads\\ySK9GRBpt_D4uHyYKsz3")));
+
+//        System.out.println(Integer.toHexString(b));
+//        System.out.println(Integer.toHexString(b & 0xFF));
     }
 }

@@ -1,11 +1,11 @@
 package yanry.lib.java.util;
 
+import yanry.lib.java.interfaces.Function;
 import yanry.lib.java.model.log.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -27,7 +27,8 @@ public class FileUtil {
             md.update(buffer, 0, len);
         }
         fis.close();
-        return new BigInteger(1, md.digest()).toString(16);
+        // 使用“new BigInteger(1, md.digest()).toString(16)”会丢失结果前面的0！
+        return HexUtil.bytesToHex(null, md.digest());
     }
 
     public static long getDirSize(File rootDir, boolean clear, Set<File> exclusive) {
@@ -50,16 +51,19 @@ public class FileUtil {
         return size;
     }
 
-    public static void copyAndRename(File srcDir, File destDir, RenameFunction function) throws IOException {
-        HashMap<String, File> map = new HashMap<>();
-        for (File file : srcDir.listFiles()) {
-            String renameTo = function.rename(file);
-            if (renameTo != null) {
-                File conflictFile = map.put(renameTo, file);
-                if (conflictFile == null) {
-                    IOUtil.copyFile(file, new File(destDir, renameTo));
-                } else {
-                    Logger.getDefault().w("%s has conflict mapping: %s, %s", renameTo, conflictFile, file);
+    public static void copyAndRename(File srcDir, File destDir, Function<File, String> function) throws IOException {
+        File[] files = srcDir.listFiles();
+        if (files != null) {
+            HashMap<String, File> map = new HashMap<>();
+            for (File file : files) {
+                String renameTo = function.apply(file);
+                if (renameTo != null) {
+                    File conflictFile = map.put(renameTo, file);
+                    if (conflictFile == null) {
+                        IOUtil.copyFile(file, new File(destDir, renameTo));
+                    } else {
+                        Logger.getDefault().w("%s has conflict mapping: %s, %s", renameTo, conflictFile, file);
+                    }
                 }
             }
         }
@@ -77,13 +81,5 @@ public class FileUtil {
             }
             return null;
         });
-    }
-
-    public interface RenameFunction {
-        /**
-         * @param file
-         * @return return null means abort rename action.
-         */
-        String rename(File file);
     }
 }
