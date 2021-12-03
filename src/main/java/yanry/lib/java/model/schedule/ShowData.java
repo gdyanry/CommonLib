@@ -172,6 +172,7 @@ public class ShowData extends FlagsHolder implements Runnable {
             if (scheduler.manager.logger != null) {
                 scheduler.manager.logger.vv(ShowData.this, " state change: ", from, " -> ", to);
             }
+            onStateChange(to, from);
         }
     }
 }
