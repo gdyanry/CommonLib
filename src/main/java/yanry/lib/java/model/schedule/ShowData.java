@@ -152,7 +152,9 @@ public class ShowData extends FlagsHolder implements Runnable {
                         scheduler.manager.queue.remove(ShowData.this);
                         break;
                     default:
-                        scheduler.manager.logger.ww("quit dismiss for invalid state ", stateValue, ": ", ShowData.this);
+                        if (scheduler.manager.logger != null) {
+                            scheduler.manager.logger.ww("quit dismiss for invalid state ", stateValue, ": ", ShowData.this);
+                        }
                         break;
                 }
             }
@@ -167,7 +169,9 @@ public class ShowData extends FlagsHolder implements Runnable {
     private class StateHolder extends IntHolderImpl {
         @Override
         protected void onDispatchValueChange(int to, int from) {
-            scheduler.manager.logger.vv(ShowData.this, " state change: ", from, " -> ", to);
+            if (scheduler.manager.logger != null) {
+                scheduler.manager.logger.vv(ShowData.this, " state change: ", from, " -> ", to);
+            }
         }
     }
 }
