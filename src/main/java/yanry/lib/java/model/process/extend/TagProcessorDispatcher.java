@@ -1,13 +1,14 @@
 package yanry.lib.java.model.process.extend;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
+import yanry.lib.java.model.Registry;
 import yanry.lib.java.model.process.ProcessResult;
 import yanry.lib.java.model.process.Processor;
 import yanry.lib.java.model.process.RequestHandler;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 根据请求数据的标签值快速查找子处理器的处理器分发器。
@@ -18,54 +19,56 @@ import yanry.lib.java.model.process.RequestHandler;
  * @param <R> type of process result.
  * @param <T> type of tag.
  */
-public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> extends HashMap<T, LinkedList<Processor<? super D, R>>> implements Processor<D, R> {
-    private boolean stackLike;
+public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> implements Processor<D, R> {
+    private HashMap<T, Registry<Processor<? super D, R>>> processorHolder = new HashMap<>();
+    private Comparator<Processor<? super D, R>> comparator;
 
     /**
-     * @param stackLike 标签对应的多个处理节点是否按栈操作顺序进行处理，为true时后添加的节点优先执行，为false时优先执行先添加的节点。
+     * 设置排序比较器，设置后再调用addChildProcessor()时生效。
+     *
+     * @param comparator
      */
-    public TagProcessorDispatcher(boolean stackLike) {
-        this.stackLike = stackLike;
+    public void setComparator(Comparator<Processor<? super D, R>> comparator) {
+        this.comparator = comparator;
+        for (Registry<Processor<? super D, R>> registry : processorHolder.values()) {
+            registry.setComparator(comparator);
+        }
     }
 
-    /**
-     * 添加子处理器。
-     *
-     * @param tag       子处理器对应的标签值，若为null则表示通用处理器。
-     * @param processor
-     */
-    public void addChildProcessor(T tag, Processor<? super D, R> processor) {
-        LinkedList<Processor<? super D, R>> processors = get(tag);
-        if (processors == null) {
-            processors = new LinkedList<>();
-            put(tag, processors);
+    public Registry<Processor<? super D, R>> getProcessorRegistry(T tag) {
+        Registry<Processor<? super D, R>> registry = processorHolder.get(tag);
+        if (registry == null) {
+            synchronized (tag == null ? this : tag) {
+                registry = processorHolder.get(tag);
+                if (registry == null) {
+                    registry = new Registry<>();
+                    registry.setComparator(comparator);
+                    processorHolder.put(tag, registry);
+                }
+            }
         }
-        if (stackLike) {
-            processors.addFirst(processor);
-        } else {
-            processors.addLast(processor);
-        }
+        return registry;
     }
 
     /**
      * 添加子处理器并映射到多个标签。
      *
      * @param processor
-     * @param tags      子处理器对应的标签值。
+     * @param tags      子处理器对应的标签列表。
      */
     public void addChildProcessor(Processor<? super D, R> processor, T... tags) {
         if (tags == null || tags.length == 0) {
-            addChildProcessor(null, processor);
+            getProcessorRegistry(null).register(processor);
         } else {
             for (T tag : tags) {
-                addChildProcessor(tag, processor);
+                getProcessorRegistry(tag).register(processor);
             }
         }
     }
 
     public void removeChildProcessor(Processor<? super D, R> processor) {
-        for (LinkedList<Processor<? super D, R>> processors : values()) {
-            processors.remove(processor);
+        for (Registry<Processor<? super D, R>> registry : processorHolder.values()) {
+            registry.unregister(processor);
         }
     }
 
@@ -74,11 +77,13 @@ public abstract class TagProcessorDispatcher<D, R extends ProcessResult, T> exte
     @Override
     public void process(RequestHandler<? extends D, R> request) {
         T tag = getTag(request.getRequestData());
-        LinkedList<Processor<? super D, R>> processors = get(tag);
+        Registry<Processor<? super D, R>> registry = processorHolder.get(tag);
+        List<Processor<? super D, R>> processors = registry == null ? null : registry.getList();
         if (tag == null) {
             dispatch(request, processors);
         } else {
-            LinkedList<Processor<? super D, R>> commonProcessors = get(null);
+            Registry<Processor<? super D, R>> defaultRegistry = processorHolder.get(null);
+            List<Processor<? super D, R>> commonProcessors = defaultRegistry == null ? null : defaultRegistry.getList();
             if (commonProcessors == null) {
                 dispatch(request, processors);
             } else if (processors == null) {

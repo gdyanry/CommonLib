@@ -52,7 +52,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dequeue by scheduler cancel: ", next);
                         }
-                        next.setState(ShowData.STATE_DEQUEUE);
+                        next.stateHolder.setValue(ShowData.STATE_DEQUEUE);
                         iterator.remove();
                     }
                 }
@@ -101,6 +101,12 @@ public class Scheduler {
     }
 
     public <D extends ShowData> void show(D data, Class<? extends Display<? extends D>> displayType) {
+        if (data.scheduler != null && data.scheduler != this) {
+            manager.logger.ww("data has been shown by another scheduler: ", data);
+            return;
+        }
+        data.scheduler = this;
+        data.display = getDisplay(displayType);
         new ScheduleRunnable(manager) {
             @Override
             protected void doRun() {
@@ -113,8 +119,6 @@ public class Scheduler {
                 if (data.getState().getValue() == ShowData.STATE_ENQUEUE && manager.queue.remove(data) && manager.logger != null) {
                     manager.logger.dd("remove data from queue to schedule show: ", data);
                 }
-                data.scheduler = Scheduler.this;
-                data.display = getDisplay(displayType);
                 // 根据request的需要清理队列
                 Iterator<ShowData> it = manager.queue.iterator();
                 while (it.hasNext()) {
@@ -123,7 +127,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dequeue by expelled: ", next);
                         }
-                        next.setState(ShowData.STATE_DEQUEUE);
+                        next.stateHolder.setValue(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
@@ -147,7 +151,7 @@ public class Scheduler {
                         if (manager.logger != null) {
                             manager.logger.vv("dismiss by expelled: ", showingData);
                         }
-                        showingData.setState(ShowData.STATE_DISMISS);
+                        showingData.stateHolder.setValue(ShowData.STATE_DISMISS);
                         if (data.display != showingData.display) {
                             displaysToDismisses.add(showingData.display);
                         }
@@ -165,14 +169,14 @@ public class Scheduler {
                                 manager.logger.vv("insert head: ", data);
                             }
                             manager.queue.addFirst(data);
-                            data.setState(ShowData.STATE_ENQUEUE);
+                            data.stateHolder.setValue(ShowData.STATE_ENQUEUE);
                             break;
                         case ShowData.STRATEGY_APPEND_TAIL:
                             if (manager.logger != null) {
                                 manager.logger.vv("append tail: ", data);
                             }
                             manager.queue.addLast(data);
-                            data.setState(ShowData.STATE_ENQUEUE);
+                            data.stateHolder.setValue(ShowData.STATE_ENQUEUE);
                             break;
                     }
                 }
@@ -201,7 +205,7 @@ public class Scheduler {
             if (manager.logger != null) {
                 manager.logger.vv("dismiss by cancel: ", currentData);
             }
-            currentData.setState(ShowData.STATE_DISMISS);
+            currentData.stateHolder.setValue(ShowData.STATE_DISMISS);
             if (displaysToDismisses == null) {
                 currentData.display.internalDismiss();
             } else {

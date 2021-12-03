@@ -63,37 +63,22 @@ public class ShowData extends FlagsHolder implements Runnable {
     Display display;
     int priority;
     int strategy;
-    private IntHolderImpl state = new IntHolderImpl();
+    IntHolderImpl stateHolder = new StateHolder();
 
     public ShowData() {
         super(false);
     }
 
     public IntHolderImpl getState() {
-        return state;
-    }
-
-    int setState(int state) {
-        Integer previous = this.state.setValue(state);
-        if (previous != state) {
-            onStateChange(state, previous);
-        }
-        return previous;
+        return stateHolder;
     }
 
     public void dismiss(long delay) {
-        // 此处scheduler.showingData==this不能用state==STATE_SHOWING替代，因为state是在show完成之后才更新，而实际使用有可能会在show的过程中调用dismiss。
-        if (scheduler != null && scheduler.showingData.getValue() == this) {
+        if (scheduler != null) {
             if (delay > 0) {
                 scheduler.manager.runner.schedule(this, delay);
             } else {
-                new ScheduleRunnable(scheduler.manager) {
-                    @Override
-                    protected void doRun() {
-                        scheduler.manager.runner.cancel(ShowData.this);
-                        doDismiss();
-                    }
-                }.start("dismiss by manual: ", ShowData.this);
+                dismiss(false);
             }
         }
     }
@@ -131,7 +116,7 @@ public class ShowData extends FlagsHolder implements Runnable {
     }
 
     public void cancelDismiss() {
-        if (scheduler != null && scheduler.showingData.getValue() == this) {
+        if (scheduler != null) {
             scheduler.manager.runner.cancel(this);
         }
     }
@@ -145,32 +130,44 @@ public class ShowData extends FlagsHolder implements Runnable {
 
     @Override
     public final void run() {
+        dismiss(true);
+    }
+
+    private void dismiss(boolean isTimeout) {
         new ScheduleRunnable(scheduler.manager) {
             @Override
             protected void doRun() {
                 scheduler.manager.runner.cancel(ShowData.this);
-                doDismiss();
+                int stateValue = stateHolder.getValue();
+                switch (stateValue) {
+                    case STATE_SHOWING:
+                        scheduler.showingData.setValue(null);
+                        stateHolder.setValue(STATE_DISMISS);
+                        HashSet<Display> displaysToDismisses = new HashSet<>();
+                        displaysToDismisses.add(display);
+                        scheduler.manager.rebalance(null, displaysToDismisses);
+                        break;
+                    case STATE_ENQUEUE:
+                        stateHolder.setValue(STATE_DEQUEUE);
+                        scheduler.manager.queue.remove(ShowData.this);
+                        break;
+                    default:
+                        scheduler.manager.logger.ww("quit dismiss for invalid state ", stateValue, ": ", ShowData.this);
+                        break;
+                }
             }
-        }.start("dismiss by timeout: ", ShowData.this);
-    }
-
-    private void doDismiss() {
-        if (scheduler != null) {
-            if (scheduler.showingData.getValue() == this) {
-                scheduler.showingData.setValue(null);
-                setState(STATE_DISMISS);
-                HashSet<Display> displaysToDismisses = new HashSet<>();
-                displaysToDismisses.add(display);
-                scheduler.manager.rebalance(null, displaysToDismisses);
-            } else {
-                setState(STATE_DEQUEUE);
-                scheduler.manager.queue.remove(this);
-            }
-        }
+        }.start("dismiss by ", isTimeout ? "timeout: " : "manual: ", this);
     }
 
     @Override
     public String toString() {
         return extra == null ? super.toString() : extra.toString();
+    }
+
+    private class StateHolder extends IntHolderImpl {
+        @Override
+        protected void onDispatchValueChange(int to, int from) {
+            scheduler.manager.logger.vv(ShowData.this, " state change: ", from, " -> ", to);
+        }
     }
 }

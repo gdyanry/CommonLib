@@ -78,7 +78,7 @@ public class SchedulerManager {
                     if (logger != null) {
                         logger.vv("dequeue by all cancel: ", data);
                     }
-                    data.setState(ShowData.STATE_DEQUEUE);
+                    data.stateHolder.setValue(ShowData.STATE_DEQUEUE);
                 }
                 queue.clear();
                 if (dismissCurrent && schedulers.size() > 0) {
@@ -116,7 +116,7 @@ public class SchedulerManager {
                         if (logger != null) {
                             logger.vv("dequeue by tag cancel: ", data);
                         }
-                        data.setState(ShowData.STATE_DEQUEUE);
+                        data.stateHolder.setValue(ShowData.STATE_DEQUEUE);
                         it.remove();
                     }
                 }
@@ -178,7 +178,7 @@ public class SchedulerManager {
                 if (logger != null) {
                     logger.vv("dequeue by invalid: ", next);
                 }
-                next.setState(ShowData.STATE_DEQUEUE);
+                next.stateHolder.setValue(ShowData.STATE_DEQUEUE);
                 iterator.remove();
             } else if (dataToShow.contains(next)) {
                 // 从队列中清除即将显示的数据
@@ -200,7 +200,7 @@ public class SchedulerManager {
                 logger.vv("loop and show: ", data);
             }
             data.display.show(data);
-            data.setState(ShowData.STATE_SHOWING);
+            data.stateHolder.setValue(ShowData.STATE_SHOWING);
             if (data.duration > 0) {
                 runner.schedule(data, data.duration);
             }

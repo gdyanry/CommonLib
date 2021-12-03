@@ -55,27 +55,7 @@ public abstract class LazyLoader<T> implements Callable<T>, Future<T>, Supplier<
 
     @Override
     public T get() {
-        if (future == null) {
-            logNotStarted();
-        } else if (future.isCancelled()) {
-            logCancelled();
-        } else {
-            try {
-                if (future.isDone()) {
-                    return future.get();
-                } else {
-                    long start = System.currentTimeMillis();
-                    T target = future.get();
-                    logTimeCost(start, target);
-                    return target;
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                Logger.getDefault().catches(e);
-            } catch (CancellationException e) {
-                logCancelled();
-            }
-        }
-        return null;
+        return get(-1, null);
     }
 
     @Override
@@ -90,7 +70,7 @@ public abstract class LazyLoader<T> implements Callable<T>, Future<T>, Supplier<
                     return future.get();
                 } else {
                     long start = System.currentTimeMillis();
-                    T target = future.get(timeout, unit);
+                    T target = timeout > 0 ? future.get(timeout, unit) : future.get();
                     logTimeCost(start, target);
                     return target;
                 }

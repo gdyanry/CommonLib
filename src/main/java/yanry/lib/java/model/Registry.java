@@ -12,6 +12,11 @@ public class Registry<T> {
     private List<T> registrantList = Collections.EMPTY_LIST;
     private Comparator<T> comparator;
 
+    /**
+     * 设置排序比较器，设置后再调用{@link #register(Object[])}时生效。
+     *
+     * @param comparator
+     */
     public void setComparator(Comparator<T> comparator) {
         this.comparator = comparator;
     }
@@ -67,7 +72,7 @@ public class Registry<T> {
     }
 
     /**
-     * 获取内部List，不为null且不可修改
+     * 获取内部只读List，不为null且不可修改
      *
      * @return
      */
