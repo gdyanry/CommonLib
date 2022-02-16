@@ -1,0 +1,28 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+box "宿主apk" #LightBlue
+participant 业务节点
+participant 分发节点
+participant 插件加载节点
+end box
+box "插件apk"
+participant 插件业务节点
+end box
+
+group 模块化
+业务节点 <- 分发节点: 业务流转
+end
+group 插件化
+== 初次进入 ==
+分发节点 -> 插件加载节点: 业务流转
+插件加载节点 -> 插件业务节点: 加载插件
+插件加载节点 <- 插件业务节点: 加载成功
+插件业务节点 --> 分发节点: 注册节点
+插件加载节点 -> 分发节点: 业务流转
+插件加载节点 --> 插件加载节点: 释放节点
+分发节点 -> 插件业务节点: 业务流转
+== 再次进入==
+分发节点 -> 插件业务节点: 业务流转
+end
+@enduml

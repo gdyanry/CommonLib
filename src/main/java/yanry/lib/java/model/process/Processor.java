@@ -1,9 +1,10 @@
 package yanry.lib.java.model.process;
 
-import yanry.lib.java.interfaces.DataTransformer;
+import yanry.lib.java.interfaces.Function;
 import yanry.lib.java.model.log.LogLevel;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
+import yanry.lib.java.model.uml.UmlElement;
 
 /**
  * 请求处理器接口。
@@ -23,6 +24,7 @@ public interface Processor<D, R extends ProcessResult> {
      * @param completeCallback 请求结果回调。
      * @return 当前请求对象。
      */
+    @UmlElement(note = "流程发起入口")
     default ProcessRequest<D> request(Runner runner, Logger logger, D requestData, ProcessCallback<R> completeCallback) {
         String shortName = getShortName();
         if (logger != null) {
@@ -40,11 +42,11 @@ public interface Processor<D, R extends ProcessResult> {
      * @param <T>             目标请求数据类型。
      * @return 目标处理器。
      */
-    default <T> Processor<T, R> wrap(DataTransformer<T, D> dataTransformer) {
+    default <T> Processor<T, R> wrap(Function<T, D> dataTransformer) {
         return new Processor<T, R>() {
             @Override
             public void process(RequestHandler<? extends T, R> request) {
-                D transformedData = dataTransformer.transform(request.getRequestData());
+                D transformedData = dataTransformer.apply(request.getRequestData());
                 if (transformedData == null) {
                     request.fail();
                 } else {
@@ -112,5 +114,6 @@ public interface Processor<D, R extends ProcessResult> {
      *
      * @param request 请求对象，处理请求时可用于查询请求数据和请求状态，分发处理，或者提交处理结果。
      */
+    @UmlElement(note = "节点业务逻辑接入")
     void process(RequestHandler<? extends D, R> request);
 }

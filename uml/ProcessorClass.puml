@@ -1,0 +1,81 @@
+16:48:37: Executing task ':ClassDiagramBuilder.main()'...
+
+
+> Task :compileJava
+注: 某些输入文件使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+> Task :processResources NO-SOURCE
+> Task :classes
+
+> Task :ClassDiagramBuilder.main()
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Processor<D, R extends ProcessResult> {
++getShortName():String
++getTimeout():long
++isAnonymous():boolean
++isEnable():boolean
++onHit(D, R):void
++onPass(D, boolean):void
++request(Runner, Logger, D, ProcessCallback<R>):ProcessRequest<D>
++wrap(Function<T, D>):Processor<T, R>
++{abstract}process(RequestHandler<? extends D, R>):void
+}
+note left of Processor::"request(Runner, Logger, D, ProcessCallback<R"
+流程发起入口
+end note
+note left of Processor::"process(RequestHandler<? extends D, R"
+节点业务逻辑接入
+end note
+Processor --> ProcessResult
+Processor ..> ProcessCallback
+Processor o--> ProcessRequest
+Processor o--> Processor
+Processor ..> RequestHandler
+
+class ProcessResult {
++ProcessResult()
+-processNode: ProcessNode<?, ? extends ProcessResult>
++getElapsedTime():long
++getEndTime():long
++getProcessNode():ProcessNode<?, ? extends ProcessResult>
+}
+ProcessResult *--> ProcessNode
+
+interface ProcessNode<D, R extends ProcessResult> {
++{abstract}getParent():ProcessNode<?, R>
++{abstract}getProcessor():Processor<? super D, R>
++{abstract}getRoot():ProcessNode<?, R>
++{abstract}getStartTime():long
+}
+ProcessNode --> ProcessResult
+ProcessNode o--> ProcessNode
+ProcessNode o--> Processor
+
+interface ProcessCallback<R extends ProcessResult> {
++{abstract}onFail(boolean):void
++{abstract}onSuccess(R):void
+}
+ProcessCallback --> ProcessResult
+
+interface ProcessRequest<D> {
++{abstract}fail():boolean
++{abstract}getRequestData():D
++{abstract}isOpen():boolean
+}
+
+interface RequestHandler<D, R extends ProcessResult> {
++{abstract}dispatch(T, Collection<? extends Processor<? super T, R>>, boolean):void
++{abstract}hit(R):boolean
++{abstract}redirect(T, Processor<? super T, R>):void
+}
+RequestHandler --> ProcessResult
+RequestHandler --|> ProcessRequest
+RequestHandler ..> Processor
+@enduml
+
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 executed
+16:48:38: Task execution finished ':ClassDiagramBuilder.main()'.

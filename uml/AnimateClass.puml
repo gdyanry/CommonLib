@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface ProgressInterpolator {
+    {static} float accelerateDecelerateInterpolate(float input)
+    {static} float powerInterpolate(float input, float exponent)
+    {static} float sectionInterpolate(float input, float... sections)
+
+    float getInterpolation(float input)
+}
+class FlagsHolder {
+    +boolean hasFlag(int value)
+    +FlagsHolder addFlag(int value)
+    +FlagsHolder removeFlag(int value)
+}
+class ValueAnimator {
+    +{static} int FLAG_REVERSE
+    +{static} int FLAG_FILL_END
+
+    -long period
+    -int repeatCount
+    +boolean isFinish(long elapsedTime)
+    +float getAnimatedValue(long elapsedTime, ProgressInterpolator interpolator, float... keyValues)
+}
+ValueAnimator --|> FlagsHolder
+ValueAnimator *--> ProgressInterpolator
+
+class TimeController {
+    +long getElapsedTime()
+    +boolean isPause()
+    +void setPause(boolean pause)
+    +void seekTo(long timeOffset)
+}
+abstract class AnimateSegment {
+
+}
+
+AnimateSegment --|> TimeController
+
+@enduml

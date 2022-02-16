@@ -2,7 +2,7 @@ package yanry.lib.java.model.log;
 
 import java.util.Objects;
 
-public class ConcatLogRecord extends LogRecord {
+class ConcatLogRecord extends LogRecord {
     private Object[] msgParts;
 
     public ConcatLogRecord(Object tag, LogLevel level, int encapsulationLayerCount, Object[] msgParts) {

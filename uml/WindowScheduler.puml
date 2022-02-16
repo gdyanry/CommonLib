@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+title 进程A先显示
+
+进程A -> 调度器: 请求显示
+调度器 --> 进程A: 执行显示
+
+进程B -> 调度器: 请求显示
+
+进程A -> 调度器: 通知关闭
+调度器 --> 进程B: 执行显示
+
+autonumber
+newpage 进程B先显示
+
+进程B -> 调度器: 请求显示
+调度器 --> 进程B: 执行显示
+
+进程A -> 调度器: 请求显示
+调度器 --> 进程B: 执行关闭
+调度器 --> 进程A: 执行显示
+@enduml

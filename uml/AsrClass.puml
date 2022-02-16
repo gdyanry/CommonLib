@@ -1,0 +1,75 @@
+@startuml
+'https://plantuml.com/class-diagram
+title ASR架构类图
+
+interface AsrStarter {
+    String getName();
+    String getVersion();
+    void cancel();
+    boolean isSupportLocalAsr()
+}
+interface AsrAudioDataProcessor {
+    String getName();
+    boolean onAudioDataStart(AsrConfigInfo asrConfigInfo, AsrSession asrSession, String audioEncoding, String special);
+    void onAudioData(byte[] data, int length);
+    void onSpeechStateChanged(boolean isSilent);
+    void onLocalAsr(String text);
+    void onAudioDataStop();
+}
+class AsrManager {
+    AsrSession startSession(AsrStarter asrStarter, AsrType asrType, boolean background)
+}
+class AsrSession {
+    AsrStarter starter
+    AsrAudioDataProcessor audioDataProcessor
+    ..data source..
+    boolean startAudioDataProcess(String configId, String audioEncoding, String special)
+    void dispatchSoundLocation(float degree)
+    void dispatchWakeup(String keyword, int snr)
+    void dispatchRecording(float volume)
+    void dispatchShortClick()
+    ..data processor..
+    void dispatchUserText(String text, boolean isFinal)
+    void dispatchError(String error)
+    ..business..
+    void playWakeupFeedback()
+    boolean cancel()
+}
+abstract class AsrJniWrapper {
+    protected {abstract} boolean isWakeupWord(String keyword);
+    protected {abstract} String getHandFreeText(String keyword);
+    protected {abstract} String getConfigId(byte halType, AsrManager.AsrSession asrSession);
+    protected {abstract} boolean catchUnhandledCmd(byte cmd, byte[] buf, int len);
+}
+class IflytekAsrModule
+note bottom: 讯飞so
+class XiriAsrProvider
+note bottom: 语点
+abstract class AbstractWebSocketAsrProvider {
+    protected {abstract} void connect(String url);
+    protected {abstract} void disconnect();
+    protected {abstract} boolean isConnected();
+    protected {abstract} boolean isDisconnected();
+    protected {abstract} void sendText(String text);
+}
+note bottom: 云云
+class XiriSdkDataProcessor
+note bottom: 讯飞SDK
+class BdsAsr
+note bottom: 百度so
+class CastorAsrModule
+note bottom: 智屏
+
+AsrManager ..> AsrStarter
+AsrManager ..> AsrSession
+AsrSession --> AsrStarter
+AsrSession --> AsrAudioDataProcessor
+AsrStarter <|-- AsrJniWrapper
+AsrStarter <|-- XiriAsrProvider
+AsrAudioDataProcessor <|-- XiriAsrProvider
+AsrAudioDataProcessor <|-- XiriSdkDataProcessor
+AsrAudioDataProcessor <|-- AbstractWebSocketAsrProvider
+AsrJniWrapper <|-- IflytekAsrModule
+AsrJniWrapper <|-- BdsAsr
+AsrJniWrapper <|-- CastorAsrModule
+@enduml

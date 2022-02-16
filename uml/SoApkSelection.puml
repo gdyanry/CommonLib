@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+if (语点是否已安装) then (no)
+    :so;
+    stop
+elseif (语点版本是否小于1126536) then (yes)
+    :apk;
+    stop
+elseif (/vendor/etc/yunyun.id文件是否存在) then (no)
+    :apk;
+    stop
+elseif (EnableXiriApk配置enable是否=1) then (yes)
+    :apk;
+    stop
+else (no)
+    :so;
+    stop
+
+@enduml

@@ -2,6 +2,7 @@ package yanry.lib.java.model.event;
 
 import yanry.lib.java.model.Registry;
 import yanry.lib.java.model.task.SequenceActionRunner;
+import yanry.lib.java.model.uml.UmlElement;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -20,6 +21,7 @@ public class EventDispatcher<E extends Event, I extends EventInterceptor<? super
      *
      * @param event
      */
+    @UmlElement(note = "事件分发入口")
     public final void dispatchEvent(E event) {
         sequenceActionRunner.schedule(() -> {
             List<I> copy = getList();

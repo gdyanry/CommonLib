@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+frame AsrEventDispatcher {
+    [NlpManager] -> [SoundManager]
+    [SoundManager] --> [SkinEventDispatcher]
+    component [asrEventInterceptor1] #orange
+    component [asrEventInterceptor2] #orange
+    [SkinEventDispatcher] --> [asrEventInterceptor1]
+    [asrEventInterceptor1] --> [asrEventInterceptor2]
+    frame SkinEventDispatcher {
+        [SkinManager] -> [SkinRegistry]
+        frame [SkinRegistry] {
+            component [skin1] #lightGreen
+            component [skin2] #lightGreen
+            [ContextManager] --> [skin1]
+            [skin1] --> [skin2]
+            frame [ContextManager] {
+                [AppContextAgentRegistry] --> [ActivityContextAgentRegistry]
+                [ActivityContextAgentRegistry] --> [NativeActivityContextDispatcher]
+                component [queryContext1] #lightBlue
+                component [queryContext2] #lightBlue
+                [NativeActivityContextDispatcher] --> [queryContext1]
+                [queryContext1] --> [queryContext2]
+            }
+        }
+    }
+}
+@enduml

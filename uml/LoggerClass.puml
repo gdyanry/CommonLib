@@ -1,0 +1,87 @@
+18:34:13: Executing task ':ClassDiagramBuilder.main()'...
+
+
+> Task :compileJava
+注: 某些输入文件使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+> Task :processResources NO-SOURCE
+> Task :classes
+
+> Task :ClassDiagramBuilder.main()
+@startuml
+'https://plantuml.com/class-diagram
+
+class Logger {
++addHandler(LogHandler):void
++addHandler(Object, LogHandler):void
++catches(Throwable):void
++setLevel(LogLevel):void
++{static}get(Object):Logger
++{static}getDefault():Logger
++{static}setDefaultHandler(LogHandler):void
++{static}setDefaultTag(Object):void
++concat(LogLevel, Object[]):void
++concat(int, LogLevel, Object[]):void
++d(String, Object[]):void
++dd(Object[]):void
++e(String, Object[]):void
++ee(Object[]):void
++format(LogLevel, String, Object[]):void
++format(int, LogLevel, String, Object[]):void
++i(String, Object[]):void
++ii(Object[]):void
++v(String, Object[]):void
++vv(Object[]):void
++w(String, Object[]):void
++ww(Object[]):void
+}
+Logger ..> LogHandler
+Logger ..> LogLevel
+Logger o--> Logger
+
+abstract class LogHandler {
++LogHandler()
++getLevel():LogLevel
++setFormatter(LogFormatter):LogHandler
++setLevel(LogLevel):void
+#{abstract}catches(Object, Throwable):void
+#{abstract}handleFormattedLog(LogRecord, String):void
+}
+LogHandler o--> LogLevel
+LogHandler ..> LogFormatter
+LogHandler o--> LogHandler
+LogHandler ..> LogRecord
+
+enum LogLevel {
++{static}Debug: LogLevel
++{static}Error: LogLevel
++{static}Info: LogLevel
++{static}Verbose: LogLevel
++{static}Warn: LogLevel
++getAcronym():String
++{static}valueOf(String):LogLevel
++{static}values():LogLevel[]
+}
+LogLevel *--> LogLevel
+
+interface LogFormatter {
++{abstract}format(LogRecord):String
+}
+LogFormatter ..> LogRecord
+
+abstract class LogRecord {
++getLevel():LogLevel
++getMessage():String
++getSequenceNumber():long
++getTag():Object
++getTimeMillis():long
++nextStackTraceElement():StackTraceElement
+#{abstract}buildMessage():String
+}
+LogRecord o--> LogLevel
+@enduml
+
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 executed
+18:34:14: Task execution finished ':ClassDiagramBuilder.main()'.

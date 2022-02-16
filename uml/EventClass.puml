@@ -1,0 +1,58 @@
+17:58:24: Executing task ':ClassDiagramBuilder.main()'...
+
+
+> Task :compileJava
+注: 某些输入文件使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+> Task :processResources NO-SOURCE
+> Task :classes
+
+> Task :ClassDiagramBuilder.main()
+@startuml
+'https://plantuml.com/class-diagram
+
+class EventDispatcher<E extends Event, I extends EventInterceptor<? super E>> {
++EventDispatcher()
++dispatchEvent(E):void
++onDispatchEvent(E):int
++onEvent(E):int
+}
+note left of EventDispatcher::"dispatchEvent("
+事件分发入口
+end note
+EventDispatcher --> Event
+EventDispatcher ..|> EventInterceptor
+EventDispatcher --|> Registry
+
+class Event {
++Event()
++configLogger(Logger, LogLevel):void
++getCurrentLevel():int
+}
+
+interface EventInterceptor<E extends Event> {
++isEnable():boolean
++{abstract}onDispatchEvent(E):int
++{abstract}onEvent(E):int
+}
+note left of EventInterceptor::"onDispatchEvent("
+拦截
+end note
+note left of EventInterceptor::"onEvent("
+处理
+end note
+EventInterceptor --> Event
+
+class Registry<T> {
++Registry()
++getList():List<T>
++setComparator(Comparator<T>):void
++register(T[]):boolean
++unregister(T[]):boolean
+}
+@enduml
+
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 executed
+17:58:25: Task execution finished ':ClassDiagramBuilder.main()'.

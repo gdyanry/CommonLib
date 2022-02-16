@@ -1,0 +1,168 @@
+18:24:10: Executing task ':ClassDiagramBuilder.main()'...
+
+
+> Task :compileJava
+注: 某些输入文件使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+> Task :processResources NO-SOURCE
+> Task :classes
+
+> Task :ClassDiagramBuilder.main()
+@startuml
+'https://plantuml.com/class-diagram
+
+class SchedulerManager {
++SchedulerManager(Runner, Logger)
++cancelAll(boolean):void
++cancelByTag(Object):void
++cancelScheduler(boolean, Filter<Scheduler>):void
++get(Object):Scheduler
++hasScheduler(Object):boolean
++peek(Object):Scheduler
+}
+note left of SchedulerManager::"get(Objec"
+获取Scheduler对象
+end note
+SchedulerManager ..> Runner
+SchedulerManager o--> Scheduler
+
+interface Runner {
++{abstract}cancel(Runnable):void
++{abstract}run(Runnable):void
++{abstract}schedule(Runnable, long):void
++{abstract}terminate():void
+}
+
+class Scheduler {
++addDisplay(Display<?>):void
++cancel(boolean):void
++getDisplay(Class<T extends Display>):T
++getDisplays():Collection<Display>
++getShowingData():ValueHolder<ShowData>
++getVisibility():BooleanHolder
++removeDisplay(Class<T extends Display>):T
++show(D, Class<? extends Display<? extends D>>):void
++toString():String
++addLink(Scheduler[]):void
+}
+note left of Scheduler::"show(D, Class<? extends Display<? extends D>"
+执行入口
+end note
+Scheduler ..> Display
+Scheduler o--> ValueHolder
+Scheduler --> ShowData
+Scheduler o--> BooleanHolder
+Scheduler ..> Scheduler
+
+abstract class Display<D extends ShowData> {
+#scheduler: Scheduler
++getShowingData():D
+#{abstract}internalDismiss():void
+#{abstract}show(D):void
+}
+Display --> ShowData
+Display *--> Scheduler
+
+class ShowData {
++ShowData()
++{static}FLAG_EXPEL_WAITING_DATA: int
++{static}FLAG_INVALID_ON_DELAYED_SHOW: int
++{static}FLAG_REJECT_DISMISSED: int
++{static}FLAG_REJECT_EXPELLED: int
++{static}STATE_DEQUEUE: int
++{static}STATE_DISMISS: int
++{static}STATE_ENQUEUE: int
++{static}STATE_SHOWING: int
++{static}STRATEGY_APPEND_TAIL: int
++{static}STRATEGY_INSERT_HEAD: int
++{static}STRATEGY_SHOW_IMMEDIATELY: int
++cancelDismiss():void
++dismiss(long):void
++getExtra():Object
++getState():IntHolder
++setDuration(long):ShowData
++setExtra(Object):ShowData
++setPriority(int):ShowData
++setStrategy(int):ShowData
++setTag(Object):ShowData
++toString():String
+#expelWaitingData(ShowData):boolean
+#onStateChange(int, int):void
++run():void
+}
+ShowData --|> FlagsHolder
+ShowData o--> IntHolder
+ShowData o--> ShowData
+
+class FlagsHolder {
++FlagsHolder(boolean)
++addFlag(int):FlagsHolder
++hasFlag(int):boolean
++isIndexBase():boolean
++removeFlag(int):FlagsHolder
+}
+FlagsHolder --|> IntHolderImpl
+FlagsHolder o--> FlagsHolder
+
+class IntHolderImpl {
++IntHolderImpl()
++IntHolderImpl(int)
++addWatcher(IntWatcher):boolean
++getValue():int
++removeWatcher(IntWatcher):boolean
++setValue(int):int
+#onDispatchValueChange(int, int):void
+}
+IntHolderImpl --|> Registry
+IntHolderImpl ..|> IntHolder
+IntHolderImpl ..> IntWatcher
+
+class Registry<T> {
++Registry()
++getList():List<T>
++setComparator(Comparator<T>):void
++register(T[]):boolean
++unregister(T[]):boolean
+}
+
+interface IntHolder {
++getAndWatch(IntWatcher):boolean
++{abstract}addWatcher(IntWatcher):boolean
++{abstract}getValue():int
++{abstract}removeWatcher(IntWatcher):boolean
+}
+IntHolder ..> IntWatcher
+
+interface IntWatcher {
++{abstract}onValueChange(int, int):void
+}
+
+interface ValueHolder<V> {
++getAndWatch(ValueWatcher<V>):boolean
++{abstract}addWatcher(ValueWatcher<V>):boolean
++{abstract}getValue():V
++{abstract}removeWatcher(ValueWatcher<V>):boolean
+}
+ValueHolder ..> ValueWatcher
+
+interface ValueWatcher<V> {
++{abstract}onValueChange(V, V):void
+}
+
+interface BooleanHolder {
++getAndWatch(BooleanWatcher):boolean
++{abstract}addWatcher(BooleanWatcher):boolean
++{abstract}getValue():boolean
++{abstract}removeWatcher(BooleanWatcher):boolean
+}
+BooleanHolder ..> BooleanWatcher
+
+interface BooleanWatcher {
++{abstract}onValueChange(boolean):void
+}
+@enduml
+
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 executed
+18:24:11: Task execution finished ':ClassDiagramBuilder.main()'.

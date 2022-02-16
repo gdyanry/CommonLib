@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+title ASR流程时序图
+
+participant so
+actor Walleve
+participant AsrAudioDataProcessor
+
+so -> Walleve: OPCODE_VOICE_START_CMD(近场)\nASR_CMD_WAKEUP(远场)
+Walleve -> AsrAudioDataProcessor: onAudioDataStart()
+so -> Walleve: OPCODE_VOICE_DATA(近场)\nASR_CMD_RECORD(远场)
+Walleve -> AsrAudioDataProcessor: onAudioData()
+|||
+AsrAudioDataProcessor --> Walleve: 中间结果
+|||
+so --> Walleve: OPCODE_VOICE_STOP_CMD(近场)
+Walleve --> AsrAudioDataProcessor: onAudioDataStop()
+AsrAudioDataProcessor -> Walleve: 最终结果
+Walleve --> so: ASR_CMD_RECORD_END(远场)
+@enduml

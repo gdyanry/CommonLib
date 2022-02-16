@@ -1,0 +1,65 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+title 模块化初始化流程
+hide empty description
+state "Application.onCreate()，模块注册" as start #lightblue
+state "CORE模块按优先级排序；遍历回调<color blue>ProjectModule.onCreate()</color>" as initCore
+state "切换到bg线程，遍历所有模块,回调ProjectModule.<color red>postInit(EMERGENCY_CORE)</color>" as postInitCore
+state "PRELOAD模块按优先级排序；遍历回调<color blue>ProjectModule.onCreate()</color>" as initPreload
+state "切换到bg线程，遍历所有模块,回调ProjectModule.<color red>postInit(EMERGENCY_PRELOAD)</color>" as postInitPreload
+state "LAZY模块按优先级排序；等待主线程空闲；遍历回调<color blue>ProjectModule.onCreate()</color>" as initLazy
+state "切换到bg线程，遍历所有模块,回调ProjectModule.<color red>postInit(EMERGENCY_LAZY)</color>" as postInitLazy
+state Asr连接成功 #lightblue
+
+[*] -> start
+start --> initCore
+note right of initCore: system、base、asr、skin等模块
+initCore -[dashed]-> postInitCore
+initCore --> 15秒兜底
+initCore -[dashed]-> Asr连接成功
+Asr连接成功 --> initPreload
+15秒兜底 -[dashed]-> initPreload
+note left of initPreload: nlp、tts、天气、影视、电视控制等模块
+initPreload -[dashed]-> postInitPreload
+initPreload --> 等待15秒
+等待15秒 -[dashed]-> initLazy
+note left of initLazy: 非核心业务模块
+initLazy -[dashed]-> postInitLazy
+
+
+'state dispatchInit {
+'    state isEmergent <<choice>>
+'    state "遍历当前emergency模块，回调<color red>ProjectModule.onCreate</color>()" as moduleOnCreate
+'    state "遍历所有模块，回调<color red>ProjectModule.postInit</color>(emergency)" as modulePostInit
+'    当前emergency模块按优先级排序 --> isEmergent
+'    isEmergent --> 等待主线程空闲 : emergency==EMERGENCY_LAZY
+'    等待主线程空闲 -[dashed]-> moduleOnCreate
+'    isEmergent --> moduleOnCreate : else
+'    moduleOnCreate --> 切换到bg线程
+'    切换到bg线程 --> modulePostInit
+'}
+
+'start --> 模块注册
+'模块注册 --> dispatchInit : EMERGENCY_CORE
+'note on link
+'    system、base、asr等模块
+'end note
+'dispatchInit --> CORE模块初始化完成
+'CORE模块初始化完成 --> 15秒兜底
+'15秒兜底 -[dashed]> 初始化PRELOAD模块
+'Asr连接成功 --> 初始化PRELOAD模块
+'初始化PRELOAD模块 --> dispatchInit : EMERGENCY_PRELOAD
+'note on link
+'    skin、nlp、tts、天气、
+'    影视、电视控制等模块
+'end note
+'dispatchInit --> PRELOAD模块初始化完成
+'PRELOAD模块初始化完成 --> 等待15秒
+'等待15秒 -[dashed]-> dispatchInit : EMERGENCY_LAZY
+'note on link
+'    非核心业务模块
+'end note
+'dispatchInit --> LAZY模块初始化完成
+'LAZY模块初始化完成 --> [*]
+
+@enduml

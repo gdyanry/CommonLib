@@ -1,6 +1,7 @@
 package yanry.lib.java.model.schedule;
 
 import yanry.lib.java.model.FlagsHolder;
+import yanry.lib.java.model.watch.IntHolder;
 import yanry.lib.java.model.watch.IntHolderImpl;
 
 import java.util.HashSet;
@@ -69,7 +70,7 @@ public class ShowData extends FlagsHolder implements Runnable {
         super(false);
     }
 
-    public IntHolderImpl getState() {
+    public IntHolder getState() {
         return stateHolder;
     }
 

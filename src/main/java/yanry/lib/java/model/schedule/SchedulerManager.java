@@ -3,6 +3,7 @@ package yanry.lib.java.model.schedule;
 import yanry.lib.java.interfaces.Filter;
 import yanry.lib.java.model.log.Logger;
 import yanry.lib.java.model.runner.Runner;
+import yanry.lib.java.model.uml.UmlElement;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,14 +33,20 @@ public class SchedulerManager {
      * @param tag
      * @return
      */
+    @UmlElement(note = "获取Scheduler对象")
     public Scheduler get(Object tag) {
         Scheduler scheduler = schedulers.get(tag);
         if (scheduler == null) {
-            scheduler = new Scheduler(this, tag);
-            schedulers.put(tag, scheduler);
-            HashSet<Scheduler> set = new HashSet<>();
-            set.add(scheduler);
-            conflictedSchedulers.put(scheduler, set);
+            synchronized (tag) {
+                scheduler = schedulers.get(tag);
+                if (scheduler == null) {
+                    scheduler = new Scheduler(this, tag);
+                    schedulers.put(tag, scheduler);
+                    HashSet<Scheduler> set = new HashSet<>();
+                    set.add(scheduler);
+                    conflictedSchedulers.put(scheduler, set);
+                }
+            }
         }
         return scheduler;
     }
@@ -52,17 +59,6 @@ public class SchedulerManager {
      */
     public Scheduler peek(Object tag) {
         return schedulers.get(tag);
-    }
-
-    /**
-     * 双向关联
-     *
-     * @param a
-     * @param b
-     */
-    public void link(Scheduler a, Scheduler b) {
-        a.addLink(b);
-        b.addLink(a);
     }
 
     /**

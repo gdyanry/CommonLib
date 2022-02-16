@@ -1,0 +1,52 @@
+@startuml
+'https://plantuml.com/class-diagram
+title 线程相关类结构
+
+interface Runner {
+    run(Runnable runnable)
+    schedule(Runnable runnable, long delay)
+    cancel(Runnable runnable)
+}
+interface Executor {
+    execute (Runnable command)
+}
+interface ExecutorService {
+    Future<?> submit(Runnable task)
+    Future<T> submit(Callable<T> task)
+}
+class Handler {
+    post(Runnable runnable)
+    postDelayed(Runnable runnable, long delay)
+}
+class HandlerThreadRunner {
+    Handler getHandler()
+}
+
+Handler <|-- UiRunner
+Runner <|.. UiRunner
+Executor <|.. UiRunner
+
+HandlerThread <|-- HandlerThreadRunner
+Runner <|.. HandlerThreadRunner
+Executor <|.. HandlerThreadRunner
+HandlerThreadRunner *--> Handler
+
+Executor <|.. ExecutorService
+
+note left of UiRunner #lightgray: getUiRunner()
+note left of HandlerThreadRunner #lightgray: getQuickRunner()
+note bottom of ExecutorService #lightgray: getIoExecutor()\ngetCpuExecutor()
+note right of Runner::run
+马上执行，自动cancel
+end note
+note right of Runner::schedule
+延时执行，自动cancel
+end note
+note left of Handler::post
+排队执行，不cancel
+end note
+note left of Handler::postDelayed
+延时执行，不cancel
+end note
+
+@enduml
