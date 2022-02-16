@@ -38,10 +38,7 @@ public class Registry<T> {
                 }
             }
             if (changed) {
-                if (comparator != null) {
-                    Collections.sort(newList, comparator);
-                }
-                registrantList = Collections.unmodifiableList(newList);
+                setList(newList);
                 return true;
             }
         }
@@ -69,6 +66,23 @@ public class Registry<T> {
             }
         }
         return false;
+    }
+
+    public boolean unregisterAll() {
+        if (registrantList.size() == 0) {
+            return false;
+        }
+        synchronized (this) {
+            registrantList = Collections.EMPTY_LIST;
+        }
+        return true;
+    }
+
+    public synchronized void setList(List<T> list) {
+        if (comparator != null) {
+            Collections.sort(list, comparator);
+        }
+        registrantList = Collections.unmodifiableList(list);
     }
 
     /**
