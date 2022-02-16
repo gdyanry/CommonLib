@@ -1,7 +1,6 @@
 package yanry.lib.java.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yanry
@@ -10,7 +9,7 @@ import java.util.Map;
  */
 public final class Singletons {
 
-    private static Map<Class<?>, Object> container = new HashMap<>();
+    private static ConcurrentHashMap<Class<?>, Object> container = new ConcurrentHashMap<>();
 
     private Singletons() {
     }

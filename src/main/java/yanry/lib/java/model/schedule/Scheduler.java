@@ -1,14 +1,15 @@
 package yanry.lib.java.model.schedule;
 
+import yanry.lib.java.model.uml.UmlElement;
 import yanry.lib.java.model.watch.BooleanHolder;
 import yanry.lib.java.model.watch.BooleanHolderImpl;
 import yanry.lib.java.model.watch.ValueHolder;
 import yanry.lib.java.model.watch.ValueHolderImpl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 本类适用的场景为：需要为不同的数据弹出不同的界面，同一时刻最多只显示一个界面，比如显示推送通知。
@@ -19,7 +20,7 @@ public class Scheduler {
     private Object tag;
     ShowingDataHolder showingData = new ShowingDataHolder();
     BooleanHolderImpl visibility = new BooleanHolderImpl();
-    private HashMap<Class<? extends Display>, Display> displays = new HashMap<>();
+    private ConcurrentHashMap<Class<? extends Display>, Display> displays = new ConcurrentHashMap<>();
 
     Scheduler(SchedulerManager manager, Object tag) {
         this.manager = manager;
@@ -77,15 +78,16 @@ public class Scheduler {
     public <T extends Display> T getDisplay(Class<T> displayType) {
         T display = (T) displays.get(displayType);
         if (display == null) {
-            try {
-                display = displayType.getDeclaredConstructor().newInstance();
-                display.setScheduler(this);
-                displays.put(displayType, display);
-            } catch (Exception e) {
-                if (manager.logger != null) {
-                    manager.logger.catches(e);
-                } else {
-                    e.printStackTrace();
+            synchronized (displayType) {
+                display = (T) displays.get(displayType);
+                if (display == null) {
+                    try {
+                        display = displayType.getDeclaredConstructor().newInstance();
+                        display.setScheduler(this);
+                        displays.put(displayType, display);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
@@ -100,6 +102,7 @@ public class Scheduler {
         return displays.values();
     }
 
+    @UmlElement(note = "执行入口")
     public <D extends ShowData> void show(D data, Class<? extends Display<? extends D>> displayType) {
         if (data.scheduler != null && data.scheduler != this) {
             manager.logger.ww("data has been shown by another scheduler: ", data);
